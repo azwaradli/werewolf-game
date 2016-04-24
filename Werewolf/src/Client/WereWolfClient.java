@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package TCPServer;
+package Client;
+
+import Client.ClientProtocol;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -30,6 +32,7 @@ public class WereWolfClient {
     JTextField textField = new JTextField(40);
     JTextArea messageArea = new JTextArea(8, 40);
     JTextArea playerList = new JTextArea(8, 40);
+    ClientProtocol clientProtocol = new ClientProtocol();
 
     /**
      * Constructs the client by laying out the GUI and registering a
@@ -63,6 +66,7 @@ public class WereWolfClient {
                 textField.setText("");
             }
         });
+       
     }
 
     /**
@@ -95,9 +99,9 @@ public class WereWolfClient {
         // Make connection and initialize streams
         String serverAddress = getServerAddress();
         Socket socket = new Socket(serverAddress, 8080);
-        in = new BufferedReader(new InputStreamReader(
-            socket.getInputStream()));
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         out = new PrintWriter(socket.getOutputStream(), true);
+        out.println(clientProtocol.joinGameMessage("tes")); // testing send message
 
         // Process all messages from server, according to the protocol.
         while (true) {
