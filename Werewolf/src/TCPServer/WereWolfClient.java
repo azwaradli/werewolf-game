@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 public class WereWolfClient {
     BufferedReader in;
     PrintWriter out;
-    JFrame frame = new JFrame("Chatter");
+    JFrame frame = new JFrame("Werewolf Game");
     JTextField textField = new JTextField(40);
     JTextArea messageArea = new JTextArea(8, 40);
     JTextArea playerList = new JTextArea(8, 40);
@@ -45,7 +45,7 @@ public class WereWolfClient {
         textField.setEditable(false);
         messageArea.setEditable(false);
         playerList.setEditable(false);
-        playerList.setMaximumSize(new Dimension(50, playerList.getPreferredSize().height));
+        playerList.setPreferredSize(new Dimension(20, playerList.getPreferredSize().height));
         frame.getContentPane().add(textField, "North");
         frame.getContentPane().add(playerList, "East");
         frame.getContentPane().add(new JScrollPane(messageArea), "Center");
@@ -72,7 +72,7 @@ public class WereWolfClient {
         return JOptionPane.showInputDialog(
             frame,
             "Enter IP Address of the Server:",
-            "Welcome to the Chatter",
+            "Welcome to the Werewolf Game",
             JOptionPane.QUESTION_MESSAGE);
     }
 
