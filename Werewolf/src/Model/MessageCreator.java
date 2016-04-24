@@ -54,7 +54,6 @@ public class MessageCreator {
     public String joinFailureGameStarted(){
         try {
             JSONObject obj = new JSONObject();
-            
             obj.put("status", "fail");
             obj.put("description", "please wait, game is currently running");
             

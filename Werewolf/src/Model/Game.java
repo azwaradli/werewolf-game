@@ -51,12 +51,21 @@ public class Game {
     }
     
     public boolean addPlayer(String name){
-        if(!players.contains(name)){
+        if(isNameUnique(name)){
             players.add(new Player(stPlayerId++, name));
             return true;
         }else{
             return false;
         }
+    }
+    
+    public boolean isNameUnique(String name){
+        for(Player player : players){
+            if(player.getName().equals(name)){
+                return false;
+            }
+        }
+        return true;
     }
     
     public void deletePlayer(String name){
