@@ -10,9 +10,9 @@ package Model;
  * @author fauzanrifqy
  */
 public class Player {
-    private int id;
-    private String name;
-    private boolean role;
+    private int id;             //id pemain
+    private String name;        //Nama pemain
+    private boolean role;       //True : Civilian, False : Werewolf
     
     Player(int iid, String inname){
         id = iid;
@@ -47,6 +47,14 @@ public class Player {
     
     public boolean isCivil(){
         return role;
+    }
+    
+    public void setRoleWerewolf(){
+        role = false;
+    }
+    
+    public void setRoleCivil(){
+       role = true;
     }
     
     public void setRole(boolean inp){

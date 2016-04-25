@@ -66,4 +66,20 @@ public class MessageCreator {
         }
         return null;
     }
+
+    public String joinFailureNoUser() {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "fail");
+            obj.put("description", "No Username received by server");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 }
