@@ -13,16 +13,31 @@ public class Player {
     private int id;             //id pemain
     private String name;        //Nama pemain
     private boolean role;       //True : Civilian, False : Werewolf
+    private boolean ready;
     
     Player(int iid, String inname){
         id = iid;
         name = inname;
         role = true;
+        ready = false;
     }
     
     Player(String inname, boolean inrole){
         name = inname;
         role = inrole;
+        ready = false;
+    }
+    
+    public void setReady(){
+        ready = true;
+    }
+    
+    public void setNotReady(){
+        ready = false;
+    }
+    
+    public boolean isReady(){
+        return ready;
     }
     
     public void setId(int inp){

@@ -46,8 +46,52 @@ public class Game {
         return players.get(inp);
     }
     
+    public ArrayList<Player> getPlayer(){
+        return players;
+    }
+    
+    public ArrayList<Player> getPlayerReady(){
+        ArrayList<Player> tempPlayers = new ArrayList();
+        for(Player player : players){
+            if(player.isReady()){
+                tempPlayers.add(player);
+            }
+        }
+        return tempPlayers;
+    }
+    
+    public ArrayList<Player> getPlayerNotReady(){
+        ArrayList<Player> tempPlayers = new ArrayList();
+        for(Player player : players){
+            if(!player.isReady()){
+                tempPlayers.add(player);
+            }
+        }
+        return tempPlayers;
+    }
+    
     public int playerSize(){
         return players.size();
+    }
+    
+    public int playerReadySize(){
+        int temp = 0;
+        for(Player player : players){
+            if(player.isReady()){
+                temp++;
+            }
+        }
+        return temp;
+    }
+    
+    public int playerNotReadySize(){
+        int temp = 0;
+        for(Player player : players){
+            if(!player.isReady()){
+                temp++;
+            }
+        }
+        return temp;
     }
     
     public boolean addPlayer(String name){
@@ -78,10 +122,30 @@ public class Game {
         return false;
     }
     
-    public boolean deletePlayer(Integer id){
+    public boolean deletePlayer(int id){
         for(Player player : players){
             if(player.getId() == id){
                 players.remove(player);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean getReady(int id){
+        for(Player player : players){
+            if(player.getId() == id){
+                player.setReady();
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean cancelReady(int id){
+        for(Player player : players){
+            if(player.getId() == id){
+                player.setNotReady();
                 return true;
             }
         }
