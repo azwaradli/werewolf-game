@@ -78,6 +78,7 @@ public class WereWolfServer {
                 JSONParser parser = new JSONParser();   //json parser
                 
                 System.out.println("Server :: A Client is connected");
+                int thisClient = -1;
                 while(true){
                     getjson = in.readLine();
                     System.out.println("Server :: Client Message :: " + getjson);
@@ -103,7 +104,8 @@ public class WereWolfServer {
                                     {
                                         //Jika username unique dan berhasil ditambahkan
                                         System.out.println("Server :: Client Join Success as " + json.get("username").toString());
-                                        String message = mc.joinSuccess(game.getPlayerId(json.get("username").toString()));
+                                        thisClient = game.getPlayerId(json.get("username").toString());
+                                        String message = mc.joinSuccess(thisClient);
                                         out.println(message);
                                     }
                                     else
@@ -118,7 +120,7 @@ public class WereWolfServer {
                                 {
                                     //Jika Tidak Memiliki Key Username
                                     System.out.println("Server :: Client Join Request Rejected, Username doesn't recognize");
-                                    String message = mc.joinFailureNoUser();
+                                    String message = mc.failureWrongRequest();
                                     out.println(message);
                                 }
                                 
@@ -131,11 +133,29 @@ public class WereWolfServer {
                                 out.println(message);
                             } 
                         }
+                        else if(thisClient > -1)            //Check Apakah User telah berhasil join dan telah memiliki id
+                        {
+                            if(json.get("method").equals("leave"))
+                            {
+                                //------------------------------
+                                //----------LEAVE STATE---------
+                                //------------------------------
+                                if(game.deletePlayer(thisClient))
+                                {
+                                    mc.leaveSuccess();
+                                }
+                                else
+                                {
+                                    mc.leaveFailure();
+                                }
+                            }
+                        }
                         else
                         {
-                        //------------------------------
-                        //----------JOIN STATE----------
-                        //------------------------------
+                            //------------------------------
+                            //----------WRONG STATE---------
+                            //------------------------------
+                            mc.failureWrongRequest();
                         }
                         
                     } catch (ParseException ex) {
