@@ -68,8 +68,24 @@ public class Game {
         return true;
     }
     
-    public void deletePlayer(String name){
-        players.remove(name);
+    public boolean deletePlayer(String name){
+        for(Player player : players){
+            if(player.getName().equals(name)){
+                players.remove(player);
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean deletePlayer(Integer id){
+        for(Player player : players){
+            if(player.getId() == id){
+                players.remove(player);
+                return true;
+            }
+        }
+        return false;
     }
     
     public void gameStart(){
