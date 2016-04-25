@@ -87,75 +87,99 @@ public class WereWolfServer {
                         Object obj = parser.parse(getjson);
                         json = (JSONObject)obj;
                         
-                      
-                        if(json.get("method").equals("join"))
-                        {      
-                        //------------------------------
-                        //----------JOIN STATE----------
-                        //------------------------------
-                            System.out.println("Server :: Client Request Join");
-                            if(!game.isStarted())
+                        if(json.containsKey("method")){
+                            if(json.get("method").equals("join"))
                             {      
-                                //Jika Game Belum Di Mulai
-                                if(json.containsKey("username"))
-                                {
-                                    //Jika Terdapat Key Username
-                                    if(game.addPlayer(json.get("username").toString(),socket.getRemoteSocketAddress().toString()))
+                            //------------------------------
+                            //----------JOIN STATE----------
+                            //------------------------------
+                                System.out.println("Server :: Client Request Join");
+                                if(!game.isStarted())
+                                {      
+                                    //Jika Game Belum Di Mulai
+                                    if(json.containsKey("username"))
                                     {
-                                        //Jika username unique dan berhasil ditambahkan
-                                        System.out.println("Server :: Client Join Success as " + json.get("username").toString());
-                                        thisClient = game.getPlayerId(json.get("username").toString());
-                                        String message = mc.joinSuccess(thisClient);
+                                        //Jika Terdapat Key Username
+                                        if(game.addPlayer(json.get("username").toString(),socket.getRemoteSocketAddress().toString()))
+                                        {
+                                            //Jika username unique dan berhasil ditambahkan
+                                            System.out.println("Server :: Client Join Success as " + json.get("username").toString());
+                                            thisClient = game.getPlayerId(json.get("username").toString());
+                                            String message = mc.joinSuccess(thisClient);
+                                            out.println(message);
+                                        }
+                                        else
+                                        {
+                                            //Jika username tidak unique dan gagal ditambahkan
+                                            System.out.println("Server :: Client Join Request Rejected, Name Already Exists");
+                                            String message = mc.joinFailureUserExists();
+                                            out.println(message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //Jika Tidak Memiliki Key Username
+                                        System.out.println("Server :: Client Join Request Rejected, Username doesn't recognize");
+                                        String message = mc.failureWrongRequest();
+                                        out.println(message);
+                                    }
+
+                                }
+                                else
+                                {
+                                    //Jika Game Telah Berjalan
+                                    System.out.println("Server :: Client Join Request Rejected, Game Already Began");
+                                    String message = mc.joinFailureGameStarted();
+                                    out.println(message);
+                                } 
+                            }
+                            else if(thisClient > -1 && json.containsKey("method"))            //Check Apakah User telah berhasil join dan telah memiliki id
+                            {
+                                if(json.get("method").equals("leave"))
+                                {
+                                    //------------------------------
+                                    //----------LEAVE STATE---------
+                                    //------------------------------
+                                    if(game.deletePlayer(thisClient))
+                                    {
+                                        String message = mc.leaveSuccess();
                                         out.println(message);
                                     }
                                     else
                                     {
-                                        //Jika username tidak unique dan gagal ditambahkan
-                                        System.out.println("Server :: Client Join Request Rejected, Name Already Exists");
-                                        String message = mc.joinFailureUserExists();
+                                        String message = mc.failureUserNoExist();
                                         out.println(message);
                                     }
                                 }
-                                else
+                                else if(json.get("method").equals("ready"))
                                 {
-                                    //Jika Tidak Memiliki Key Username
-                                    System.out.println("Server :: Client Join Request Rejected, Username doesn't recognize");
-                                    String message = mc.failureWrongRequest();
-                                    out.println(message);
+                                    //------------------------------
+                                    //----------READY STATE---------
+                                    //------------------------------
+                                    if(game.getReady(thisClient))
+                                    {
+                                        String message = mc.readySuccess();
+                                        out.println(message);
+                                    }
+                                    else
+                                    {
+                                        String message = mc.failureUserNoExist();
+                                        out.println(message);
+                                    }
                                 }
-                                
                             }
                             else
                             {
-                                //Jika Game Telah Berjalan
-                                System.out.println("Server :: Client Join Request Rejected, Game Already Began");
-                                String message = mc.joinFailureGameStarted();
+                                //----------WRONG STATE---------
+                                String message = mc.failureWrongRequest();
                                 out.println(message);
-                            } 
-                        }
-                        else if(thisClient > -1)            //Check Apakah User telah berhasil join dan telah memiliki id
-                        {
-                            if(json.get("method").equals("leave"))
-                            {
-                                //------------------------------
-                                //----------LEAVE STATE---------
-                                //------------------------------
-                                if(game.deletePlayer(thisClient))
-                                {
-                                    mc.leaveSuccess();
-                                }
-                                else
-                                {
-                                    mc.leaveFailure();
-                                }
                             }
                         }
                         else
                         {
-                            //------------------------------
                             //----------WRONG STATE---------
-                            //------------------------------
-                            mc.failureWrongRequest();
+                            String message = mc.failureWrongRequest();
+                            out.println(message);
                         }
                         
                     } catch (ParseException ex) {

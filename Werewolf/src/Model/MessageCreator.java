@@ -99,7 +99,7 @@ public class MessageCreator {
         return null;
     }
     
-    public String leaveFailure(){
+    public String failureUserNoExist(){
         try {
             JSONObject obj = new JSONObject();
             obj.put("status", "fail");
@@ -114,4 +114,21 @@ public class MessageCreator {
         }
         return null;
     }
+    
+    public String readySuccess(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "ok");
+            obj.put("description", "waiting other players");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 }

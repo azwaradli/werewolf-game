@@ -15,6 +15,8 @@ public class Player {
     private boolean role;       //True : Civilian, False : Werewolf
     private String address;
     private Integer port;
+    private boolean ready;
+
     
     Player(int iid, String inname, String IPAddress){
         id = iid;
@@ -22,11 +24,26 @@ public class Player {
         role = true;
         port = Integer.parseInt(IPAddress.split(":")[1]);
         address = IPAddress.split(":")[0].substring(1);
+        ready = false;
+
     }
     
     Player(String inname, boolean inrole){
         name = inname;
         role = inrole;
+        ready = false;
+    }
+    
+    public void setReady(){
+        ready = true;
+    }
+    
+    public void setNotReady(){
+        ready = false;
+    }
+    
+    public boolean isReady(){
+        return ready;
     }
     
     public void setId(int inp){
