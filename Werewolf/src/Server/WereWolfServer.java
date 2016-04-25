@@ -100,7 +100,7 @@ public class WereWolfServer {
                                 if(json.containsKey("username"))
                                 {
                                     //Jika Terdapat Key Username
-                                    if(game.addPlayer(json.get("username").toString()))
+                                    if(game.addPlayer(json.get("username").toString(),socket.getRemoteSocketAddress().toString()))
                                     {
                                         //Jika username unique dan berhasil ditambahkan
                                         System.out.println("Server :: Client Join Success as " + json.get("username").toString());

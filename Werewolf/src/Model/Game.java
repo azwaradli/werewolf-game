@@ -50,9 +50,9 @@ public class Game {
         return players.size();
     }
     
-    public boolean addPlayer(String name){
+    public boolean addPlayer(String name, String IPAddress){
         if(isNameUnique(name)){
-            players.add(new Player(stPlayerId++, name));
+            players.add(new Player(stPlayerId++, name, IPAddress));
             return true;
         }else{
             return false;

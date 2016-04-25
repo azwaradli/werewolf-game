@@ -13,11 +13,15 @@ public class Player {
     private int id;             //id pemain
     private String name;        //Nama pemain
     private boolean role;       //True : Civilian, False : Werewolf
+    private String address;
+    private Integer port;
     
-    Player(int iid, String inname){
+    Player(int iid, String inname, String IPAddress){
         id = iid;
         name = inname;
         role = true;
+        port = Integer.parseInt(IPAddress.split(":")[1]);
+        address = IPAddress.split(":")[0].substring(1);
     }
     
     Player(String inname, boolean inrole){
@@ -61,4 +65,11 @@ public class Player {
         role = inp;
     }
     
+    public String getAddress(){
+        return address;
+    }
+    
+    public Integer getPort(){
+        return port;
+    }
 }
