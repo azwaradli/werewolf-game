@@ -76,7 +76,7 @@ public class WereWolfServer {
                 String getjson;         //tempat string yang didapatkan dari client
                 JSONObject json;        //string yang telah diubah ke json object
                 JSONParser parser = new JSONParser();   //json parser
-                
+                System.out.println(socket.getRemoteSocketAddress().toString());
                 System.out.println("Server :: A Client is connected");
                 while(true){
                     getjson = in.readLine();
@@ -90,6 +90,7 @@ public class WereWolfServer {
                             System.out.println("Server :: Client Request Join");
                             if(!game.isStarted()){
                                 if(game.addPlayer(json.get("username").toString())){
+    
                                     System.out.println("Server :: Client Join Success as " + json.get("username").toString());
                                     String message = mc.joinSuccess(game.getPlayerId(json.get("username").toString()));
                                     out.println(message);
