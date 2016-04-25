@@ -10,28 +10,64 @@ package Model;
  * @author fauzanrifqy
  */
 public class Player {
-    private int id;             //id pemain
+    private int id, port;             //id pemain
     private String name;        //Nama pemain
     private boolean role;       //True : Civilian, False : Werewolf
-    private String address;
-    private Integer port;
     private boolean ready;
-
+    private boolean alive;
+    private String ip="192.168.1.1";
+    
+    Player(int iid, String inname, String iip, int iport){
+        id = iid;
+        name = inname;
+        role = true;
+        ready = false;
+        alive = true;
+        ip = iip;
+        port = iport;
+    }
     
     Player(int iid, String inname, String IPAddress){
         id = iid;
         name = inname;
         role = true;
-        port = Integer.parseInt(IPAddress.split(":")[1]);
-        address = IPAddress.split(":")[0].substring(1);
         ready = false;
-
+        alive = true;
     }
     
     Player(String inname, boolean inrole){
         name = inname;
         role = inrole;
         ready = false;
+        alive = true;
+    }
+    
+    public void setPort(int inp){
+        port = inp;
+    }
+    
+    public int getPort(){
+        return port;
+    }
+    
+    public void setIP(String inp){
+        ip = inp;
+    }
+    
+    public String getIP(){
+        return ip;
+    }
+    
+    public void setDead(){
+        alive = false;
+    }
+    
+    public void Revive(){
+        alive = true;
+    }
+    
+    public boolean isAlive(){
+        return alive;
     }
     
     public void setReady(){
@@ -80,13 +116,5 @@ public class Player {
     
     public void setRole(boolean inp){
         role = inp;
-    }
-    
-    public String getAddress(){
-        return address;
-    }
-    
-    public Integer getPort(){
-        return port;
     }
 }

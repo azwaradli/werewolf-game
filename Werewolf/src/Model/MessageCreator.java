@@ -7,8 +7,10 @@ package Model;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -129,6 +131,51 @@ public class MessageCreator {
             Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public String requestPlayers(ArrayList<Player> players){
+        if(!players.isEmpty()){
+             try {
+                JSONObject obj = new JSONObject();
+                obj.put("status", "ok");
+                
+                JSONArray playerArray = new JSONArray();
+                for(Player player : players){
+                    JSONObject temp = new JSONObject();
+                    temp.put("player_id", player.getId());
+                    temp.put("is_alive", player.isAlive());
+                    temp.put("address", player.getIP());
+                    temp.put("port", player.getPort());
+                    temp.put("username", player.getName());
+                    playerArray.add(temp);
+                }
+                
+                obj.put("clients", playerArray);
+                obj.put("description", "list of clients retrieved.");
+
+                StringWriter out = new StringWriter();
+                obj.writeJSONString(out);
+
+                return out.toString();
+            } catch (IOException ex) {
+                Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }else{
+            try {
+                JSONObject obj = new JSONObject();
+                obj.put("status", "fail");
+                obj.put("description", "players empty");
+
+                StringWriter out = new StringWriter();
+                obj.writeJSONString(out);
+
+                return out.toString();
+            } catch (IOException ex) {
+                Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }
     }
     
 }
