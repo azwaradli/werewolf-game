@@ -5,7 +5,7 @@
  */
 package Client;
 
-import Client.ClientStandard;
+import Model.StandardMessage;
 import org.json.simple.JSONObject;
 /**
  *
@@ -19,26 +19,26 @@ public class ClientProtocol {
     }
     
     public JSONObject joinGameMessage(String username){
-        data.put(ClientStandard.MESSAGE_METHOD, ClientStandard.PARAM_JOIN);
-        data.put(ClientStandard.MESSAGE_USERNAME, username);
+        data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_JOIN);
+        data.put(StandardMessage.MESSAGE_USERNAME, username);
         
         return data;
     }
     
     public JSONObject leaveGameMessage(){
-        data.put(ClientStandard.MESSAGE_METHOD, ClientStandard.PARAM_LEAVE);
+        data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_LEAVE);
         
         return data;
     }
     
     public JSONObject readyUpMessage(){
-        data.put(ClientStandard.MESSAGE_METHOD, ClientStandard.PARAM_READY);
+        data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_READY);
         
         return data;
     }
     
     public JSONObject listClientMessage(){
-        data.put(ClientStandard.MESSAGE_METHOD, ClientStandard.PARAM_CLIENT_ADDRESS);
+        data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_CLIENT_ADDRESS);
         
         return data;
     }
