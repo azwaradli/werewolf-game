@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,6 +80,8 @@ public class WereWolfServer {
                 System.out.println(socket.getRemoteSocketAddress().toString());
                 System.out.println("Server :: A Client is connected");
                 int thisClient = -1;
+                String thisIP = socket.getRemoteSocketAddress().toString();
+                int thisPort = socket.getPort();
                 while(true){
                     getjson = in.readLine();
                     System.out.println("Server :: Client Message :: " + getjson);
@@ -100,7 +103,7 @@ public class WereWolfServer {
                                     if(json.containsKey("username"))
                                     {
                                         //Jika Terdapat Key Username
-                                        if(game.addPlayer(json.get("username").toString(),socket.getRemoteSocketAddress().toString()))
+                                        if(game.addPlayer(json.get("username").toString(), thisIP, thisPort))
                                         {
                                             //Jika username unique dan berhasil ditambahkan
                                             System.out.println("Server :: Client Join Success as " + json.get("username").toString());
@@ -140,15 +143,18 @@ public class WereWolfServer {
                                     //------------------------------
                                     //----------LEAVE STATE---------
                                     //------------------------------
+                                    System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to leave.");
                                     if(game.deletePlayer(thisClient))
                                     {
                                         String message = mc.leaveSuccess();
                                         out.println(message);
+                                        System.out.println("Server :: Client " + game.getPlayer(thisClient).getName() + " is leaving the game.");
                                     }
                                     else
                                     {
                                         String message = mc.failureUserNoExist();
                                         out.println(message);
+                                        System.out.println("Server :: Client " + game.getPlayer(thisClient).getName() + " leaving error, id doesn't matched.");
                                     }
                                 }
                                 else if(json.get("method").equals("ready"))
@@ -156,21 +162,35 @@ public class WereWolfServer {
                                     //------------------------------
                                     //----------READY STATE---------
                                     //------------------------------
+                                    System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to change ready state.");
                                     if(game.getReady(thisClient))
                                     {
                                         String message = mc.readySuccess();
                                         out.println(message);
+                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" ready to play. Waiting " + (6-game.playerReadySize())+" more to play.");
                                     }
                                     else
                                     {
+                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" failure to ready. Userid doesn't recognize, please relogin.");
                                         String message = mc.failureUserNoExist();
                                         out.println(message);
                                     }
+                                }
+                                else if(json.get("method").equals("client_address"))
+                                {
+                                    //---------------------------------------
+                                    //----------CLIENT ADDRESS STATE---------
+                                    //---------------------------------------
+                                    System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to client address");
+                                    ArrayList<Player> players = game.getPlayer();
+                                    String message = mc.requestPlayers(players);
+                                    out.println(message);
                                 }
                             }
                             else
                             {
                                 //----------WRONG STATE---------
+                                System.out.println("Server :: Client Bad Request.");
                                 String message = mc.failureWrongRequest();
                                 out.println(message);
                             }
@@ -178,6 +198,7 @@ public class WereWolfServer {
                         else
                         {
                             //----------WRONG STATE---------
+                            System.out.println("Server :: Client has no method");
                             String message = mc.failureWrongRequest();
                             out.println(message);
                         }

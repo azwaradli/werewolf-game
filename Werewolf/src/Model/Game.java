@@ -94,9 +94,29 @@ public class Game {
         return temp;
     }
     
-    public boolean addPlayer(String name, String IPAddress){
+    public int playerAliveSize(){
+        int temp = 0;
+        for(Player player : players){
+            if(player.isAlive()){
+                temp++;
+            }
+        }
+        return temp;
+    }
+    
+    public int playerDeadSize(){
+        int temp = 0;
+        for(Player player : players){
+            if(!player.isAlive()){
+                temp++;
+            }
+        }
+        return temp;
+    }
+    
+    public boolean addPlayer(String name, String ip, int port){
         if(isNameUnique(name)){
-            players.add(new Player(stPlayerId++, name, IPAddress));
+            players.add(new Player(stPlayerId++, name, ip, port));
             return true;
         }else{
             return false;
