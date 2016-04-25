@@ -76,7 +76,7 @@ public class WereWolfServer {
                 String getjson;         //tempat string yang didapatkan dari client
                 JSONObject json;        //string yang telah diubah ke json object
                 JSONParser parser = new JSONParser();   //json parser
-                
+                System.out.println(socket.getRemoteSocketAddress().toString());
                 System.out.println("Server :: A Client is connected");
                 int thisClient = -1;
                 while(true){
