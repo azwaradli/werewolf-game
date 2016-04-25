@@ -116,6 +116,8 @@ public class WereWolfClient {
                 playerList.setText("");
             }else if(line.startsWith("LISTPLAYERS")){
                 playerList.append(line.substring(12) + "\n");
+            }else {
+                System.out.println(line);
             }
         }
     }
