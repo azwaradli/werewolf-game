@@ -90,8 +90,8 @@ public class WereWolfServer {
                         Object obj = parser.parse(getjson);
                         json = (JSONObject)obj;
                         
-                        if(json.containsKey("method")){
-                            if(json.get("method").equals("join"))
+                        if(json.containsKey(StandardMessage.MESSAGE_METHOD)){
+                            if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_JOIN))
                             {      
                             //------------------------------
                             //----------JOIN STATE----------
@@ -100,14 +100,14 @@ public class WereWolfServer {
                                 if(!game.isStarted())
                                 {      
                                     //Jika Game Belum Di Mulai
-                                    if(json.containsKey("username"))
+                                    if(json.containsKey(StandardMessage.MESSAGE_USERNAME))
                                     {
                                         //Jika Terdapat Key Username
-                                        if(game.addPlayer(json.get("username").toString(), thisIP, thisPort))
+                                        if(game.addPlayer(json.get(StandardMessage.MESSAGE_USERNAME).toString(), thisIP, thisPort))
                                         {
                                             //Jika username unique dan berhasil ditambahkan
-                                            System.out.println("Server :: Client Join Success as " + json.get("username").toString());
-                                            thisClient = game.getPlayerId(json.get("username").toString());
+                                            System.out.println("Server :: Client Join Success as " + json.get(StandardMessage.MESSAGE_USERNAME).toString());
+                                            thisClient = game.getPlayerId(json.get(StandardMessage.MESSAGE_USERNAME).toString());
                                             String message = mc.joinSuccess(thisClient);
                                             out.println(message);
                                         }
@@ -136,9 +136,9 @@ public class WereWolfServer {
                                     out.println(message);
                                 } 
                             }
-                            else if(thisClient > -1 && json.containsKey("method"))            //Check Apakah User telah berhasil join dan telah memiliki id
+                            else if(thisClient > -1 && json.containsKey(StandardMessage.MESSAGE_METHOD))            //Check Apakah User telah berhasil join dan telah memiliki id
                             {
-                                if(json.get("method").equals("leave"))
+                                if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_LEAVE))
                                 {
                                     //------------------------------
                                     //----------LEAVE STATE---------
@@ -157,7 +157,7 @@ public class WereWolfServer {
                                         System.out.println("Server :: Client " + game.getPlayer(thisClient).getName() + " leaving error, id doesn't matched.");
                                     }
                                 }
-                                else if(json.get("method").equals("ready"))
+                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_READY))
                                 {
                                     //------------------------------
                                     //----------READY STATE---------

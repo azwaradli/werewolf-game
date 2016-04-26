@@ -3,13 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Client;
+package Model;
 
 /**
  *
  * @author Adz
  */
-public class ClientStandard {
+public class StandardMessage {
     public static String MESSAGE_METHOD = "method";
     public static String MESSAGE_USERNAME = "username";
     public static String MESSAGE_PROPOSAL_ID = "proposal_id";
