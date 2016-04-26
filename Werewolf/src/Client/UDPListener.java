@@ -12,13 +12,18 @@ import java.net.*;
  *
  * @author Hp
  */
-public class UDPListener {
+public class UDPListener implements Runnable{
     private int port;
     private DatagramSocket server;
     private byte[] receiveData;
     
     public UDPListener(int _port){
         port = _port;
+   
+    }
+    
+    @Override
+    public void run(){
         receiveData = new byte[1024];
         try{
             server = new DatagramSocket(port);
@@ -34,6 +39,7 @@ public class UDPListener {
             }
             String message = new String(packet.getData());
             //message dapat diproses
+            System.out.println(message);
         }
     }
 }

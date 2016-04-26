@@ -10,16 +10,23 @@ import java.net.*;
  *
  * @author Hp
  */
-public class UDPSender {
+public class UDPSender implements Runnable{
     BufferedReader userInput;
     DatagramSocket client;
     InetAddress IPAddress;
     byte[] sendData;
     String message;
     DatagramPacket packet;
+    String IP;
+    Integer port;
     
-    UDPSender(String IP, int port){
-        
+    UDPSender(String _IP, Integer _port){
+        IP = _IP;
+        port =_port;
+    }
+    
+    @Override
+    public void run(){
         userInput = new BufferedReader(new InputStreamReader(System.in));
         try{
             client = new DatagramSocket();
@@ -37,7 +44,6 @@ public class UDPSender {
         }catch(IOException e){
             e.printStackTrace();
         }
-        
-        
     }
+    
 }

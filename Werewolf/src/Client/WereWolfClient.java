@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -95,31 +96,33 @@ public class WereWolfClient {
      * Connects to the server then enters the processing loop.
      */
     private void run() throws IOException {
-
-        // Make connection and initialize streams
         String serverAddress = getServerAddress();
-        Socket socket = new Socket(serverAddress, 8080);
-        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        out = new PrintWriter(socket.getOutputStream(), true);
-        out.println(clientProtocol.joinGameMessage("tes")); // testing send message
-
-        // Process all messages from server, according to the protocol.
-        while (true) {
-            String line = in.readLine();
-            if (line.startsWith("SUBMITNAME")) {
-                out.println(getName());
-            } else if (line.startsWith("NAMEACCEPTED")) {
-                textField.setEditable(true);
-            } else if (line.startsWith("MESSAGE")) {
-                messageArea.append(line.substring(8) + "\n");
-            } else if(line.startsWith("REFRESHLISTPLAYERS")){
-                playerList.setText("");
-            }else if(line.startsWith("LISTPLAYERS")){
-                playerList.append(line.substring(12) + "\n");
-            }else {
-                System.out.println(line);
-            }
-        }
+        int port = 8080;
+        
+        TCPConnection connection= new TCPConnection(serverAddress,port);
+        Thread t1 = new Thread(connection);
+        t1.start();
+        
+//        UDPListener udpListener = new UDPListener(port);
+//        Thread t2 = new Thread(udpListener);
+//        t2.start();
+//        
+//        Scanner sc = new Scanner(System.in);
+//        while(true){
+//            System.out.println("Cara Komunikasi : ");
+//            System.out.println("UDP <spasi> Address <spasi> Port");
+//            String message = sc.nextLine();
+//            String messages[] = message.split(" ");
+//            if(messages[0].equals("UDP")){
+//                UDPSender udpSender = new UDPSender(messages[1],Integer.parseInt(messages[2]));
+//                Thread t3 = new Thread(udpSender);
+//                t3.start();
+//            }
+//            else{
+//                
+//            }
+//        }
+        
     }
 
     /**
