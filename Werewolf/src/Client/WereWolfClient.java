@@ -103,25 +103,27 @@ public class WereWolfClient {
         Thread t1 = new Thread(connection);
         t1.start();
         
-//        UDPListener udpListener = new UDPListener(port);
-//        Thread t2 = new Thread(udpListener);
-//        t2.start();
-//        
-//        Scanner sc = new Scanner(System.in);
-//        while(true){
-//            System.out.println("Cara Komunikasi : ");
-//            System.out.println("UDP <spasi> Address <spasi> Port");
-//            String message = sc.nextLine();
-//            String messages[] = message.split(" ");
-//            if(messages[0].equals("UDP")){
-//                UDPSender udpSender = new UDPSender(messages[1],Integer.parseInt(messages[2]));
-//                Thread t3 = new Thread(udpSender);
-//                t3.start();
-//            }
-//            else{
-//                
-//            }
-//        }
+        UDPListener udpListener = new UDPListener(connection.getLocalPort());
+        Thread t2 = new Thread(udpListener);
+        t2.start();
+        
+        Scanner sc = new Scanner(System.in);
+        while(true){
+            System.out.println("Cara Komunikasi : ");
+            System.out.println("UDP <spasi> Address <spasi> Port <spasi> Pesan");
+            String message = sc.nextLine();
+            String messages[] = message.split(" ");
+            if(messages[0].equals("UDP")){
+//                System.out.println("masuk sini");
+                UDPSender udpSender = new UDPSender(messages[1],Integer.parseInt(messages[2]) , messages[3]);
+//                System.out.println(messages[1]);
+                Thread t3 = new Thread(udpSender);
+                t3.start();
+            }
+            else{
+                
+            }
+        }
         
     }
 

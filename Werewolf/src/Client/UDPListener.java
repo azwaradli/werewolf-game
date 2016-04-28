@@ -31,6 +31,7 @@ public class UDPListener implements Runnable{
             e.printStackTrace();
         }
         while(true){
+//            System.out.print("a");
             DatagramPacket packet = new DatagramPacket(receiveData,receiveData.length);
             try{
                 server.receive(packet);

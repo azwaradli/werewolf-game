@@ -16,17 +16,25 @@ public class TCPConnection implements Runnable{
     public String serverAddress;
     public int port;
     public ClientProtocol clientProtocol;
+    public int localPort;
     
     public TCPConnection(String _serverAddress, int _port){
         serverAddress = _serverAddress;
         port = _port;
         clientProtocol = new ClientProtocol();
     }
+    
+    public int getLocalPort(){
+        return localPort;
+    }
+    
     @Override
     public void run(){
         // Make connection and initialize stream
         try{
             Socket socket = new Socket(serverAddress, port);
+            localPort = socket.getLocalPort();
+            System.out.println("Local port anda = " + localPort);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(clientProtocol.joinGameMessage("tes")); // testing send message

@@ -20,9 +20,10 @@ public class UDPSender implements Runnable{
     String IP;
     Integer port;
     
-    UDPSender(String _IP, Integer _port){
+    UDPSender(String _IP, Integer _port, String _message){
         IP = _IP;
         port =_port;
+        message = _message;
     }
     
     @Override
@@ -32,7 +33,6 @@ public class UDPSender implements Runnable{
             client = new DatagramSocket();
             IPAddress = InetAddress.getByName(IP);
             sendData = new byte[1024];
-            message = userInput.readLine();
             sendData = message.getBytes();
             packet = new DatagramPacket(sendData,sendData.length,IPAddress,port);
             client.send(packet);
