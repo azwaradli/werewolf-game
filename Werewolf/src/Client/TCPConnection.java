@@ -38,7 +38,6 @@ public class TCPConnection implements Runnable{
         try{
             Socket socket = new Socket(serverAddress, port);
             localPort = socket.getLocalPort();
-            System.out.println("Local port anda = " + localPort);
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
             out.println(clientProtocol.joinGameMessage("tes")); // testing send message

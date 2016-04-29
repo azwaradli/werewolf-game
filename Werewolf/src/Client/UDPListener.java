@@ -14,6 +14,7 @@ import java.net.*;
  */
 public class UDPListener implements Runnable{
     private int port;
+    private int localPort;
     private DatagramSocket server;
     private byte[] receiveData;
     
@@ -22,10 +23,16 @@ public class UDPListener implements Runnable{
         try{
             server = new DatagramSocket(null);
             InetSocketAddress address = new InetSocketAddress(_address,port);
-            server.bind(address);
+            server.bind(address);  
+            localPort = server.getLocalPort();
+            System.out.println("Local port anda = " + localPort);
         }catch(SocketException e){
             e.printStackTrace();
         }
+    }
+    
+    public int getLocalPort(){
+        return localPort;
     }
     
     @Override
