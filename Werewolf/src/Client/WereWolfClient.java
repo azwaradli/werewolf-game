@@ -14,6 +14,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
 import java.net.Socket;
 import java.util.Scanner;
 import javax.swing.JFrame;
@@ -103,10 +105,11 @@ public class WereWolfClient {
         Thread t1 = new Thread(connection);
         t1.start();
         
-        UDPListener udpListener = new UDPListener(connection.getLocalPort());
+        UDPListener udpListener = new UDPListener(connection.getAddress(),connection.getLocalPort());
         Thread t2 = new Thread(udpListener);
         t2.start();
         
+    
         Scanner sc = new Scanner(System.in);
         while(true){
             System.out.println("Cara Komunikasi : ");
@@ -120,7 +123,7 @@ public class WereWolfClient {
                 Thread t3 = new Thread(udpSender);
                 t3.start();
             }
-            else{
+            else if(messages[0].equals("TCP")){
                 
             }
         }

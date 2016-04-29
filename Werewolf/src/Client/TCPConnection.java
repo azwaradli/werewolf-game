@@ -28,6 +28,10 @@ public class TCPConnection implements Runnable{
         return localPort;
     }
     
+    public String getAddress(){
+        return serverAddress;
+    }
+    
     @Override
     public void run(){
         // Make connection and initialize stream

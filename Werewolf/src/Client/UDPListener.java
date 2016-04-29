@@ -17,30 +17,30 @@ public class UDPListener implements Runnable{
     private DatagramSocket server;
     private byte[] receiveData;
     
-    public UDPListener(int _port){
+    public UDPListener(String _address,int _port){
         port = _port;
-   
+        try{
+            server = new DatagramSocket(null);
+            InetSocketAddress address = new InetSocketAddress(_address,port);
+            server.bind(address);
+        }catch(SocketException e){
+            e.printStackTrace();
+        }
     }
     
     @Override
     public void run(){
         receiveData = new byte[1024];
-        try{
-            server = new DatagramSocket(port);
-        }catch(SocketException e){
-            e.printStackTrace();
-        }
-        while(true){
-//            System.out.print("a");
-            DatagramPacket packet = new DatagramPacket(receiveData,receiveData.length);
+        DatagramPacket packet = new DatagramPacket(receiveData,receiveData.length);
+        while(true){    
             try{
                 server.receive(packet);
+                String message = new String(packet.getData());
+                //message dapat diproses
+                System.out.println(message);
             }catch(IOException e){
                 e.printStackTrace();
             }
-            String message = new String(packet.getData());
-            //message dapat diproses
-            System.out.println(message);
         }
     }
 }
