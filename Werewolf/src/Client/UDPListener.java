@@ -7,6 +7,7 @@ package Client;
 
 import java.io.*;
 import java.net.*;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -17,9 +18,11 @@ public class UDPListener implements Runnable{
     private int localPort;
     private DatagramSocket server;
     private byte[] receiveData;
+    private JTextArea messageArea;
     
-    public UDPListener(String _address,int _port){
+    public UDPListener(String _address,int _port, JTextArea _messageArea){
         port = _port;
+        messageArea = _messageArea;
         try{
             server = new DatagramSocket(null);
             InetSocketAddress address = new InetSocketAddress(_address,port);
@@ -42,9 +45,10 @@ public class UDPListener implements Runnable{
                 receiveData = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(receiveData,receiveData.length);
                 server.receive(packet);
-                String message = new String(packet.getData());
+                String message = new String(packet.getData(),0, packet.getLength());
                 //message dapat diproses
                 System.out.println(message);
+                messageArea.append("<"+packet.getPort()+">       :  " + message + "\n");
             }catch(IOException e){
                 e.printStackTrace();
             }

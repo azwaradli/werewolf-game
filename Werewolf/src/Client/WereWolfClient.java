@@ -128,18 +128,22 @@ public class WereWolfClient {
         
         frame.pack();
         
-//        // Add Listeners
-//        messageBox.addActionListener(new ActionListener() {
-//            /**
-//             * Responds to pressing the enter key in the messageBox by sending
-//             * the contents of the text field to the server.    Then clear
-//             * the text area in preparation for the next message.
-//             */
-//            public void actionPerformed(ActionEvent e) {
-//                System.out.println(messageBox.getText());
-//                messageBox.setText("");
-//            }
-//        });
+        // Add Listeners
+        messageBox.addActionListener(new ActionListener() {
+            /**
+             * Responds to pressing the enter key in the messageBox by sending
+             * the contents of the text field to the server.    Then clear
+             * the text area in preparation for the next message.
+             */
+            public void actionPerformed(ActionEvent e) {
+                UDPSender udpSender = new UDPSender(IPChooser.getText(),Integer.parseInt(portChooser.getText()) , messageBox.getText());
+                Thread t3 = new Thread(udpSender);
+                t3.start();
+                
+                messageArea.append("<You>           :  " + messageBox.getText() + "\n");
+                messageBox.setText("");
+            }
+        });
         
         sendMessage.addActionListener(new ActionListener(){
             /**
@@ -148,9 +152,10 @@ public class WereWolfClient {
              * the text area in preparation for the next message.
              */
             public void actionPerformed(ActionEvent e) {
-                System.out.println(messageBox.getText());
-                String messages[] = messageBox.getText().split(" ");
-                UDPSender udpSender = new UDPSender(messages[1],Integer.parseInt(messages[2]) , messages[3]);
+                UDPSender udpSender = new UDPSender(IPChooser.getText(),Integer.parseInt(portChooser.getText()) , messageBox.getText());
+                Thread t3 = new Thread(udpSender);
+                t3.start();
+                messageArea.append("<You>       :  " + messageBox.getText() + "\n");
                 messageBox.setText("");
             }
         });
@@ -190,7 +195,7 @@ public class WereWolfClient {
         Thread t1 = new Thread(connection);
         t1.start();
         
-        UDPListener udpListener = new UDPListener(connection.getAddress(),connection.getLocalPort());
+        UDPListener udpListener = new UDPListener(connection.getAddress(),connection.getLocalPort(),messageArea);
         Thread t2 = new Thread(udpListener);
         t2.start();
         
