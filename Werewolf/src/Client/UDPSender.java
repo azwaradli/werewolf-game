@@ -6,6 +6,7 @@
 package Client;
 import java.io.*;
 import java.net.*;
+import java.util.Random;
 /**
  *
  * @author Hp
@@ -35,7 +36,13 @@ public class UDPSender implements Runnable{
             sendData = new byte[1024];
             sendData = message.getBytes();
             packet = new DatagramPacket(sendData,sendData.length,IPAddress,port);
-            client.send(packet);
+            
+            Random random = new Random();
+            double rand = random.nextDouble();
+            if(rand < 0.85)
+                client.send(packet);
+            else
+                System.out.println("paket anda tidak terkirim");
             client.close();
         }catch(SocketException e){
             e.printStackTrace();

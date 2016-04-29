@@ -37,10 +37,10 @@ public class UDPListener implements Runnable{
     
     @Override
     public void run(){
-        receiveData = new byte[1024];
-        DatagramPacket packet = new DatagramPacket(receiveData,receiveData.length);
         while(true){    
             try{
+                receiveData = new byte[1024];
+                DatagramPacket packet = new DatagramPacket(receiveData,receiveData.length);
                 server.receive(packet);
                 String message = new String(packet.getData());
                 //message dapat diproses
