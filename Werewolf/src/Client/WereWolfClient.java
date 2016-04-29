@@ -6,8 +6,7 @@
 package Client;
 
 import Client.ClientProtocol;
-
-import java.awt.Dimension;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -18,11 +17,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.Socket;
 import java.util.Scanner;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.*;
 
 /**
  *
@@ -32,41 +27,131 @@ public class WereWolfClient {
     BufferedReader in;
     PrintWriter out;
     JFrame frame = new JFrame("Werewolf Game");
-    JTextField textField = new JTextField(40);
     JTextArea messageArea = new JTextArea(8, 40);
     JTextArea playerList = new JTextArea(8, 40);
+    
+    JButton sendMessage = new JButton("Enter");
+    JTextField messageBox = new JTextField(40);
+    JTextField IPChooser = new JTextField(20);
+    JTextField portChooser = new JTextField(10);
+    
     ClientProtocol clientProtocol = new ClientProtocol();
 
     /**
      * Constructs the client by laying out the GUI and registering a
-     * listener with the textfield so that pressing Return in the
-     * listener sends the textfield contents to the server.  Note
-     * however that the textfield is initially NOT editable, and
+     * listener with the messageBox so that pressing Return in the
+     * listener sends the messageBox contents to the server.  Note
+     * however that the messageBox is messageBox NOT editable, and
      * only becomes editable AFTER the client receives the NAMEACCEPTED
      * message from the server.
      */
     public WereWolfClient() {
-
-        // Layout GUI
-        textField.setEditable(false);
+        
+        //MAIN FRAME
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        
+        JPanel southPanel = new JPanel();
+        southPanel.setBackground(Color.GRAY);
+        southPanel.setLayout(new GridBagLayout());
+        
+        messageBox.requestFocusInWindow();
         messageArea.setEditable(false);
-        playerList.setEditable(false);
-        playerList.setPreferredSize(new Dimension(20, playerList.getPreferredSize().height));
-        frame.getContentPane().add(textField, "North");
-        frame.getContentPane().add(playerList, "East");
-        frame.getContentPane().add(new JScrollPane(messageArea), "Center");
-        frame.pack();
+        messageArea.setPreferredSize(new Dimension(20,messageArea.getPreferredSize().height));
+        messageArea.setFont(new Font("Arial", Font.PLAIN, 12));
+        messageArea.setLineWrap(true);
+        
+        mainPanel.add(new JScrollPane(messageArea), BorderLayout.CENTER);
+        
+        GridBagConstraints label = new GridBagConstraints();
+        label.anchor = GridBagConstraints.LINE_START;
+        label.weightx = 0D;
+        label.weighty = 1.0D;
+        label.gridx = 0;
+        label.gridy = 1;
+        
+        GridBagConstraints left = new GridBagConstraints();
+        left.anchor = GridBagConstraints.LINE_START;
+        left.fill = GridBagConstraints.HORIZONTAL;
+        left.gridwidth = 2;
+        left.weightx = 0D;
+        left.weighty = 1.0D;
+        left.gridx = 1;
+        left.gridy = 1;
 
-        // Add Listeners
-        textField.addActionListener(new ActionListener() {
+        GridBagConstraints right = new GridBagConstraints();
+        right.insets = new Insets(0, 10, 0, 0);
+        right.anchor = GridBagConstraints.LINE_START;
+        right.fill = GridBagConstraints.NONE;
+        right.weightx = 0D;
+        right.weighty = 1.0D;
+        right.gridx = 3;
+        right.gridy = 1;
+        
+        GridBagConstraints upper1 = new GridBagConstraints();
+        upper1.anchor = GridBagConstraints.LINE_START;
+        upper1.weightx = 0D;
+        upper1.weighty = 1.0D;
+        upper1.gridx = 0;
+        upper1.gridy = 0;
+        
+        GridBagConstraints upper2 = new GridBagConstraints();
+        upper2.anchor = GridBagConstraints.LINE_START;
+        upper2.weightx = 0D;
+        upper2.weighty = 1.0D;
+        upper2.gridx = 1;
+        upper2.gridy = 0;
+        
+        GridBagConstraints upper3 = new GridBagConstraints();
+        upper3.anchor = GridBagConstraints.LINE_END;
+        upper3.weightx = 0D;
+        upper3.weighty = 1.0D;
+        upper3.gridx = 2;
+        upper3.gridy = 0;
+        
+        GridBagConstraints upper4 = new GridBagConstraints();
+        upper4.anchor = GridBagConstraints.LINE_START;
+        upper4.weightx = 0D;
+        upper4.weighty = 1.0D;
+        upper4.gridx = 3;
+        upper4.gridy = 0;
+        
+        southPanel.add(new JLabel("Message : "),label);
+        southPanel.add(messageBox, left);
+        southPanel.add(sendMessage, right);
+        southPanel.add(new JLabel("IP Address : "),upper1);
+        southPanel.add(IPChooser,upper2);
+        southPanel.add(new JLabel(" Port : "),upper3);
+        southPanel.add(portChooser,upper4);
+        mainPanel.add(BorderLayout.SOUTH, southPanel);
+        frame.add(mainPanel);
+        
+        frame.pack();
+        
+//        // Add Listeners
+//        messageBox.addActionListener(new ActionListener() {
+//            /**
+//             * Responds to pressing the enter key in the messageBox by sending
+//             * the contents of the text field to the server.    Then clear
+//             * the text area in preparation for the next message.
+//             */
+//            public void actionPerformed(ActionEvent e) {
+//                System.out.println(messageBox.getText());
+//                messageBox.setText("");
+//            }
+//        });
+        
+        sendMessage.addActionListener(new ActionListener(){
             /**
-             * Responds to pressing the enter key in the textfield by sending
+             * Responds to pressing the enter button by sending
              * the contents of the text field to the server.    Then clear
              * the text area in preparation for the next message.
              */
             public void actionPerformed(ActionEvent e) {
-                out.println(textField.getText());
-                textField.setText("");
+                System.out.println(messageBox.getText());
+                String messages[] = messageBox.getText().split(" ");
+                UDPSender udpSender = new UDPSender(messages[1],Integer.parseInt(messages[2]) , messages[3]);
+                messageBox.setText("");
             }
         });
        
