@@ -176,7 +176,7 @@ public class WereWolfServer {
                                         out.println(message);
                                     }
                                 }
-                                else if(json.get("method").equals("client_address"))
+                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_CLIENT_ADDRESS))
                                 {
                                     //---------------------------------------
                                     //----------CLIENT ADDRESS STATE---------
@@ -185,6 +185,27 @@ public class WereWolfServer {
                                     ArrayList<Player> players = game.getPlayer();
                                     String message = mc.requestPlayers(players);
                                     out.println(message);
+                                }
+                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_PREPARE_PROPOSAL))
+                                {
+                                    //-----------------------------------------
+                                    //----------PREPARE PROPOSAL STATE---------
+                                    //-----------------------------------------
+                                    if(json.containsKey(StandardMessage.MESSAGE_KPU_ID))
+                                    {
+                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" confirm KPU ID "+json.get(StandardMessage.MESSAGE_KPU_ID).toString());
+                                        if(game.prepareLeader((int) json.get(StandardMessage.MESSAGE_KPU_ID))==-1){
+                                            System.out.println("Server ::Client "+ game.getPlayer(thisClient).getName() +" succesfully confirm. wait for other player confirm.");
+                                            //Lanjut lagi ojan
+                                            
+                                        }
+                                    }
+                                    else
+                                    {
+                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" doesn't have kpu id");
+                                    }
+                                            
+                                    
                                 }
                             }
                             else

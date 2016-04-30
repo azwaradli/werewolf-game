@@ -16,9 +16,54 @@ public class Game {
     private int stPlayerId=0;
     private boolean day = false;
     private boolean started = false;
+    private int idLeader = -1;
+    private ArrayList<Integer> preparatorLead = new ArrayList();
     
     public Game(){
         players = new ArrayList();
+    }
+    
+    public int getConfirmPlayerSize(){
+        return preparatorLead.size();
+    }
+    
+    public int getNotConfirmPlayerSize(){
+        return players.size()-preparatorLead.size();
+    }
+    
+    public int getLeaderId(){
+        return idLeader;
+    }
+    
+    public void setLeaderId(int inp){
+        idLeader = inp;
+    }
+    
+    public int prepareLeader(int inp){
+        preparatorLead.add(inp);
+        return checkLeader();
+    }
+    
+    public int checkLeader(){
+        if(preparatorLead.size() == players.size()){
+            return makeLeader();
+        }
+        return -1;
+    }
+    
+    //Mengembalikan nilai konflik yang terjadi
+    private int makeLeader(){
+        int temp = preparatorLead.get(0);
+        int cconflict = 0, cagree = 0;
+        for(int i=1; i < preparatorLead.size(); i++){
+            if(preparatorLead.get(i) == temp){
+                cagree++;
+            }else{
+                cconflict++;
+            }
+        }
+        idLeader = temp;
+        return cconflict;
     }
     
     public boolean isStarted(){
