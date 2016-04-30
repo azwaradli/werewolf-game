@@ -35,6 +35,9 @@ public class WereWolfClient {
     JTextField IPChooser = new JTextField(20);
     JTextField portChooser = new JTextField(10);
     
+    int player_id;
+    
+    
     ClientProtocol clientProtocol = new ClientProtocol();
 
     /**
@@ -209,9 +212,13 @@ public class WereWolfClient {
             String message = sc.nextLine();
             String messages[] = message.split(" ");
             if(messages[0].equals("UDP")){
-//                System.out.println("masuk sini");
-                UDPSender udpSender = new UDPSender(messages[1],Integer.parseInt(messages[2]) , messages[3]);
-//                System.out.println(messages[1]);
+                Messenger messenger = new Messenger();
+                
+                if(messages[3].equals("prepare-proposal")){
+                    messenger.prepareProposal(port, port);
+                }
+                
+                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
                 Thread t3 = new Thread(udpSender);
                 t3.start();
             }
