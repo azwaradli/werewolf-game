@@ -185,7 +185,7 @@ public class Game {
     public boolean deletePlayer(String name){
         for(Player player : players){
             if(player.getName().equals(name)){
-                players.remove(player);
+                player.setName("");
                 return true;
             }
         }
@@ -195,7 +195,7 @@ public class Game {
     public boolean deletePlayer(int id){
         for(Player player : players){
             if(player.getId() == id){
-                players.remove(player);
+                player.setName("");
                 return true;
             }
         }
@@ -222,8 +222,9 @@ public class Game {
         return false;
     }
     
-    public void gameStart(){
+    public void start(){
         started = true;
+        
     }
     
 }

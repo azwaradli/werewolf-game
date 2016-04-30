@@ -104,6 +104,16 @@ public class WereWolfServer {
                                     //Jika Game Belum Di Mulai
                                     if(json.containsKey(StandardMessage.MESSAGE_USERNAME))
                                     {
+                                        //Check ip and address
+                                        if(json.containsKey("udp_address"))
+                                        {
+                                            thisIP = json.get("udp_address").toString();
+                                        }
+                                        if(json.containsKey("udp_port"))
+                                        {
+                                            thisPort = Integer.parseInt(json.get("udp_port").toString());
+                                        }
+                                        
                                         //Jika Terdapat Key Username
                                         if(game.addPlayer(json.get(StandardMessage.MESSAGE_USERNAME).toString(), thisIP, thisPort))
                                         {
@@ -203,23 +213,86 @@ public class WereWolfServer {
                                             
                                             long startTime = System.currentTimeMillis(); //fetch starting time
                                             while(game.checkLeader() == -1&&(System.currentTimeMillis()-startTime)<10000);    //Wait other players until done or 10 seconds
-                                            //----------------------------------
-                                            //----------KPU ID RECEIVED---------
-                                            //----------------------------------
-                                            if(game.checkLeader() == -1)
+                                            
+                                            if(game.checkLeader() != -1)
                                             {
+                                                //----------------------------------
+                                                //----------KPU ID RECEIVED---------
+                                                //----------GAME START--------------
+                                                //----------------------------------
+                                                System.out.println("Server ::All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
+                                                game.start();
+                                                System.out.println("Server ::Game Started");
+                                                
+                                                String message = mc.prepareProposalFail();
+                                                out.println(message);
+                                             
+                                                getjson = in.readLine();
+                                                obj = parser.parse(getjson);
+                                                json = (JSONObject)obj;
+                                                System.out.println("Server :: Client Message :: " + getjson);
+                                                
+//                                                if(game.getPlayer(thisClient).getId() == game.getLeaderId())
+//                                                {
+//                                                    System.out.println("Server ::KPU Send a Request");
+//                                                    //----------------------------------
+//                                                    //----------PLAYER AS KPU-----------
+//                                                    //----------------------------------
+//                                                    if(json.containsKey("method"))
+//                                                    {
+//                                                        if(json.get("method").equals("vote_result_werewolf"))
+//                                                        {
+//                                                            System.out.println("Server ::KPU Request Vote Werewolf");
+//                                                            //------------------------------------------
+//                                                            //----------INFO WEREWOLF KILLED------------
+//                                                            //------------------------------------------
+//                                                            if(json.containsKey("vote_status") && 
+//                                                                    json.containsKey("vote_result"))
+//                                                            {
+//                                                                if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
+//                                                                {
+//                                                                    
+//                                                                }
+//                                                                else
+//                                                                {
+//                                                                    
+//                                                                }
+//                                                            }
+//                                                            else
+//                                                            {
+//                                                                System.out.println("Server ::KPU Bad Request No Parameter vote_status or vote_result.");
+//                                                            }
+//                                                        }
+//                                                        else
+//                                                        {
+//                                                            /* Not Vote Werewolf */
+//                                                        }
+//                                                    }
+//                                                    else
+//                                                    {
+//                                                        //----------WRONG STATE---------
+//                                                        System.out.println("Server :: Client has no method");
+//                                                        message = mc.failureWrongRequest();
+//                                                        out.println(message);
+//                                                    }
+//                                                }
+//                                                else
+//                                                {
+//                                                    //----------------------------------
+//                                                    //----------PLAYER AS ACCEPTOR------
+//                                                    //----------------------------------
+//                                                }
+                                                
+                                            }
+                                            else
+                                            {
+                                                //----------------------------------
+                                                //----------KPU ID REJECTED---------
+                                                //----------------------------------
                                                 System.out.println("Server ::Other clients failed to confirm their kpu id.");
                                                 String message = mc.prepareProposalSuccess();
                                                 out.println(message);
-                                            }
-                                            //----------------------------------
-                                            //----------KPU ID REJECTED---------
-                                            //----------------------------------
-                                            else
-                                            {
-                                                System.out.println("Server ::All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
-                                                String message = mc.prepareProposalFail();
-                                                out.println(message);
+                                                
                                             }
                                         }
                                         
@@ -250,7 +323,15 @@ public class WereWolfServer {
                         
                     } catch (ParseException ex) {
                         Logger.getLogger(WereWolfServer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch(NullPointerException npe){
+                        if(thisClient!=-1)
+                        {
+                            System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");
+                            game.deletePlayer(thisClient);
+                        }
+                        return;
                     }
+          
                 }
 
                 // Request a name from this client.  Keep requesting until
