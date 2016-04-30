@@ -10,6 +10,7 @@ import java.io.*;
 import java.util.Scanner;
 import Client.UDPListener;
 import Model.StandardMessage;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,7 +36,7 @@ public class TCPConnection implements Runnable{
     /* atribut player di client */
     int player_id;
     String time, role;
-    String[] friend;
+    ArrayList<String> friend;
     
     public TCPConnection(String _serverAddress, int _port){
         serverAddress = _serverAddress;
@@ -63,7 +64,7 @@ public class TCPConnection implements Runnable{
         return role;
     }
     
-    public String[] getFriend(){
+    public ArrayList<String> getFriend(){
         return friend;
     }
     
@@ -112,9 +113,12 @@ public class TCPConnection implements Runnable{
                             role = json.get(StandardMessage.MESSAGE_ROLE).toString();
                             JSONArray jarray = new JSONArray();
                             jarray = (JSONArray) json.get(StandardMessage.MESSAGE_FRIEND);
-                            friend = (String[]) jarray.toArray();
+                            friend = new ArrayList<String>();
+                            for(int i = 0; i<jarray.size();i++){
+                                friend.add(jarray.get(i).toString());
+                            }
                             System.out.println("Client :: Start Game");
-                            System.out.println(Arrays.toString(friend));
+                            System.out.println(friend);
                         }
                     }
                     else{

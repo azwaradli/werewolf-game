@@ -36,6 +36,7 @@ public class WereWolfClient {
     JTextField portChooser = new JTextField(10);
     
     int player_id;
+    Messenger messenger;
     
     
     ClientProtocol clientProtocol = new ClientProtocol();
@@ -49,6 +50,8 @@ public class WereWolfClient {
      * message from the server.
      */
     public WereWolfClient() {
+        
+        messenger = new Messenger();
         
         //MAIN FRAME
         JPanel mainPanel = new JPanel();
@@ -212,7 +215,6 @@ public class WereWolfClient {
             String message = sc.nextLine();
             String messages[] = message.split(" ");
             if(messages[0].equals("UDP")){
-                Messenger messenger = new Messenger();
                 
                 if(messages[3].equals("prepare-proposal")){
                     messenger.prepareProposal(port, port);

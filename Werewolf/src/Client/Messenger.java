@@ -24,6 +24,7 @@ public class Messenger {
         JSONObject obj = new JSONObject();
         obj = clientProtocol.prepareProposalMessage(proposalNumber, playerId);
         message = obj.toString();
+        
     }
     
     public void acceptProposal(int proposalNumber, int playerId){
