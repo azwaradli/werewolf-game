@@ -98,6 +98,14 @@ public class Player {
         return name;
     }
     
+    public String getRole(){
+        if(isCivil()){
+            return "civilian";
+        }else{
+            return "werewolf";
+        }
+    }
+    
     public boolean isWerewolf(){
         return !role;
     }

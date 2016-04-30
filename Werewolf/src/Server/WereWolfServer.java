@@ -32,6 +32,7 @@ public class WereWolfServer {
     private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
     private static Game game = new Game();
     private static MessageCreator mc = new MessageCreator();
+    private final static int MIN_PLAYER = 2;
     
     public static void main(String[] args) throws IOException{
         System.out.println("The Werewolf server is running");
@@ -181,7 +182,17 @@ public class WereWolfServer {
                                         String message = mc.readySuccess();
                                         isready = true;
                                         out.println(message);
-                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" ready to play. Waiting " + (6-game.playerReadySize())+" more to play.");
+                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" ready to play. Waiting " + (MIN_PLAYER-game.playerReadySize())+" more to play.");
+                                        while(game.playerReadySize() < MIN_PLAYER || game.playerReadySize() != game.playerSize());
+                                        
+                                        //----------GAME START--------------
+                                        if(game.playerReadySize() >= MIN_PLAYER && game.playerReadySize() == game.playerSize())
+                                        {
+                                            game.start();
+                                            System.out.println("Server ::Game Started");
+                                            message = game.messageStartGame(thisClient);
+                                            out.println(message);
+                                        }
                                     }
                                     else
                                     {
@@ -218,11 +229,8 @@ public class WereWolfServer {
                                             {
                                                 //----------------------------------
                                                 //----------KPU ID RECEIVED---------
-                                                //----------GAME START--------------
                                                 //----------------------------------
                                                 System.out.println("Server ::All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
-                                                game.start();
-                                                System.out.println("Server ::Game Started");
                                                 
                                                 String message = mc.prepareProposalFail();
                                                 out.println(message);
