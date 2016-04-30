@@ -10,7 +10,7 @@ package Model;
  * @author fauzanrifqy
  */
 public class Player {
-    private int id, port;             //id pemain
+    private int id, port;       //id pemain
     private String name;        //Nama pemain
     private boolean role;       //True : Civilian, False : Werewolf
     private boolean ready;

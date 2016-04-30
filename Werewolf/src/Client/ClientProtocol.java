@@ -18,9 +18,11 @@ public class ClientProtocol {
         data = new JSONObject();
     }
     
-    public JSONObject joinGameMessage(String username){
+    public JSONObject joinGameMessage(String username, String udpAddress, int udpPort){
         data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_JOIN);
         data.put(StandardMessage.MESSAGE_USERNAME, username);
+        data.put(StandardMessage.MESSAGE_UDP_ADDRESS, udpAddress);
+        data.put(StandardMessage.MESSAGE_UDP_PORT, udpPort);
         
         return data;
     }

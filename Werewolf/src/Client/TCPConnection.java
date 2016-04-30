@@ -7,6 +7,16 @@ package Client;
 
 import java.net.*;
 import java.io.*;
+import java.util.Scanner;
+import Client.UDPListener;
+import Model.StandardMessage;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -17,6 +27,15 @@ public class TCPConnection implements Runnable{
     public int port;
     public ClientProtocol clientProtocol;
     public int localPort;
+    
+    Socket socket;
+    BufferedReader in;
+    PrintWriter out;
+    
+    /* atribut player di client */
+    int player_id;
+    String time, role;
+    String[] friend;
     
     public TCPConnection(String _serverAddress, int _port){
         serverAddress = _serverAddress;
@@ -36,28 +55,57 @@ public class TCPConnection implements Runnable{
     public void run(){
         // Make connection and initialize stream
         try{
-            Socket socket = new Socket(serverAddress, port);
+            socket = new Socket(serverAddress, port);
             localPort = socket.getLocalPort();
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println(clientProtocol.joinGameMessage("tes")); // testing send message
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+            
+            String getjson;
+            JSONObject json;
+            JSONParser parser = new JSONParser();
             
             // Process all messages from server, according to the protocol.
-        while (true) {
-            String line = in.readLine();
-            System.out.println("TCP "+line);
-//            if (line.startsWith("SUBMITNAME")) {
-//                out.println(getName());
-//            } else if (line.startsWith("NAMEACCEPTED")) {
-//                textField.setEditable(true);
-//            } else if (line.startsWith("MESSAGE")) {
-//                messageArea.append(line.substring(8) + "\n");
-//            } else if(line.startsWith("REFRESHLISTPLAYERS")){
-//                playerList.setText("");
-//            }else if(line.startsWith("LISTPLAYERS")){
-//                playerList.append(line.substring(12) + "\n");
-//            }
-        }
+            while (true) {
+                getjson = in.readLine();
+                System.out.println("TCP "+getjson);
+                
+                try {
+                    Object obj = parser.parse(getjson);
+                    json = (JSONObject)obj;
+                    
+                    if(json.get(StandardMessage.MESSAGE_STATUS).equals("ok")){
+                        System.out.println("Client :: Status :: OK");
+
+                        if(json.containsKey(StandardMessage.MESSAGE_PLAYER_ID)){
+                            String playerid = json.get(StandardMessage.MESSAGE_PLAYER_ID).toString();
+                            System.out.println("Client :: Player ID :: "+playerid);
+                            player_id = Integer.parseInt(playerid);
+                        }
+                        else if(json.containsKey(StandardMessage.MESSAGE_CLIENTS)){
+                            System.out.println("Client :: List Client");
+                        }
+                        else if(json.containsValue("thanks for playing")){
+                            break;
+                        }
+                    }
+                    else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_START)){
+                        time = json.get(StandardMessage.MESSAGE_TIME).toString();
+                        role = json.get(StandardMessage.MESSAGE_ROLE).toString();
+                        JSONArray jarray = new JSONArray();
+                        jarray = (JSONArray) json.get(StandardMessage.MESSAGE_FRIEND);
+                        friend = (String[]) jarray.toArray();
+                        System.out.println("Client :: Start Game");
+                        System.out.println(Arrays.toString(friend));
+                    }
+                    else{
+                        System.out.println("Client :: Status :: "+json.get(StandardMessage.MESSAGE_STATUS).toString());
+                        System.out.println("Client :: Description :: "+json.get(StandardMessage.MESSAGE_DESCRIPTION).toString());
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(TCPConnection.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            socket.close();
         }catch(UnknownHostException e){
             e.printStackTrace();
         }catch(IOException e){
@@ -66,4 +114,23 @@ public class TCPConnection implements Runnable{
         
     }
     
+    public void joinGame(int udpPort){
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Insert username: ");
+        String username = sc.nextLine();
+        
+        out.println(clientProtocol.joinGameMessage(username, serverAddress, udpPort)); // testing send message
+    }
+    
+    public void leaveGame(){
+        out.println(clientProtocol.leaveGameMessage());
+    }
+    
+    public void readyUp(){
+        out.println(clientProtocol.readyUpMessage());
+    }
+    
+    public void listClient(){
+        out.println(clientProtocol.listClientMessage());
+    }
 }

@@ -199,11 +199,13 @@ public class WereWolfClient {
         Thread t2 = new Thread(udpListener);
         t2.start();
         
-    
+        connection.joinGame(udpListener.getLocalPort());
+        
         Scanner sc = new Scanner(System.in);
         while(true){
             System.out.println("Cara Komunikasi : ");
             System.out.println("UDP <spasi> Address <spasi> Port <spasi> Pesan");
+            System.out.println("TCP <spasi> Fungsi");
             String message = sc.nextLine();
             String messages[] = message.split(" ");
             if(messages[0].equals("UDP")){
@@ -214,7 +216,15 @@ public class WereWolfClient {
                 t3.start();
             }
             else if(messages[0].equals("TCP")){
-                
+                if(messages[1].equals("leave-game")){
+                    connection.leaveGame();
+                }
+                else if(messages[1].equals("ready-up")){
+                    connection.readyUp();
+                }
+                else if(messages[1].equals("list-client")){
+                    connection.listClient();
+                }
             }
         }
         

@@ -19,19 +19,24 @@ public class UDPListener implements Runnable{
     private DatagramSocket server;
     private byte[] receiveData;
     private JTextArea messageArea;
+    private InetSocketAddress address;
     
     public UDPListener(String _address,int _port, JTextArea _messageArea){
         port = _port;
         messageArea = _messageArea;
         try{
             server = new DatagramSocket(null);
-            InetSocketAddress address = new InetSocketAddress(_address,port);
+            address = new InetSocketAddress(_address,port);
             server.bind(address);  
             localPort = server.getLocalPort();
             System.out.println("Local port anda = " + localPort);
         }catch(SocketException e){
             e.printStackTrace();
         }
+    }
+    
+    public InetSocketAddress getAddress(){
+        return address;
     }
     
     public int getLocalPort(){
