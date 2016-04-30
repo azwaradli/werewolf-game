@@ -178,4 +178,36 @@ public class MessageCreator {
         }
     }
     
+    public String prepareProposalSuccess(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "ok");
+            obj.put("description", "");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String prepareProposalFail(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "fail");
+            obj.put("description", "Server failed to receive your kpu id.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 }

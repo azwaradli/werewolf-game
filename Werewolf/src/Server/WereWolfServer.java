@@ -82,6 +82,8 @@ public class WereWolfServer {
                 int thisClient = -1;
                 String thisIP = socket.getRemoteSocketAddress().toString();
                 int thisPort = socket.getPort();
+                boolean isready = false;
+                
                 while(true){
                     getjson = in.readLine();
                     System.out.println("Server :: Client Message :: " + getjson);
@@ -144,17 +146,18 @@ public class WereWolfServer {
                                     //----------LEAVE STATE---------
                                     //------------------------------
                                     System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to leave.");
+                                    isready = false;
                                     if(game.deletePlayer(thisClient))
                                     {
                                         String message = mc.leaveSuccess();
                                         out.println(message);
-                                        System.out.println("Server :: Client " + game.getPlayer(thisClient).getName() + " is leaving the game.");
+                                        System.out.println("Server :: Client is leaving the game.");
                                     }
                                     else
                                     {
                                         String message = mc.failureUserNoExist();
                                         out.println(message);
-                                        System.out.println("Server :: Client " + game.getPlayer(thisClient).getName() + " leaving error, id doesn't matched.");
+                                        System.out.println("Server :: Client leaving error, id doesn't matched.");
                                     }
                                 }
                                 else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_READY))
@@ -166,6 +169,7 @@ public class WereWolfServer {
                                     if(game.getReady(thisClient))
                                     {
                                         String message = mc.readySuccess();
+                                        isready = true;
                                         out.println(message);
                                         System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" ready to play. Waiting " + (6-game.playerReadySize())+" more to play.");
                                     }
@@ -186,7 +190,7 @@ public class WereWolfServer {
                                     String message = mc.requestPlayers(players);
                                     out.println(message);
                                 }
-                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_PREPARE_PROPOSAL))
+                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_PREPARE_PROPOSAL)&&isready)
                                 {
                                     //-----------------------------------------
                                     //----------PREPARE PROPOSAL STATE---------
@@ -196,9 +200,29 @@ public class WereWolfServer {
                                         System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" confirm KPU ID "+json.get(StandardMessage.MESSAGE_KPU_ID).toString());
                                         if(game.prepareLeader((int) json.get(StandardMessage.MESSAGE_KPU_ID))==-1){
                                             System.out.println("Server ::Client "+ game.getPlayer(thisClient).getName() +" succesfully confirm. wait for other player confirm.");
-                                            //Lanjut lagi ojan
                                             
+                                            long startTime = System.currentTimeMillis(); //fetch starting time
+                                            while(game.checkLeader() == -1&&(System.currentTimeMillis()-startTime)<10000);    //Wait other players until done or 10 seconds
+                                            //----------------------------------
+                                            //----------KPU ID RECEIVED---------
+                                            //----------------------------------
+                                            if(game.checkLeader() == -1)
+                                            {
+                                                System.out.println("Server ::Other clients failed to confirm their kpu id.");
+                                                String message = mc.prepareProposalSuccess();
+                                                out.println(message);
+                                            }
+                                            //----------------------------------
+                                            //----------KPU ID REJECTED---------
+                                            //----------------------------------
+                                            else
+                                            {
+                                                System.out.println("Server ::All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
+                                                String message = mc.prepareProposalFail();
+                                                out.println(message);
+                                            }
                                         }
+                                        
                                     }
                                     else
                                     {

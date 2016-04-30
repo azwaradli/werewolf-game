@@ -16,7 +16,7 @@ public class Game {
     private int stPlayerId=0;
     private boolean day = false;
     private boolean started = false;
-    private int idLeader = -1;
+    private int idLeader = -1, gconflict = 0;
     private ArrayList<Integer> preparatorLead = new ArrayList();
     
     public Game(){
@@ -63,7 +63,12 @@ public class Game {
             }
         }
         idLeader = temp;
+        gconflict = cconflict;
         return cconflict;
+    }
+    
+    public int getConflict(){
+        return gconflict;
     }
     
     public boolean isStarted(){
