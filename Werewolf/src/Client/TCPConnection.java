@@ -51,6 +51,22 @@ public class TCPConnection implements Runnable{
         return serverAddress;
     }
     
+    public int getPlayerId(){
+        return player_id;
+    }
+    
+    public String getTime(){
+        return time;
+    }
+    
+    public String getRole(){
+        return role;
+    }
+    
+    public String[] getFriend(){
+        return friend;
+    }
+    
     @Override
     public void run(){
         // Make connection and initialize stream
@@ -73,29 +89,33 @@ public class TCPConnection implements Runnable{
                     Object obj = parser.parse(getjson);
                     json = (JSONObject)obj;
                     
-                    if(json.get(StandardMessage.MESSAGE_STATUS).equals("ok")){
-                        System.out.println("Client :: Status :: OK");
+                    if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
+                        if(json.get(StandardMessage.MESSAGE_STATUS).equals(StandardMessage.PARAM_OK)){
+                            System.out.println("Client :: Status :: OK");
 
-                        if(json.containsKey(StandardMessage.MESSAGE_PLAYER_ID)){
-                            String playerid = json.get(StandardMessage.MESSAGE_PLAYER_ID).toString();
-                            System.out.println("Client :: Player ID :: "+playerid);
-                            player_id = Integer.parseInt(playerid);
-                        }
-                        else if(json.containsKey(StandardMessage.MESSAGE_CLIENTS)){
-                            System.out.println("Client :: List Client");
-                        }
-                        else if(json.containsValue("thanks for playing")){
-                            break;
+                            if(json.containsKey(StandardMessage.MESSAGE_PLAYER_ID)){
+                                String playerid = json.get(StandardMessage.MESSAGE_PLAYER_ID).toString();
+                                System.out.println("Client :: Player ID :: "+playerid);
+                                player_id = Integer.parseInt(playerid);
+                            }
+                            else if(json.containsKey(StandardMessage.MESSAGE_CLIENTS)){
+                                System.out.println("Client :: List Client");
+                            }
+                            else if(json.containsValue("thanks for playing")){
+                                break;
+                            }
                         }
                     }
-                    else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_START)){
-                        time = json.get(StandardMessage.MESSAGE_TIME).toString();
-                        role = json.get(StandardMessage.MESSAGE_ROLE).toString();
-                        JSONArray jarray = new JSONArray();
-                        jarray = (JSONArray) json.get(StandardMessage.MESSAGE_FRIEND);
-                        friend = (String[]) jarray.toArray();
-                        System.out.println("Client :: Start Game");
-                        System.out.println(Arrays.toString(friend));
+                    else if(json.containsKey(StandardMessage.MESSAGE_METHOD)){
+                        if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_START)){
+                            time = json.get(StandardMessage.MESSAGE_TIME).toString();
+                            role = json.get(StandardMessage.MESSAGE_ROLE).toString();
+                            JSONArray jarray = new JSONArray();
+                            jarray = (JSONArray) json.get(StandardMessage.MESSAGE_FRIEND);
+                            friend = (String[]) jarray.toArray();
+                            System.out.println("Client :: Start Game");
+                            System.out.println(Arrays.toString(friend));
+                        }
                     }
                     else{
                         System.out.println("Client :: Status :: "+json.get(StandardMessage.MESSAGE_STATUS).toString());
@@ -132,5 +152,13 @@ public class TCPConnection implements Runnable{
     
     public void listClient(){
         out.println(clientProtocol.listClientMessage());
+    }
+    
+    public void acceptedProposal(){
+        out.println(clientProtocol.acceptedProposalMessage(player_id));
+    }
+    
+    public void infoWerewolfKilled(){
+        
     }
 }
