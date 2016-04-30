@@ -111,5 +111,34 @@ public class ClientProtocol {
         
         return data;
     }
+    
+    public JSONObject killCivilianVote(int playerId){
+        JSONObject data = new JSONObject();
+        
+        data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_CIVILIAN);
+        data.put(StandardMessage.MESSAGE_PLAYER_ID, playerId);
+        
+        return data;
+    }
+
+    public JSONObject infoCivilianKilled(int voteStatus, int playerKilled, String[] voteResult){
+        JSONObject data = new JSONObject();
+        
+        if(voteStatus == 1){
+            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_WEREWOLF);
+            data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
+            data.put(StandardMessage.MESSAGE_PLAYER_KILLED, playerKilled);
+            data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
+        }
+        else if(voteStatus == -1){
+            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT);
+            data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
+            data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
+        }
+        
+        return data;
+    }
+    
+    
        
 }
