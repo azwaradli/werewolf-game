@@ -32,6 +32,8 @@ public class StandardMessage {
     public static String PARAM_VOTE_WEREWOLF = "vote_werewolf";
     public static String PARAM_VOTE_RESULT_WEREWOLF = "vote_result_werewolf";
     public static String PARAM_VOTE_RESULT = "vote_result";
+    public static String PARAM_VOTE_CIVILIAN = "vote_civilian";
+    public static String PARAM_VOTE_RESULT_CIVILIAN = "vote_result_civilian";
     /* End of client */
     
     /* Server */
