@@ -1,4 +1,9 @@
-/Werewolf/nbproject/private/
-/Werewolf/build/
-/Werewolf/dist/
-/Werewolf/nbproject/project.properties
+Werewolf/nbproject/*.properties
+Werewolf/nbproject/
+Werewolf/nbproject/private/
+Werewolf/build/
+Werewolf/nbbuild/
+Werewolf/dist/
+Werewolf/nbdist/
+Werewolf/nbactions.xml
+Werewolf/.nb-gradle/
