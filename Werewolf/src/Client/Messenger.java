@@ -5,6 +5,7 @@
  */
 package Client;
 
+import Model.StandardMessage;
 import Paxos.ProposalID;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
@@ -70,14 +71,28 @@ public class Messenger {
     public void sendToAll(){
         connection.listClient();
         for(JSONObject c : connection.getListPlayers()){
-            
+            int id = Integer.parseInt(c.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+            if((id!=connection.getBiggestPID())&&(id!=connection.getSecondBiggest())){
+                String IPAddress = c.get(StandardMessage.MESSAGE_ADDRESS).toString();
+                int port = Integer.parseInt(c.get(StandardMessage.MESSAGE_PORT).toString());
+                UDPSender udpSender = new UDPSender(IPAddress, port, message);
+                Thread t3 = new Thread(udpSender);
+                t3.start();
+            }
         }
-        
     }
     
-    public void sendToOne(String IPAddress, int port){
-        UDPSender udpSender = new UDPSender(IPAddress, port, message);
-        Thread t3 = new Thread(udpSender);
-        t3.start();
+    public void sendToOne(int pid){
+        connection.listClient();
+        for(JSONObject c : connection.getListPlayers()){
+            int id = Integer.parseInt(c.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+            if(id==pid){
+                String IPAddress = c.get(StandardMessage.MESSAGE_ADDRESS).toString();
+                int port = Integer.parseInt(c.get(StandardMessage.MESSAGE_PORT).toString());
+                UDPSender udpSender = new UDPSender(IPAddress, port, message);
+                Thread t3 = new Thread(udpSender);
+                t3.start();
+            }
+        }
     }
 }

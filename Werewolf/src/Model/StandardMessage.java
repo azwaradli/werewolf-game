@@ -15,6 +15,8 @@ public class StandardMessage {
     public static String MESSAGE_USERNAME = "username";
     public static String MESSAGE_PROPOSAL_ID = "proposal_id";
     public static String MESSAGE_KPU_ID = "kpu_id";
+    public static String MESSAGE_ADDRESS = "address";
+    public static String MESSAGE_PORT = "port";
     public static String MESSAGE_UDP_ADDRESS = "udp_address";
     public static String MESSAGE_UDP_PORT = "udp_port";
     public static String MESSAGE_PLAYER_ID = "player_id";
