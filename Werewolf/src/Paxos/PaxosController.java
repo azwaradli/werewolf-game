@@ -21,7 +21,6 @@ public class PaxosController {
     int role;
     
     Messenger messenger;
-    UDPListener listen;
     Proposer proposer;
     
     public PaxosController(int playerId, TCPConnection connection){
@@ -29,8 +28,12 @@ public class PaxosController {
         this.pidTerbesar = connection.getBiggestPID();
         this.pidTerbesarKedua = connection.getSecondBiggest();
         messenger = new Messenger(connection);
-        listen = new UDPListener(connection.getAddress(), connection.getLocalPort());
         proposer = new Proposer(messenger, playerId);
+    }
+    
+    public void run(){
+        decideRole();
+        runPaxos();
     }
     
     public void decideRole(){
@@ -42,17 +45,11 @@ public class PaxosController {
     
     public void runPaxos(){
         if(role == 1)
-            runProposer();
-        else
-            runAcceptor();
+            runProposer();        
     }
     
     public void runProposer(){
         proposer.setProposal(playerId);
         proposer.prepare();
-    }
-    
-    public void runAcceptor(){
-        
     }
 }

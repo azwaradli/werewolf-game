@@ -200,11 +200,14 @@ public class WereWolfClient {
         Thread t1 = new Thread(connection);
         t1.start();
         
-        UDPListener udpListener = new UDPListener(connection.getAddress(),connection.getLocalPort(),messageArea);
+        //UDPListener udpListener = new UDPListener(connection.getAddress(),connection.getLocalPort(),messageArea);
+        UDPListener udpListener = new UDPListener(connection.getAddress(),connection.getLocalPort(),messenger);
         Thread t2 = new Thread(udpListener);
         t2.start();
         
         connection.joinGame(udpListener.getLocalPort());
+        
+        udpListener.setPlayerId(connection.getPlayerId());
         
         Scanner sc = new Scanner(System.in);
         while(true){
