@@ -15,12 +15,11 @@ public class Acceptor {
     private Messenger messenger;
     private ProposalID promisedID;
     private ProposalID acceptedID;
-    private TCPConnection connection;
     private int acceptedValue;
     private int prevAcceptedValue;
     
-    public Acceptor(TCPConnection _connection){
-        connection = _connection;
+    public Acceptor(Messenger _messenger){
+        messenger = _messenger;
     }
     
     public ProposalID getPromisedID(){
@@ -39,8 +38,26 @@ public class Acceptor {
         return prevAcceptedValue;
     }
     
-    public void receivePrepare() throws IOException{
-    
+    public void receivePrepare(int senderID, ProposalID proposalID) throws IOException{   
+        if(promisedID ==null || proposalID.getID() > promisedID.getID()){
+            promisedID = proposalID;
+        }
+        messenger.sendPromise(senderID,prevAcceptedValue,acceptedValue);
     }
+    
+    public void receiveAccept(int senderID,ProposalID proposalID,int value) throws IOException{
+        if (promisedID == null || proposalID.getID() > promisedID.getID() || proposalID.equals(promisedID)) {
+            promisedID    = proposalID;
+            acceptedID    = proposalID;
+            prevAcceptedValue = acceptedValue;
+            acceptedValue = value;
+            try{
+            messenger.sendAccepted(acceptedID,acceptedValue);
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+    
     
 }

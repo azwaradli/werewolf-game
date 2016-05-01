@@ -7,6 +7,7 @@ package Client;
 
 import Model.StandardMessage;
 import Paxos.ProposalID;
+import java.io.IOException;
 import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -46,15 +47,23 @@ public class Messenger {
         message = obj.toString();
     }
     
+    public void sendAccepted(ProposalID proposalID, int acceptedValue) throws IOException, InterruptedException {
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.sendAccepted(acceptedValue);
+        message = obj.toString();
+        if(connection.sendAccepted(message)){
+            obj = clientProtocol.confirmAccepted();
+            message = obj.toString();
+            sendToOne(proposalID.getPlayerID());
+        }
+    }
+    
     
     public void sendPromise(int proposerUID, int prevAcceptedValue, int acceptedValue){
         JSONObject obj = new JSONObject();
-        obj.put("status", "ok");
-        obj.put("description", "accepted");
-        obj.put("previous_accepted", prevAcceptedValue);
-    
+        obj = clientProtocol.sendPromise(prevAcceptedValue);
         message = obj.toString();
-        sendToAll();
+        sendToOne(proposerUID);
     }
     
     public void killCivilianVote(int playerId){

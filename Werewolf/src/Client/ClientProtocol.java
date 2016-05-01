@@ -42,6 +42,29 @@ public class ClientProtocol {
         return data;
     }
     
+    public JSONObject sendPromise(int prevAcceptedValue){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION, StandardMessage.PARAM_ACCEPTED);
+        data.put(StandardMessage.PARAM_PREV_ACCEPTED, prevAcceptedValue);
+        return data;
+    }
+    
+    public JSONObject sendAccepted(int acceptedValue){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_METHOD,StandardMessage.PARAM_ACCEPTED_PROPOSAL);
+        data.put(StandardMessage.MESSAGE_KPU_ID,acceptedValue);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION,StandardMessage.PARAM_ACCEPTED_PROPOSAL);
+        return data;
+    }
+    
+    public JSONObject confirmAccepted(){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS,StandardMessage.PARAM_OK);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION,StandardMessage.PARAM_ACCEPTED);
+        return data;
+    }
+    
     public JSONObject listClientMessage(){
         JSONObject data = new JSONObject();
         

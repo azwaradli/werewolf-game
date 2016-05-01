@@ -47,6 +47,7 @@ public class StandardMessage {
     public static String MESSAGE_FRIEND = "friend";
     
     public static String PARAM_OK = "ok";
+    public static String PARAM_ACCEPTED = "accepted";
     public static String PARAM_START = "start";
     public static String PARAM_DAY = "day";
     public static String PARAM_NIGHT = "night";

@@ -198,6 +198,23 @@ public class TCPConnection implements Runnable{
         out.println(clientProtocol.acceptedProposalMessage(player_id));
     }
     
+    public boolean sendAccepted(String message){
+        boolean ret = false;
+        out.println(message);
+        try{
+            JSONParser parser = new JSONParser();
+            String getjson = in.readLine();
+            JSONObject json = (JSONObject) parser.parse(getjson);
+            if(json.get("status").equals("ok"))
+                ret = true;
+        }catch(IOException e){
+            e.printStackTrace();
+        }catch(ParseException e){
+            e.printStackTrace();
+        }
+        return ret;
+    }
+    
     public void infoWerewolfKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
         out.println(clientProtocol.infoWerewolfKilledMessage(voteStatus, playerKilled, voteResult));
     }
