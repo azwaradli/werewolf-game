@@ -119,14 +119,16 @@ public class TCPConnection implements Runnable{
                         if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_START)){
                             time = json.get(StandardMessage.MESSAGE_TIME).toString();
                             role = json.get(StandardMessage.MESSAGE_ROLE).toString();
-                            JSONArray jarray = new JSONArray();
-                            jarray = (JSONArray) json.get(StandardMessage.MESSAGE_FRIEND);
-                            friend = new ArrayList<String>();
-                            for(int i = 0; i<jarray.size();i++){
-                                friend.add(jarray.get(i).toString());
-                            }
                             System.out.println("Client :: Start Game");
-                            System.out.println(friend);
+                            if(json.containsKey(StandardMessage.MESSAGE_FRIEND)){
+                                JSONArray jarray = new JSONArray();
+                                jarray = (JSONArray) json.get(StandardMessage.MESSAGE_FRIEND);
+                                friend = new ArrayList<String>();
+                                for(int i = 0; i<jarray.size();i++){
+                                    friend.add(jarray.get(i).toString());
+                                }
+                                System.out.println(friend);
+                            }
                         }
                     }
                     else{
