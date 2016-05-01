@@ -24,12 +24,12 @@ public class PaxosController {
     UDPListener listen;
     Proposer proposer;
     
-    public PaxosController(int playerId, int pidTerbesar, int pidTerbesarKedua, String address, int port, TCPConnection _connection){
+    public PaxosController(int playerId, TCPConnection connection){
         this.playerId = playerId;
-        this.pidTerbesar = pidTerbesar;
-        this.pidTerbesarKedua = pidTerbesarKedua;
-        messenger = new Messenger(_connection);
-        listen = new UDPListener(address, port);
+        this.pidTerbesar = connection.getBiggestPID();
+        this.pidTerbesarKedua = connection.getSecondBiggest();
+        messenger = new Messenger(connection);
+        listen = new UDPListener(connection.getAddress(), connection.getLocalPort());
         proposer = new Proposer(messenger, playerId);
     }
     
