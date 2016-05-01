@@ -6,6 +6,8 @@
 package Client;
 
 import Client.ClientProtocol;
+import Paxos.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -206,6 +208,8 @@ public class WereWolfClient {
         
         connection.joinGame(udpListener.getLocalPort());
         
+        
+//        PaxosController paxosController = new PaxosController();
         Scanner sc = new Scanner(System.in);
         while(true){
             System.out.println("Cara Komunikasi : ");
