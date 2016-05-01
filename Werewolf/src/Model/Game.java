@@ -347,7 +347,32 @@ public class Game {
         daycounter++;
     }
     
-    public String isGameOver(){
+    public boolean isGameOver(){
+        if(werewolfSize() == 0){
+            return true;
+        }else if(civilianSize() == 0){
+            return true;
+        }else if(civilianSize() == 1 && werewolfSize() == 1){
+            return true;
+        }
+        return false;
+    }
+    
+    public void resetGame(){
+        daycounter = 0;
+        day = true;
+        started = false;
+        idLeader = -1;
+        gconflict = 0;
+        idSender= -1;
+        preparatorLead.clear();
+        werewolfId.clear();
+        for(Player player : players){
+            player.setNotReady();
+        }
+    }
+    
+    public String getWinner(){
         if(werewolfSize() == 0){
             return "civilian";
         }else if(civilianSize() == 0){
@@ -355,7 +380,7 @@ public class Game {
         }else if(civilianSize() == 1 && werewolfSize() == 1){
             return "werewolf";
         }
-        return "not";
+        return "none";
     }
     
     public ArrayList<Player> getFriends(int mid){
@@ -423,6 +448,23 @@ public class Game {
             obj.put("phase", getDay());
             
             obj.put("description", "Vote now.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String messageGameOver(String winner){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("method", "game_over");
+            obj.put("winner", winner);
+            obj.put("description", "Yeay!!");
             
             StringWriter out = new StringWriter();
             obj.writeJSONString(out);

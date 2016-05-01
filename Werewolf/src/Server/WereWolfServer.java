@@ -86,7 +86,6 @@ public class WereWolfServer {
                 int thisClient = -1;
                 String thisIP = socket.getRemoteSocketAddress().toString();
                 int thisPort = socket.getPort();
-                boolean isready = false;
                 
                 while(true){
                     getjson = in.readLine();
@@ -160,7 +159,7 @@ public class WereWolfServer {
                                     //----------LEAVE STATE---------
                                     //------------------------------
                                     System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to leave.");
-                                    isready = false;
+                                    game.getPlayer(thisClient).setNotReady();
                                     if(game.deletePlayer(thisClient))
                                     {
                                         String message = mc.leaveSuccess();
@@ -183,7 +182,7 @@ public class WereWolfServer {
                                     if(game.getReady(thisClient))
                                     {
                                         String message = mc.readySuccess();
-                                        isready = true;
+                                        game.getPlayer(thisClient).setReady();
                                         out.println(message);
                                         if(MIN_PLAYER > game.playerSize()){
                                             CURRENT_PLAYER = MIN_PLAYER;
@@ -257,7 +256,7 @@ public class WereWolfServer {
                                     String message = mc.requestPlayers(players);
                                     out.println(message);
                                 }
-                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_PREPARE_PROPOSAL)&&isready)
+                                else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_PREPARE_PROPOSAL)&&game.getPlayer(thisClient).isReady())
                                 {
                                     //-----------------------------------------
                                     //----------PREPARE PROPOSAL STATE---------
@@ -282,9 +281,11 @@ public class WereWolfServer {
                                                 out.println(message);
                                                 
                                                 while(true){
+                                                    System.out.println("Server :: Start on Game State.");
                                                     //----------------------------------
                                                     //----------ON GAME-----------------
                                                     //----------------------------------
+                                                    System.out.println("Server :: Prepare Voting.");
                                                     
                                                     waitingkpu = true;
                                                     
@@ -307,7 +308,7 @@ public class WereWolfServer {
                                                     
                                                     if(game.getPlayer(thisClient).getId() == game.getLeaderId())
                                                     {
-                                                        System.out.println("Server ::KPU Send a Request");
+                                                        System.out.println("Server :: Received Request from KPU");
                                                         //----------------------------------
                                                         //----------PLAYER AS KPU-----------
                                                         //----------------------------------
@@ -329,16 +330,25 @@ public class WereWolfServer {
                                                                 {
                                                                     if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
                                                                     {
+                                                                        System.out.println("Server :: 'Day Voting' has approving one person to kill.");
+                                                                        
                                                                         game.outDataVote((JSONArray) json.get("vote_result"), json.get("player_killed").toString());
                                                                         game.killPlayer(Integer.parseInt(json.get("player_killed").toString()));
+                                                                        
+                                                                        System.out.println("Server :: Player "+game.getPlayer(Integer.parseInt(json.get("player_killed").toString()))+" is killed.");
+                                                                        
                                                                         message = mc.killedPlayerSuccess();
                                                                         out.println(message);
+                                                                        
+                                                                        System.out.println("Server :: Game changing phase.");
                                                                         game.changeDay();
+                                                                        System.out.println("Server :: Changed phase to "+game.getDay());
+                                                                        
                                                                         waitingkpu = false;
                                                                     }
                                                                     else if(json.get("vote_status").equals(-1))
                                                                     {
-                                                                        System.out.println("Server :: No Werewolf killed.");
+                                                                        System.out.println("Server :: 'Day Voting' No Person killed.");
                                                                         message = mc.killedNoPlayerSuccess();
                                                                         out.println(message);
                                                                         game.changeDay();
@@ -431,8 +441,20 @@ public class WereWolfServer {
                                                         }
                                                     }
                                                     
+                                                    
+                                                    //----------------------------------
+                                                    //----------GAME OVER---------------
+                                                    //----------------------------------
+                                                    if(game.isGameOver()){
+                                                        System.out.println("Server :: Game End. Thank you for playing.");
+                                                        message = game.messageGameOver(game.getWinner());
+                                                        out.println(message);
+                                                        break;
+                                                    }
+                                                    
                                                     if(game.isDay()){
                                                         /* KPU Session Expire */
+                                                        System.out.println("Server :: KPU ID is expired.");
                                                         game.resetLeader();
                                                         break;
                                                     }
@@ -491,7 +513,12 @@ public class WereWolfServer {
                         }
                         return;
                     }
-          
+                    if(game.isGameOver()){
+                        System.out.println("Server :: Reseting The Game.");
+                        game.resetGame();
+                        System.out.println("Server :: Game has been Reset.");
+                        break;
+                    }
                 }
             } catch (IOException e) {
                 System.out.println(e);
