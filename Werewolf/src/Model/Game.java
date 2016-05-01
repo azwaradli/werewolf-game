@@ -367,6 +367,24 @@ public class Game {
         return null;
     }
     
+    public String messageVoteNow(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("method", "vote_now");
+            obj.put("phase", getDay());
+            
+            obj.put("description", "Vote now.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
     public void outDataVote(JSONArray jsonhasil, String idp){
         if(jsonhasil!=null){
             for(int i = 0; i < jsonhasil.size(); i++){

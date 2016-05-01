@@ -193,6 +193,21 @@ public class WereWolfServer {
                                             System.out.println("Server ::Game Started");
                                             message = game.messageStartGame(thisClient);
                                             out.println(message);
+                                            
+                                            /* Send Message to Client */
+                                            boolean sendf1 = true; 
+                                            while(sendf1){
+                                                message = game.messageStartGame(thisClient);
+                                                out.println(message);
+
+                                                getjson = in.readLine();
+                                                obj = parser.parse(getjson);
+                                                json = (JSONObject)obj;
+                                                if(json.get("status").toString().equals("ok")){
+                                                    sendf1 = false;
+                                                }
+                                            }
+                                            
                                         }
                                     }
                                     else
@@ -243,6 +258,21 @@ public class WereWolfServer {
                                                     //----------------------------------
                                                     
                                                     waitingkpu = true;
+                                                    
+                                                    /* Send Message to Client */
+                                                    boolean sendf2 = true;
+                                                    while(sendf2){
+                                                        message = game.messageVoteNow();
+                                                        out.println(message);
+                                                        
+                                                        getjson = in.readLine();
+                                                        obj = parser.parse(getjson);
+                                                        json = (JSONObject)obj;
+                                                        if(json.get("status").toString().equals("ok")){
+                                                            sendf2 = false;
+                                                        }
+                                                    }
+                                                    
                                                     
                                                     if(game.getPlayer(thisClient).getId() == game.getLeaderId())
                                                     {
@@ -353,8 +383,20 @@ public class WereWolfServer {
                                                     if(thisClient == game.getLeaderId()){
                                                         System.out.println("Server :: Day "+game.getDayCounter()+" phase "+game.getDay()+".");
                                                     }
-                                                    message = game.messageChangePhase();
-                                                    out.println(message);
+                                                    
+                                                    /* Send Message to Client */
+                                                    boolean sendf3 = true;
+                                                    while(sendf3){
+                                                        message = game.messageChangePhase();
+                                                        out.println(message);
+                                                        
+                                                        getjson = in.readLine();
+                                                        obj = parser.parse(getjson);
+                                                        json = (JSONObject)obj;
+                                                        if(json.get("status").toString().equals("ok")){
+                                                            sendf3 = false;
+                                                        }
+                                                    }
                                                     
                                                     if(game.isDay()){
                                                         /* KPU Session Expire */
