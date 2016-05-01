@@ -121,7 +121,7 @@ public class UDPListener implements Runnable{
                         String status = json.get(StandardMessage.MESSAGE_STATUS).toString();
                         if(status.equals(StandardMessage.PARAM_OK)){
                             if(json.containsKey(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED)){
-                                int prevAcceptedValue = (int) json.get(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED);
+                                int prevAcceptedValue = Integer.parseInt(json.get(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED).toString());
                                 //proposer.receivePromise(playerId, proposalID, prevAcceptedID, prevAcceptedValue);
                             }
                             else{

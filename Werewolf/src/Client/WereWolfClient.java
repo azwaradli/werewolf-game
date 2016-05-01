@@ -250,19 +250,39 @@ public class WereWolfClient {
             }
         }
         System.out.println("masuk paxos");
+        connection.listClient();
+        while(!connection.isReady()){
+            //busy waiting
+            try {
+                Thread.sleep(500);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        connection.setDataReady(false);
+        System.out.println("CONN :: "+connection.getBiggestPID()+" - "+connection.getSecondBiggest());
         PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
         paxosController.run();
         
         while(!connection.isEnded()){
-            if(connection.isTimeChanged())
-                paxosController.run();
+            if(connection.isTimeChanged()){
+                connection.listClient();
+                while(!connection.isReady()){
+                    //busy waiting
+                    try {
+                        Thread.sleep(500);                 //1000 milliseconds is one second.
+                    } catch(InterruptedException ex) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+                connection.setDataReady(false);
+                paxosController.run();}
             System.out.println("Masukkan order : ");
             String order = sc.nextLine();
             if(order=="prepare"){
             
             }
         }
-        
     }
 
     /**

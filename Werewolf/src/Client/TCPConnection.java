@@ -34,6 +34,7 @@ public class TCPConnection implements Runnable{
     
     private String state = "";
     private boolean timeChanged = false;
+    private boolean dataReady = false;
     
     Socket socket;
     BufferedReader in;
@@ -68,6 +69,10 @@ public class TCPConnection implements Runnable{
         return time;
     }
     
+    public void setDataReady(boolean ready){
+        dataReady = ready;
+    }
+    
     public boolean isStarted(){
         return state.equals("START");
     }
@@ -78,6 +83,10 @@ public class TCPConnection implements Runnable{
     
     public boolean isTimeChanged(){
         return timeChanged;
+    }
+    
+    public boolean isReady(){
+        return dataReady;
     }
     
     public String getRole(){
@@ -141,18 +150,26 @@ public class TCPConnection implements Runnable{
                                     tempInfo.add(clientInfo);
 
                                     biggestPID = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
-                                    secondBiggestPID = biggestPID;
+                                    secondBiggestPID = 0;
                                     for(int i = 1; i<playersInfo.size();i++){
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
                                         tempInfo.add(clientInfo);
                                         int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                         if(temp > biggestPID){
-                                            secondBiggestPID = biggestPID;
                                             biggestPID = temp;
                                         }
-                                    }                              
-                                    AllClients = tempInfo;                                
-    //                                System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
+                                    }
+                                    for(int i = 0; i<playersInfo.size();i++){
+                                        clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
+                                        tempInfo.add(clientInfo);
+                                        int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+                                        if((temp > secondBiggestPID)&&(temp < biggestPID)){
+                                            secondBiggestPID = temp;
+                                        }
+                                    }
+                                    AllClients = tempInfo;
+                                    dataReady = true;
+//                                    System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
                                 }
                                 else if(json.containsValue("thanks for playing")){
                                     state = "END";

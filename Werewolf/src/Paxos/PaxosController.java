@@ -23,10 +23,10 @@ public class PaxosController {
     Messenger messenger;
     Proposer proposer;
     
-    public PaxosController(int playerId, TCPConnection connection){
-        this.playerId = playerId;
-        this.pidTerbesar = connection.getBiggestPID();
-        this.pidTerbesarKedua = connection.getSecondBiggest();
+    public PaxosController(int _playerId, TCPConnection connection){
+        playerId = _playerId;
+        pidTerbesar = connection.getBiggestPID();
+        pidTerbesarKedua = connection.getSecondBiggest();
         messenger = new Messenger(connection);
         proposer = new Proposer(messenger, playerId);
     }
@@ -37,12 +37,13 @@ public class PaxosController {
     }
     
     public void decideRole(){
+        System.out.println(pidTerbesar + " " + pidTerbesarKedua);
         if(playerId == pidTerbesar || playerId == pidTerbesarKedua){
             role = 1;
-            System.out.println("sebagai proposer");}
+            System.out.println(playerId+ " sebagai proposer");}
         else{
             role = 0;
-            System.out.println("sebagai acceptor");}
+            System.out.println(playerId + " sebagai acceptor");}
     }
     
     public void runPaxos(){

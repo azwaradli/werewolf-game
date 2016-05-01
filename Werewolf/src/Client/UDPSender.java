@@ -39,9 +39,7 @@ public class UDPSender implements Runnable{
             
             Random random = new Random();
             double rand = random.nextDouble();
-            
-            
-            
+
             if(rand < 0.85)
                 client.send(packet);
             else
