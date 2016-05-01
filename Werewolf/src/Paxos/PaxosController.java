@@ -22,6 +22,7 @@ public class PaxosController {
     
     Messenger messenger;
     UDPListener listen;
+    Proposer proposer;
     
     public PaxosController(int playerId, int pidTerbesar, int pidTerbesarKedua, String address, int port, TCPConnection _connection){
         this.playerId = playerId;
@@ -29,6 +30,7 @@ public class PaxosController {
         this.pidTerbesarKedua = pidTerbesarKedua;
         messenger = new Messenger(_connection);
         listen = new UDPListener(address, port);
+        proposer = new Proposer(messenger, playerId);
     }
     
     public void decideRole(){
@@ -46,7 +48,8 @@ public class PaxosController {
     }
     
     public void runProposer(){
-        
+        proposer.setProposal(playerId);
+        proposer.prepare();
     }
     
     public void runAcceptor(){
