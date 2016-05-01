@@ -48,6 +48,7 @@ public class StandardMessage {
     
     public static String PARAM_OK = "ok";
     public static String PARAM_ACCEPTED = "accepted";
+    public static String PARAM_PREV_ACCEPTED = "previous_accepted";
     public static String PARAM_START = "start";
     public static String PARAM_DAY = "day";
     public static String PARAM_NIGHT = "night";
