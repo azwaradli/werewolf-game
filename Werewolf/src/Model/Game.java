@@ -26,8 +26,9 @@ public class Game {
     private int daycounter = 0;
     private boolean day = true;
     private boolean started = false;
-    private int idLeader = -1, gconflict = 0;
+    private int idLeader = -1, gconflict = 0, idSender=-1;
     private ArrayList<Integer> preparatorLead = new ArrayList();
+    private ArrayList<Integer> werewolfId = new ArrayList();
     
     private int WEREWOLF_AMOUNT = 2;
     
@@ -61,16 +62,20 @@ public class Game {
     }
     
     public void randomingWerewolf(){
-        ArrayList<Integer> randomWerewolf = listRandInt(0, playerSize(), WEREWOLF_AMOUNT);
-        int counter = 0;
+        werewolfId = listRandInt(0, playerSize()-1, WEREWOLF_AMOUNT);
+        int temp =0;
         for(Player player : players){
             if(player.isActive()){
-                for(Integer tint : randomWerewolf){
-                    if(tint == counter){
-                        player.setRole(false);
+                for(int i : werewolfId){
+                    System.out.println("Random :: int "+i);
+                    if(temp == i){
+                        System.out.println("Random :: werewolf "+player.getName());
+                        player.setRoleWerewolf();
+                        break;
                     }
+                    System.out.println("Random :: civil "+player.getName());
                 }
-                counter++;
+                temp++;
             }
         }
     }
@@ -156,6 +161,10 @@ public class Game {
     
     public boolean isNight(){
         return !day;
+    }
+    
+    public Integer getSenderId(){
+        return idSender;
     }
     
     public Integer getPlayerId(String name){
@@ -268,6 +277,9 @@ public class Game {
     public boolean addPlayer(String name, String ip, int port){
         if(isNameUnique(name)&&!name.equals("")){
             players.add(new Player(stPlayerId++, name, ip, port));
+            if(idSender == -1){
+                idSender = stPlayerId;
+            }
             return true;
         }else{
             return false;
@@ -287,6 +299,9 @@ public class Game {
         for(Player player : players){
             if(player.getName().equals(name)){
                 player.setName("");
+                if(player.getId() == idSender){
+                    idSender = getPlayer().get(0).getId();
+                }
                 return true;
             }
         }
@@ -297,6 +312,9 @@ public class Game {
         for(Player player : players){
             if(player.getId() == id){
                 player.setName("");
+                if(player.getId() == idSender){
+                    idSender = getPlayer().get(0).getId();
+                }
                 return true;
             }
         }
@@ -344,7 +362,7 @@ public class Game {
         
         ArrayList<Player> temp = new ArrayList();
         for(Player player : getPlayer()){
-            if(player.isCivil() == getPlayer(mid).isCivil()&&player.getId()!=mid){
+            if((player.isCivil() == getPlayer(mid).isCivil())&&(player.getId()!=mid)){
                 temp.add(player);
             }
         }
