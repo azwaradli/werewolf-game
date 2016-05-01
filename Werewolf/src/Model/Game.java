@@ -8,6 +8,9 @@ package Model;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.Random;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONObject;
@@ -24,8 +27,46 @@ public class Game {
     private int idLeader = -1, gconflict = 0;
     private ArrayList<Integer> preparatorLead = new ArrayList();
     
+    private int WEREWOLF_AMOUNT = 2;
+    
     public Game(){
         players = new ArrayList();
+    }
+    
+    private ArrayList<Integer> listRandInt(int min, int max, int amount){
+        ArrayList<Integer> arrtemp = new ArrayList();
+        for(int i=0; i < amount; i++){
+            int temp = randInt(min, max);
+            while(arrtemp.contains(temp)){
+                temp++;
+                temp = temp % max;
+            }
+            arrtemp.add(temp);
+        }
+        return arrtemp;
+    }
+    
+    public static int randInt(int min, int max) {
+        Random rand = new Random();
+
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+
+        return randomNum;
+    }
+    
+    public void randomingWerewolf(){
+        ArrayList<Integer> randomWerewolf = listRandInt(0, playerSize(), WEREWOLF_AMOUNT);
+        int counter = 0;
+        for(Player player : players){
+            if(player.isActive()){
+                for(Integer tint : randomWerewolf){
+                    if(tint == counter){
+                        player.setRole(false);
+                    }
+                }
+                counter++;
+            }
+        }
     }
     
     public int getConfirmPlayerSize(){
@@ -33,7 +74,7 @@ public class Game {
     }
     
     public int getNotConfirmPlayerSize(){
-        return players.size()-preparatorLead.size();
+        return playerSize()-preparatorLead.size();
     }
     
     public int getLeaderId(){
@@ -50,7 +91,7 @@ public class Game {
     }
     
     public int checkLeader(){
-        if(preparatorLead.size() == players.size()){
+        if(preparatorLead.size() == playerSize()){
             return makeLeader();
         }
         return -1;
@@ -110,12 +151,18 @@ public class Game {
     }
     
     public ArrayList<Player> getPlayer(){
-        return players;
+        ArrayList<Player> temp = new ArrayList();
+        for(Player player : players){
+            if(player.isActive()){
+                temp.add(player);
+            }
+        }
+        return temp;
     }
     
     public ArrayList<Player> getPlayerReady(){
         ArrayList<Player> tempPlayers = new ArrayList();
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isReady()){
                 tempPlayers.add(player);
             }
@@ -125,7 +172,7 @@ public class Game {
     
     public ArrayList<Player> getPlayerNotReady(){
         ArrayList<Player> tempPlayers = new ArrayList();
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(!player.isReady()){
                 tempPlayers.add(player);
             }
@@ -134,12 +181,12 @@ public class Game {
     }
     
     public int playerSize(){
-        return players.size();
+        return getPlayer().size();
     }
     
     public int playerReadySize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isReady()){
                 temp++;
             }
@@ -149,7 +196,7 @@ public class Game {
     
     public int playerNotReadySize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(!player.isReady()){
                 temp++;
             }
@@ -159,7 +206,7 @@ public class Game {
     
     public int playerAliveSize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isAlive()){
                 temp++;
             }
@@ -169,7 +216,7 @@ public class Game {
     
     public int playerDeadSize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(!player.isAlive()){
                 temp++;
             }
@@ -178,7 +225,7 @@ public class Game {
     }
     
     public boolean addPlayer(String name, String ip, int port){
-        if(isNameUnique(name)){
+        if(isNameUnique(name)&&!name.equals("")){
             players.add(new Player(stPlayerId++, name, ip, port));
             return true;
         }else{
@@ -237,13 +284,13 @@ public class Game {
     
     public void start(){
         started = true;
-        
+        randomingWerewolf();
     }
     
     public ArrayList<Player> getFriends(int mid){
         
         ArrayList<Player> temp = new ArrayList();
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isCivil() == getPlayer(mid).isCivil()&&player.getId()!=mid){
                 temp.add(player);
             }

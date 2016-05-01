@@ -127,7 +127,7 @@ public class WereWolfServer {
                                         else
                                         {
                                             //Jika username tidak unique dan gagal ditambahkan
-                                            System.out.println("Server :: Client Join Request Rejected, Name Already Exists");
+                                            System.out.println("Server :: Client Join Request Rejected, Name Already Exists or Your input name is empty.");
                                             String message = mc.joinFailureUserExists();
                                             out.println(message);
                                         }
@@ -204,6 +204,7 @@ public class WereWolfServer {
                                 else if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_CLIENT_ADDRESS))
                                 {
                                     //---------------------------------------
+                                    //----------REQUEST PLAYER---------------
                                     //----------CLIENT ADDRESS STATE---------
                                     //---------------------------------------
                                     System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to client address");
@@ -232,7 +233,7 @@ public class WereWolfServer {
                                                 //----------------------------------
                                                 System.out.println("Server ::All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
                                                 
-                                                String message = mc.prepareProposalFail();
+                                                String message = mc.prepareProposalSuccess(game.getLeaderId());
                                                 out.println(message);
                                              
                                                 getjson = in.readLine();
@@ -298,7 +299,7 @@ public class WereWolfServer {
                                                 //----------KPU ID REJECTED---------
                                                 //----------------------------------
                                                 System.out.println("Server ::Other clients failed to confirm their kpu id.");
-                                                String message = mc.prepareProposalSuccess();
+                                                String message = mc.prepareProposalFail();
                                                 out.println(message);
                                                 
                                             }
