@@ -15,24 +15,26 @@ import Client.UDPListener;
 public class PaxosController {
     // attributes
     int playerId;
-    int numClient;
+    int pidTerbesar;
+    int pidTerbesarKedua;
     int role;
     
     Messenger messenger;
     UDPListener listen;
     
-    public PaxosController(int playerId, int numClient, String address, int port){
+    public PaxosController(int playerId, int pidTerbesar, int pidTerbesarKedua, String address, int port){
         this.playerId = playerId;
-        this.numClient = numClient;
+        this.pidTerbesar = pidTerbesar;
+        this.pidTerbesarKedua = pidTerbesarKedua;
         messenger = new Messenger();
         listen = new UDPListener(address, port);
     }
     
     public void decideRole(){
-        if(numClient - playerId <= 1)
-            role = 1; // proposer
+        if(playerId == pidTerbesar || playerId == pidTerbesarKedua)
+            role = 1;
         else
-            role = 0; // acceptor
+            role = 0;
     }
     
     public void runPaxos(){

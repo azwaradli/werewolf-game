@@ -5,6 +5,8 @@
  */
 package Client;
 
+import Paxos.ProposalID;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -21,15 +23,17 @@ public class Messenger {
         message = new String();
     }
     
-    public void prepareProposal(int proposalNumber, int playerId){
+    public void prepareProposal(ProposalID proposalID){
         JSONObject obj = new JSONObject();
-        obj = clientProtocol.prepareProposalMessage(proposalNumber, playerId);
+        obj = clientProtocol.prepareProposalMessage(proposalID.getID(), proposalID.getPlayerID());
         message = obj.toString();
+        
+        sendToAll();
     }
     
-    public void acceptProposal(int proposalNumber, int playerId){
+    public void acceptProposal(ProposalID proposalID, int proposedValue){
         JSONObject obj = new JSONObject();
-        obj = clientProtocol.acceptProposalMessage(proposalNumber, playerId);
+        obj = clientProtocol.acceptProposalMessage(proposalID.getID(), proposalID.getPlayerID(), proposedValue);
         message = obj.toString();
     }
     

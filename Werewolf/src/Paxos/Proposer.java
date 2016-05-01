@@ -7,6 +7,7 @@ package Paxos;
 
 import Client.Messenger;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  *
@@ -14,27 +15,50 @@ import java.util.ArrayList;
  */
 public class Proposer {
     Messenger messenger;
-    String proposerUID;
+    int proposerUID;
     int quorumSize;
     int proposalNumber;
     int playerId;
     int proposedValue = 0; // KPU_id
-    //ProposalID proposalID;
+    ProposalID proposalID;
+    ProposalID lastAcceptedID;
+    HashSet<Integer> promisesReceived = new HashSet<Integer>();
     
     
-    //messenger
-    //Proposal_id
-    //proposedValue = KPU_id
-    
-    
-    public void Proposer(Messenger messenger, String proposerUID, String proposal_id){
+    public void Proposer(Messenger messenger, int proposerUID, String proposal_id){
         this.proposerUID = proposerUID;
         this.messenger = messenger;
-        
+        proposalID = new ProposalID(0, proposerUID);
     }
     
-    public void setProposal(Object obj){
+    public void setProposal(int playerId){
+        if(proposedValue == 0)
+            proposedValue = playerId;
+    }
+    
+    public void receivePromise(int fromUID, ProposalID proposalID, ProposalID prevAcceptedID, int prevAcceptedValue) {
+        if ( !proposalID.equals(this.proposalID) || promisesReceived.contains(fromUID) ) 
+            return;
+		
+        promisesReceived.add( fromUID );
+
+        if (lastAcceptedID == null || prevAcceptedID.getID() > lastAcceptedID.getID()){
+            lastAcceptedID = prevAcceptedID;
+
+            if (prevAcceptedValue != 0)
+                proposedValue = prevAcceptedValue;
+        }
         
+        if (promisesReceived.size() == quorumSize){
+            if (proposedValue != 0)
+                messenger.acceptProposal(this.proposalID, this.proposedValue);
+        }
+    }
+    
+    public void prepare(){
+        promisesReceived.clear();
+        proposalID.incrementID();
+        messenger.prepareProposal(proposalID);
     }
     
 }
