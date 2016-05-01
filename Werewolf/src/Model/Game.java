@@ -13,6 +13,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 /**
@@ -31,6 +32,10 @@ public class Game {
     
     public Game(){
         players = new ArrayList();
+    }
+    
+    public void killPlayer(int id){
+        players.get(id).setDead();
     }
     
     private ArrayList<Integer> listRandInt(int min, int max, int amount){
@@ -324,6 +329,19 @@ public class Game {
             Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public void outDataVote(JSONArray jsonhasil, String idp){
+        if(jsonhasil!=null){
+            for(int i = 0; i < jsonhasil.size(); i++){
+                JSONArray temp = (JSONArray)jsonhasil.get(i);
+                for(int j = 0; j < temp.size(); j++){
+                    Player tempplayer = getPlayer(Integer.parseInt(temp.get(0).toString()));
+                    System.out.println("Server :: "+tempplayer.getName()+" voted by "+temp.get(1).toString()+" player");
+                }
+            }
+        }
+        System.out.println("Server :: "+getPlayer(Integer.parseInt(idp))+" is dead.");
     }
     
 }

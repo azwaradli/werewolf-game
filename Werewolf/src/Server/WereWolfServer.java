@@ -241,56 +241,62 @@ public class WereWolfServer {
                                                 json = (JSONObject)obj;
                                                 System.out.println("Server :: Client Message :: " + getjson);
                                                 
-//                                                if(game.getPlayer(thisClient).getId() == game.getLeaderId())
-//                                                {
-//                                                    System.out.println("Server ::KPU Send a Request");
-//                                                    //----------------------------------
-//                                                    //----------PLAYER AS KPU-----------
-//                                                    //----------------------------------
-//                                                    if(json.containsKey("method"))
-//                                                    {
-//                                                        if(json.get("method").equals("vote_result_werewolf"))
-//                                                        {
-//                                                            System.out.println("Server ::KPU Request Vote Werewolf");
-//                                                            //------------------------------------------
-//                                                            //----------INFO WEREWOLF KILLED------------
-//                                                            //------------------------------------------
-//                                                            if(json.containsKey("vote_status") && 
-//                                                                    json.containsKey("vote_result"))
-//                                                            {
-//                                                                if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
-//                                                                {
-//                                                                    
-//                                                                }
-//                                                                else
-//                                                                {
-//                                                                    
-//                                                                }
-//                                                            }
-//                                                            else
-//                                                            {
-//                                                                System.out.println("Server ::KPU Bad Request No Parameter vote_status or vote_result.");
-//                                                            }
-//                                                        }
-//                                                        else
-//                                                        {
-//                                                            /* Not Vote Werewolf */
-//                                                        }
-//                                                    }
-//                                                    else
-//                                                    {
-//                                                        //----------WRONG STATE---------
-//                                                        System.out.println("Server :: Client has no method");
-//                                                        message = mc.failureWrongRequest();
-//                                                        out.println(message);
-//                                                    }
-//                                                }
-//                                                else
-//                                                {
-//                                                    //----------------------------------
-//                                                    //----------PLAYER AS ACCEPTOR------
-//                                                    //----------------------------------
-//                                                }
+                                                if(game.getPlayer(thisClient).getId() == game.getLeaderId())
+                                                {
+                                                    System.out.println("Server ::KPU Send a Request");
+                                                    //----------------------------------
+                                                    //----------PLAYER AS KPU-----------
+                                                    //----------------------------------
+                                                    if(json.containsKey("method"))
+                                                    {
+                                                        if(json.get("method").equals("vote_result_werewolf"))
+                                                        {
+                                                            System.out.println("Server ::KPU Request Vote Werewolf");
+                                                            //------------------------------------------
+                                                            //----------INFO WEREWOLF KILLED------------
+                                                            //------------------------------------------
+                                                            if(json.containsKey("vote_status") && 
+                                                                    json.containsKey("vote_result"))
+                                                            {
+                                                                if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
+                                                                {
+                                                                    game.outDataVote((JSONArray) json.get("vote_result"), json.get("player_killed").toString());
+                                                                    game.killPlayer(Integer.parseInt(json.get("player_killed").toString()));
+                                                                    mc.killedPlayerSuccess();
+                                                                }
+                                                                else if(json.get("vote_status").equals(-1))
+                                                                {
+                                                                    System.out.println("Server :: No Werewolf killed.");
+                                                                    mc.killedNoPlayerSuccess();
+                                                                }else{
+                                                                    System.out.println("Server :: Status not known.");
+                                                                    mc.killedPlayerFail();
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                System.out.println("Server ::KPU Bad Request No Parameter vote_status or vote_result.");
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            /* Not Vote Werewolf */
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        //----------WRONG STATE---------
+                                                        System.out.println("Server :: Client has no method");
+                                                        message = mc.failureWrongRequest();
+                                                        out.println(message);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    //----------------------------------
+                                                    //----------PLAYER AS ACCEPTOR------
+                                                    //----------------------------------
+                                                }
                                                 
                                             }
                                             else

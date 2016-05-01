@@ -212,4 +212,52 @@ public class MessageCreator {
         return null;
     }
     
+    public String killedPlayerSuccess(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "ok");
+            obj.put("description", "Nice Kill.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String killedNoPlayerSuccess(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "ok");
+            obj.put("description", "No Kill.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String killedPlayerFail(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "fail");
+            obj.put("description", "Status not known.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 }
