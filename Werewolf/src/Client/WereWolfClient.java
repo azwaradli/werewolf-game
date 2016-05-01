@@ -207,8 +207,6 @@ public class WereWolfClient {
         
         connection.joinGame(udpListener.getLocalPort());
         
-        udpListener.setPlayerId(connection.getPlayerId());
-        
         Scanner sc = new Scanner(System.in);
         while(true){
             System.out.println("Cara Komunikasi : ");
