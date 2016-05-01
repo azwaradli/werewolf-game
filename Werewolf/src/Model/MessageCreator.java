@@ -147,6 +147,7 @@ public class MessageCreator {
                     temp.put("address", player.getIP());
                     temp.put("port", player.getPort());
                     temp.put("username", player.getName());
+                    temp.put("role", player.getRole());
                     playerArray.add(temp);
                 }
                 
@@ -178,10 +179,11 @@ public class MessageCreator {
         }
     }
     
-    public String prepareProposalSuccess(){
+    public String prepareProposalSuccess(int kpuid){
         try {
             JSONObject obj = new JSONObject();
             obj.put("status", "ok");
+            obj.put("kpu_id", kpuid);
             obj.put("description", "");
             
             StringWriter out = new StringWriter();
