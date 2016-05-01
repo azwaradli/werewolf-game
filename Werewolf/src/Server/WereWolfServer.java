@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Level;
@@ -444,6 +445,13 @@ public class WereWolfServer {
                     } catch (ParseException ex) {
                         Logger.getLogger(WereWolfServer.class.getName()).log(Level.SEVERE, null, ex);
                     } catch(NullPointerException npe){
+                        if(thisClient!=-1)
+                        {
+                            System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");
+                            game.deletePlayer(thisClient);
+                        }
+                        return;
+                    } catch (SocketException se) {
                         if(thisClient!=-1)
                         {
                             System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");

@@ -245,6 +245,26 @@ public class Game {
         return temp;
     }
     
+    public int civilianSize(){
+        int temp = 0;
+        for(Player player : getPlayer()){
+            if(player.isCivil()){
+                temp++;
+            }
+        }
+        return temp;
+    }
+    
+    public int werewolfSize(){
+        int temp = 0;
+        for(Player player : getPlayer()){
+            if(player.isWerewolf()){
+                temp++;
+            }
+        }
+        return temp;
+    }
+    
     public boolean addPlayer(String name, String ip, int port){
         if(isNameUnique(name)&&!name.equals("")){
             players.add(new Player(stPlayerId++, name, ip, port));
@@ -307,6 +327,17 @@ public class Game {
         started = true;
         randomingWerewolf();
         daycounter++;
+    }
+    
+    public String isGameOver(){
+        if(werewolfSize() == 0){
+            return "civilian";
+        }else if(civilianSize() == 0){
+            return "werewolf";
+        }else if(civilianSize() == 1 && werewolfSize() == 1){
+            return "werewolf";
+        }
+        return "not";
     }
     
     public ArrayList<Player> getFriends(int mid){
