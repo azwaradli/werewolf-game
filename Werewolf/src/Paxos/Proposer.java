@@ -19,38 +19,62 @@ public class Proposer {
     int quorumSize;
     int proposalNumber;
     int playerId;
-    int proposedValue = 0; // KPU_id
+    int proposedValue; // KPU_id
     ProposalID proposalID;
     ProposalID lastAcceptedID;
     HashSet<Integer> promisesReceived = new HashSet<Integer>();
+    int counter;
     
     public Proposer(Messenger messenger, int proposerUID){
         this.proposerUID = proposerUID;
         this.messenger = messenger;
         proposalID = new ProposalID(0, proposerUID);
+        counter = 0;
+        proposedValue = -1;
     }
     
     public void setProposal(int playerId){
-        if(proposedValue == 0)
+        if(proposedValue == -1)
             proposedValue = playerId;
     }
     
-    public void receivePromise(int fromUID, ProposalID proposalID, ProposalID prevAcceptedID, int prevAcceptedValue) {
-        if ( !proposalID.equals(this.proposalID) || promisesReceived.contains(fromUID) ) 
+    /*public void receivePromise(int fromUID, ProposalID proposalID, ProposalID prevAcceptedID, int prevAcceptedValue) {
+        if(!proposalID.equals(this.proposalID) || promisesReceived.contains(fromUID)) 
             return;
 		
         promisesReceived.add(fromUID);
 
-        if (lastAcceptedID == null || prevAcceptedID.getID() > lastAcceptedID.getID()){
+        if(lastAcceptedID == null || prevAcceptedID.getID() > lastAcceptedID.getID()){
             lastAcceptedID = prevAcceptedID;
-
             if (prevAcceptedValue != 0)
                 proposedValue = prevAcceptedValue;
         }
-        
-        if (promisesReceived.size() == quorumSize){
+        if (promisesReceived.size() > quorumSize){
             if (proposedValue != 0)
                 messenger.acceptProposal(this.proposalID, this.proposedValue);
+        }
+    }*/
+    
+    public void receivePromise(int prevAcceptedValue){
+        counter++;
+        
+        if(proposedValue == -1){
+            proposedValue = prevAcceptedValue;
+        }
+        if(counter > quorumSize){
+            if(proposedValue != -1){
+                messenger.acceptProposal(proposalID, proposedValue);
+            }
+        }
+    }
+    
+    public void receivePromise(){
+        counter++;
+        
+        if(counter > quorumSize){
+            if(proposedValue != -1){
+                messenger.acceptProposal(proposalID, proposedValue);
+            }
         }
     }
     
