@@ -260,4 +260,36 @@ public class MessageCreator {
         return null;
     }
     
+    public String killedPlayerError(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "error");
+            obj.put("description", "No Parameter vote_status or vote_result(when vote_status == 1)");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String killedError(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "error");
+            obj.put("description", "Your method is unknown.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 }

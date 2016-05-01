@@ -23,7 +23,8 @@ import org.json.simple.JSONObject;
 public class Game {
     private ArrayList<Player> players;
     private int stPlayerId=0;
-    private boolean day = false;
+    private int daycounter = 0;
+    private boolean day = true;
     private boolean started = false;
     private int idLeader = -1, gconflict = 0;
     private ArrayList<Integer> preparatorLead = new ArrayList();
@@ -90,6 +91,10 @@ public class Game {
         idLeader = inp;
     }
     
+    public void resetLeader(){
+        preparatorLead.clear();
+    }
+    
     public int prepareLeader(int inp){
         preparatorLead.add(inp);
         return checkLeader();
@@ -126,11 +131,22 @@ public class Game {
         return started;
     }
     
+    public int getDayCounter(){
+        return daycounter;
+    }
+    
     public String getDay(){
         if(isDay()){
             return "day";
         }else{
             return "night";
+        }
+    }
+    
+    public void changeDay(){
+        day = !day;
+        if(day){
+            daycounter++;
         }
     }
     
@@ -290,6 +306,7 @@ public class Game {
     public void start(){
         started = true;
         randomingWerewolf();
+        daycounter++;
     }
     
     public ArrayList<Player> getFriends(int mid){
@@ -320,6 +337,43 @@ public class Game {
             obj.put("friend", jsonFriends);
             
             obj.put("description", "Game is started.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String messageChangePhase(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("method", "change_phase");
+            obj.put("time", getDay());
+            obj.put("day", getDayCounter());
+            
+            obj.put("description", "Game changed phase.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+    public String messageVoteNow(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("method", "vote_now");
+            obj.put("phase", getDay());
+            
+            obj.put("description", "Vote now.");
             
             StringWriter out = new StringWriter();
             obj.writeJSONString(out);
