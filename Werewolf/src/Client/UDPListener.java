@@ -35,6 +35,19 @@ public class UDPListener implements Runnable{
         }
     }
     
+    public UDPListener(String _address,int _port){
+        port = _port;
+        try{
+            server = new DatagramSocket(null);
+            address = new InetSocketAddress(_address,port);
+            server.bind(address);  
+            localPort = server.getLocalPort();
+            System.out.println("Local port anda = " + localPort);
+        }catch(SocketException e){
+            e.printStackTrace();
+        }
+    }
+    
     public InetSocketAddress getAddress(){
         return address;
     }

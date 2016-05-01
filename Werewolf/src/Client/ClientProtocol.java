@@ -7,6 +7,7 @@ package Client;
 
 import Model.StandardMessage;
 import java.util.ArrayList;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 /**
  *
@@ -52,9 +53,9 @@ public class ClientProtocol {
     public JSONObject prepareProposalMessage(int proposalNumber, int playerId){
         JSONObject data = new JSONObject();
         
-        String[] proposalId = new String[2];
-        proposalId[0] = String.valueOf(proposalNumber);
-        proposalId[1] = String.valueOf(playerId);
+        JSONArray proposalId = new JSONArray();
+        proposalId.add(proposalNumber);
+        proposalId.add(playerId);
         
         data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_PREPARE_PROPOSAL);
         data.put(StandardMessage.MESSAGE_PROPOSAL_ID, proposalId);
@@ -62,16 +63,16 @@ public class ClientProtocol {
         return data;
     }
     
-    public JSONObject acceptProposalMessage(int proposalNumber, int playerId){
+    public JSONObject acceptProposalMessage(int proposalNumber, int playerId, int proposedValue){
         JSONObject data = new JSONObject();
         
-        String[] proposalId = new String[2];
-        proposalId[0] = String.valueOf(proposalNumber);
-        proposalId[1] = String.valueOf(playerId);
+        JSONArray proposalId = new JSONArray();
+        proposalId.add(proposalNumber);
+        proposalId.add(playerId);
         
         data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_ACCEPT_PROPOSAL);
         data.put(StandardMessage.MESSAGE_PROPOSAL_ID, proposalId);
-        data.put(StandardMessage.MESSAGE_KPU_ID, Integer.toString(playerId));
+        data.put(StandardMessage.MESSAGE_KPU_ID, Integer.toString(proposedValue));
         
         return data;
     }
