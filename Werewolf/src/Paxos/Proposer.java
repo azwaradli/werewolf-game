@@ -5,23 +5,32 @@
  */
 package Paxos;
 
+import Client.Messenger;
+import java.util.ArrayList;
+
 /**
  *
  * @author Adz
  */
 public class Proposer {
+    Messenger messenger;
     String proposerUID;
     int quorumSize;
-    String proposal_id; // [<proposal-number>, <player-id>]
+    int proposalNumber;
+    int playerId;
+    int proposedValue = 0; // KPU_id
+    //ProposalID proposalID;
+    
     
     //messenger
     //Proposal_id
     //proposedValue = KPU_id
     
     
-    public void Proposer(String proposerUID, String proposal_id){
+    public void Proposer(Messenger messenger, String proposerUID, String proposal_id){
         this.proposerUID = proposerUID;
-        this.proposal_id = proposal_id;
+        this.messenger = messenger;
+        
     }
     
     public void setProposal(Object obj){
