@@ -54,7 +54,9 @@ public class Messenger {
         
     }
     
-    public void sendToOne(){
-        
+    public void sendToOne(String IPAddress, int port){
+        UDPSender udpSender = new UDPSender(IPAddress, port, message);
+        Thread t3 = new Thread(udpSender);
+        t3.start();
     }
 }
