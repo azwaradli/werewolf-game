@@ -6,6 +6,7 @@
 package Paxos;
 
 import Client.Messenger;
+import Client.TCPConnection;
 import Client.UDPListener;
 
 /**
@@ -22,11 +23,11 @@ public class PaxosController {
     Messenger messenger;
     UDPListener listen;
     
-    public PaxosController(int playerId, int pidTerbesar, int pidTerbesarKedua, String address, int port){
+    public PaxosController(int playerId, int pidTerbesar, int pidTerbesarKedua, String address, int port, TCPConnection _connection){
         this.playerId = playerId;
         this.pidTerbesar = pidTerbesar;
         this.pidTerbesarKedua = pidTerbesarKedua;
-        messenger = new Messenger();
+        messenger = new Messenger(_connection);
         listen = new UDPListener(address, port);
     }
     

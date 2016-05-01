@@ -6,6 +6,7 @@
 package Client;
 
 import Paxos.ProposalID;
+import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -15,10 +16,12 @@ import org.json.simple.JSONObject;
  */
 public class Messenger {
     ClientProtocol clientProtocol;
+    TCPConnection connection;
     UDPSender udpSender;
     String message;
     
-    public Messenger(){
+    public Messenger(TCPConnection _connection){
+        connection = _connection;
         clientProtocol = new ClientProtocol();
         message = new String();
     }
@@ -27,7 +30,6 @@ public class Messenger {
         JSONObject obj = new JSONObject();
         obj = clientProtocol.prepareProposalMessage(proposalID.getID(), proposalID.getPlayerID());
         message = obj.toString();
-        
         sendToAll();
     }
     
@@ -66,6 +68,10 @@ public class Messenger {
     
     
     public void sendToAll(){
+        connection.listClient();
+        for(JSONObject c : connection.getListPlayers()){
+            
+        }
         
     }
     

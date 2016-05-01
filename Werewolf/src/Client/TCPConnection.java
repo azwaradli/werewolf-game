@@ -124,7 +124,7 @@ public class TCPConnection implements Runnable{
                                 tempInfo.add(clientInfo);
                                 
                                 biggestPID = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
-                                
+                                secondBiggestPID = biggestPID;
                                 for(int i = 1; i<playersInfo.size();i++){
                                     clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
                                     tempInfo.add(clientInfo);
@@ -134,9 +134,8 @@ public class TCPConnection implements Runnable{
                                         biggestPID = temp;
                                     }
                                 }                              
-                                AllClients = tempInfo;
-                                
-                                System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
+                                AllClients = tempInfo;                                
+//                                System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
                             }
                             else if(json.containsValue("thanks for playing")){
                                 break;

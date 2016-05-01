@@ -51,8 +51,6 @@ public class WereWolfClient {
      */
     public WereWolfClient() {
         
-        messenger = new Messenger();
-        
         //MAIN FRAME
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BorderLayout());
@@ -198,6 +196,7 @@ public class WereWolfClient {
         int port = 8080;
         
         TCPConnection connection= new TCPConnection(serverAddress,port);
+        messenger = new Messenger(connection);
         Thread t1 = new Thread(connection);
         t1.start();
         
@@ -218,7 +217,7 @@ public class WereWolfClient {
                 
                 if(messages[3].equals("prepare-proposal")){
                     connection.listClient();
-                    messenger.prepareProposal(port, port);
+//                    messenger.prepareProposal(port, port);
                 }
                 
 //                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
