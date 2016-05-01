@@ -6,6 +6,7 @@
 package Client;
 
 import Model.StandardMessage;
+import java.util.ArrayList;
 import org.json.simple.JSONObject;
 /**
  *
@@ -94,7 +95,7 @@ public class ClientProtocol {
         return data;
     }
     
-    public JSONObject infoWerewolfKilledMessage(int voteStatus, int playerKilled, String[] voteResult){
+    public JSONObject infoWerewolfKilledMessage(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
         JSONObject data = new JSONObject();
         
         if(voteStatus == 1){
@@ -112,7 +113,7 @@ public class ClientProtocol {
         return data;
     }
     
-    public JSONObject killCivilianVote(int playerId){
+    public JSONObject killCivilianVoteMessage(int playerId){
         JSONObject data = new JSONObject();
         
         data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_CIVILIAN);
@@ -121,7 +122,7 @@ public class ClientProtocol {
         return data;
     }
 
-    public JSONObject infoCivilianKilled(int voteStatus, int playerKilled, String[] voteResult){
+    public JSONObject infoCivilianKilledMessage(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
         JSONObject data = new JSONObject();
         
         if(voteStatus == 1){
@@ -138,7 +139,5 @@ public class ClientProtocol {
         
         return data;
     }
-    
-    
-       
+           
 }
