@@ -32,6 +32,7 @@ public class WereWolfServer {
     private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
     private static Game game = new Game();
     private static MessageCreator mc = new MessageCreator();
+    private static boolean waitingkpu = true;
     private final static int MIN_PLAYER = 2;
     
     public static void main(String[] args) throws IOException{
@@ -249,33 +250,41 @@ public class WereWolfServer {
                                                     //----------------------------------
                                                     if(json.containsKey("method"))
                                                     {
-                                                        if(json.get("method").equals("vote_result_werewolf"))
+                                                        if(json.get("method").equals("vote_result_werewolf")&&game.isNight())
                                                         {
                                                             System.out.println("Server ::KPU Request Vote Werewolf");
                                                             //------------------------------------------
                                                             //----------INFO WEREWOLF KILLED------------
                                                             //------------------------------------------
-                                                            if(json.containsKey("vote_status") && 
-                                                                    json.containsKey("vote_result"))
+                                                            if(json.containsKey("vote_status") && json.containsKey("vote_result"))
                                                             {
                                                                 if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
                                                                 {
                                                                     game.outDataVote((JSONArray) json.get("vote_result"), json.get("player_killed").toString());
                                                                     game.killPlayer(Integer.parseInt(json.get("player_killed").toString()));
-                                                                    mc.killedPlayerSuccess();
+                                                                    message = mc.killedPlayerSuccess();
+                                                                    out.println(message);
+                                                                    game.changeDay();
+                                                                    waitingkpu = false;
                                                                 }
                                                                 else if(json.get("vote_status").equals(-1))
                                                                 {
                                                                     System.out.println("Server :: No Werewolf killed.");
-                                                                    mc.killedNoPlayerSuccess();
+                                                                    message = mc.killedNoPlayerSuccess();
+                                                                    out.println(message);
+                                                                    game.changeDay();
+                                                                    waitingkpu = false;
                                                                 }else{
                                                                     System.out.println("Server :: Status not known.");
-                                                                    mc.killedPlayerFail();
+                                                                    message = mc.killedPlayerFail();
+                                                                    out.println(message);
                                                                 }
                                                             }
                                                             else
                                                             {
-                                                                System.out.println("Server ::KPU Bad Request No Parameter vote_status or vote_result.");
+                                                                System.out.println("Server ::KPU Bad Request No Parameter vote_status or vote_result(when vote_status == 1).");
+                                                                message = mc.killedPlayerError();
+                                                                out.println(message);
                                                             }
                                                         }
                                                         else
@@ -291,12 +300,16 @@ public class WereWolfServer {
                                                         out.println(message);
                                                     }
                                                 }
-                                                else
-                                                {
-                                                    //----------------------------------
-                                                    //----------PLAYER AS ACCEPTOR------
-                                                    //----------------------------------
+                                                //----------------------------------
+                                                //----------PLAYER AS ACCEPTOR------
+                                                //----------AND KPU WHEN DONE-------
+                                                //----------------------------------
+                                                while(waitingkpu);
+                                                if(thisClient == game.getLeaderId()){
+                                                    System.out.println("Server :: Day "+game.getDayCounter()+" phase "+game.getDay()+".");
                                                 }
+                                                message = game.messageChangePhase();
+                                                out.println(message);
                                                 
                                             }
                                             else
