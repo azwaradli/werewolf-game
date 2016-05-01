@@ -28,6 +28,7 @@ public class TCPConnection implements Runnable{
     public int port;
     public ClientProtocol clientProtocol;
     public int localPort;
+   
     
     Socket socket;
     BufferedReader in;
@@ -37,6 +38,7 @@ public class TCPConnection implements Runnable{
     int player_id;
     String time, role;
     ArrayList<String> friend;
+    private JSONArray playersInfo;
     
     public TCPConnection(String _serverAddress, int _port){
         serverAddress = _serverAddress;
@@ -66,6 +68,10 @@ public class TCPConnection implements Runnable{
     
     public ArrayList<String> getFriend(){
         return friend;
+    }
+    
+    public JSONArray getListPlayers(){
+        return playersInfo;
     }
     
     @Override
@@ -101,6 +107,8 @@ public class TCPConnection implements Runnable{
                             }
                             else if(json.containsKey(StandardMessage.MESSAGE_CLIENTS)){
                                 System.out.println("Client :: List Client");
+                                playersInfo = (JSONArray) json.get(StandardMessage.MESSAGE_CLIENTS);
+//                                System.out.println(playersInfo);
                             }
                             else if(json.containsValue("thanks for playing")){
                                 break;

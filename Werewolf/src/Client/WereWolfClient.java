@@ -217,12 +217,13 @@ public class WereWolfClient {
             if(messages[0].equals("UDP")){
                 
                 if(messages[3].equals("prepare-proposal")){
+                    connection.listClient();
                     messenger.prepareProposal(port, port);
                 }
                 
-                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
-                Thread t3 = new Thread(udpSender);
-                t3.start();
+//                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
+//                Thread t3 = new Thread(udpSender);
+//                t3.start();
             }
             else if(messages[0].equals("TCP")){
                 if(messages[1].equals("leave-game")){
