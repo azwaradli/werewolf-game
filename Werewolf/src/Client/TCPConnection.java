@@ -28,7 +28,9 @@ public class TCPConnection implements Runnable{
     public int port;
     public ClientProtocol clientProtocol;
     public int localPort;
-   
+    private int biggestPID;
+    private int secondBiggestPID;
+    private ArrayList<JSONObject> AllClients;
     
     Socket socket;
     BufferedReader in;
@@ -38,12 +40,12 @@ public class TCPConnection implements Runnable{
     int player_id;
     String time, role;
     ArrayList<String> friend;
-    private JSONArray playersInfo;
     
     public TCPConnection(String _serverAddress, int _port){
         serverAddress = _serverAddress;
         port = _port;
         clientProtocol = new ClientProtocol();
+        AllClients = new ArrayList<JSONObject>();
     }
     
     public int getLocalPort(){
@@ -70,8 +72,16 @@ public class TCPConnection implements Runnable{
         return friend;
     }
     
-    public JSONArray getListPlayers(){
-        return playersInfo;
+    public ArrayList<JSONObject> getListPlayers(){
+        return AllClients;
+    }
+    
+    public int getBiggestPID(){
+        return biggestPID;
+    }
+    
+    public int getSecondBiggest(){
+        return secondBiggestPID;
     }
     
     @Override
@@ -107,8 +117,26 @@ public class TCPConnection implements Runnable{
                             }
                             else if(json.containsKey(StandardMessage.MESSAGE_CLIENTS)){
                                 System.out.println("Client :: List Client");
-                                playersInfo = (JSONArray) json.get(StandardMessage.MESSAGE_CLIENTS);
-//                                System.out.println(playersInfo);
+                                JSONArray playersInfo = (JSONArray) json.get(StandardMessage.MESSAGE_CLIENTS);
+                                
+                                ArrayList<JSONObject> tempInfo = new ArrayList<JSONObject>();
+                                JSONObject clientInfo = (JSONObject) parser.parse(playersInfo.get(0).toString());
+                                tempInfo.add(clientInfo);
+                                
+                                biggestPID = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+                                
+                                for(int i = 1; i<playersInfo.size();i++){
+                                    clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
+                                    tempInfo.add(clientInfo);
+                                    int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+                                    if(temp > biggestPID){
+                                        secondBiggestPID = biggestPID;
+                                        biggestPID = temp;
+                                    }
+                                }                              
+                                AllClients = tempInfo;
+                                
+                                System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
                             }
                             else if(json.containsValue("thanks for playing")){
                                 break;
@@ -152,7 +180,6 @@ public class TCPConnection implements Runnable{
         Scanner sc = new Scanner(System.in);
         System.out.print("Insert username: ");
         String username = sc.nextLine();
-        
         out.println(clientProtocol.joinGameMessage(username, serverAddress, udpPort)); // testing send message
     }
     

@@ -5,6 +5,7 @@
  */
 package Paxos;
 import Client.*;
+import java.io.IOException;
 
 /**
  *
@@ -12,10 +13,34 @@ import Client.*;
  */
 public class Acceptor {
     private Messenger messenger;
+    private ProposalID promisedID;
+    private ProposalID acceptedID;
     private TCPConnection connection;
+    private int acceptedValue;
+    private int prevAcceptedValue;
     
     public Acceptor(TCPConnection _connection){
         connection = _connection;
+    }
+    
+    public ProposalID getPromisedID(){
+        return promisedID;
+    }
+    
+    public ProposalID getAcceptedID(){
+        return acceptedID;
+    }
+    
+    public int getAcceptedValue(){
+        return acceptedValue;
+    }
+    
+    public int getPrevAcceptedValue(){
+        return prevAcceptedValue;
+    }
+    
+    public void receivePrepare() throws IOException{
+    
     }
     
 }

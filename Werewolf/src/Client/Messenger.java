@@ -39,6 +39,17 @@ public class Messenger {
         message = obj.toString();
     }
     
+    
+    public void sendPromise(int proposerUID, int prevAcceptedValue, int acceptedValue){
+        JSONObject obj = new JSONObject();
+        obj.put("status", "ok");
+        obj.put("description", "accepted");
+        obj.put("previous_accepted", prevAcceptedValue);
+    
+        message = obj.toString();
+        sendToAll();
+    }
+    
     public void killCivilianVote(int playerId){
         JSONObject obj = new JSONObject();
         obj = clientProtocol.killCivilianVoteMessage(playerId);
