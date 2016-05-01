@@ -29,25 +29,25 @@ public class UDPListener implements Runnable{
     private int localPort;
     private DatagramSocket server;
     private byte[] receiveData;
-    private JTextArea messageArea;
+//    private JTextArea messageArea;
     private InetSocketAddress address;
     
     Acceptor acceptor;
     Proposer proposer;
     
-    public UDPListener(String _address,int _port, JTextArea _messageArea){
-        port = _port;
-        messageArea = _messageArea;
-        try{
-            server = new DatagramSocket(null);
-            address = new InetSocketAddress(_address,port);
-            server.bind(address);  
-            localPort = server.getLocalPort();
-            System.out.println("Local port anda = " + localPort);
-        }catch(SocketException e){
-            e.printStackTrace();
-        }
-    }
+//    public UDPListener(String _address,int _port, JTextArea _messageArea){
+//        port = _port;
+//        messageArea = _messageArea;
+//        try{
+//            server = new DatagramSocket(null);
+//            address = new InetSocketAddress(_address,port);
+//            server.bind(address);  
+//            localPort = server.getLocalPort();
+//            System.out.println("Local port anda = " + localPort);
+//        }catch(SocketException e){
+//            e.printStackTrace();
+//        }
+//    }
     
     public UDPListener(String _address,int _port, Messenger messenger){
         port = _port;
@@ -87,7 +87,7 @@ public class UDPListener implements Runnable{
                 String message = new String(packet.getData(),0, packet.getLength());
                 //message dapat diproses
                 System.out.println(message);
-                messageArea.append("<"+packet.getPort()+">       :  " + message + "\n");
+//                messageArea.append("<"+packet.getPort()+">       :  " + message + "\n");
                 
                 try {
                     Object obj = parser.parse(message);

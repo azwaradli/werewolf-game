@@ -26,6 +26,12 @@ public class ClientProtocol {
         return data;
     }
     
+    public JSONObject statusOK(){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
+        return data;
+    }
+    
     public JSONObject leaveGameMessage(){
         JSONObject data = new JSONObject();
         

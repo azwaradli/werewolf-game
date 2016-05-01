@@ -37,10 +37,12 @@ public class PaxosController {
     }
     
     public void decideRole(){
-        if(playerId == pidTerbesar || playerId == pidTerbesarKedua)
+        if(playerId == pidTerbesar || playerId == pidTerbesarKedua){
             role = 1;
-        else
+            System.out.println("sebagai proposer");}
+        else{
             role = 0;
+            System.out.println("sebagai acceptor");}
     }
     
     public void runPaxos(){

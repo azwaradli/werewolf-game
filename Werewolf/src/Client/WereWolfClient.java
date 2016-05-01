@@ -40,7 +40,6 @@ public class WereWolfClient {
     int player_id;
     Messenger messenger;
     
-    
     ClientProtocol clientProtocol = new ClientProtocol();
 
     /**
@@ -209,36 +208,58 @@ public class WereWolfClient {
         
         connection.joinGame(udpListener.getLocalPort());
         
-        
-//        PaxosController paxosController = new PaxosController();
         Scanner sc = new Scanner(System.in);
-        while(true){
+        
+        boolean waiting = false;
+        while(!waiting){
             System.out.println("Cara Komunikasi : ");
-            System.out.println("UDP <spasi> Address <spasi> Port <spasi> Pesan");
+//            System.out.println("UDP <spasi> Address <spasi> Port <spasi> Fungsi");
             System.out.println("TCP <spasi> Fungsi");
             String message = sc.nextLine();
             String messages[] = message.split(" ");
-            if(messages[0].equals("UDP")){
-                
-                if(messages[3].equals("prepare-proposal")){
-                    connection.listClient();
-//                    messenger.prepareProposal(port, port);
-                }
-                
-//                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
-//                Thread t3 = new Thread(udpSender);
-//                t3.start();
-            }
-            else if(messages[0].equals("TCP")){
+//            if(messages[0].equals("UDP")){
+//                
+//                if(messages[3].equals("prepare-proposal")){
+//                    connection.listClient();
+////                    messenger.prepareProposal(port, port);
+//                }
+//                
+////                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
+////                Thread t3 = new Thread(udpSender);
+////                t3.start();
+//            }
+            if(messages[0].equals("TCP")){
                 if(messages[1].equals("leave-game")){
                     connection.leaveGame();
                 }
                 else if(messages[1].equals("ready-up")){
                     connection.readyUp();
+                    waiting = true;
                 }
                 else if(messages[1].equals("list-client")){
                     connection.listClient();
                 }
+            }
+        }
+        while(!connection.isStarted()){
+            //busy waiting
+            try {
+                Thread.sleep(500);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        System.out.println("masuk paxos");
+        PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
+        paxosController.run();
+        
+        while(!connection.isEnded()){
+            if(connection.isTimeChanged())
+                paxosController.run();
+            System.out.println("Masukkan order : ");
+            String order = sc.nextLine();
+            if(order=="prepare"){
+            
             }
         }
         
