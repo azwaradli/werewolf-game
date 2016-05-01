@@ -127,7 +127,7 @@ public class WereWolfServer {
                                         else
                                         {
                                             //Jika username tidak unique dan gagal ditambahkan
-                                            System.out.println("Server :: Client Join Request Rejected, Name Already Exists");
+                                            System.out.println("Server :: Client Join Request Rejected, Name Already Exists or Your input name is empty.");
                                             String message = mc.joinFailureUserExists();
                                             out.println(message);
                                         }

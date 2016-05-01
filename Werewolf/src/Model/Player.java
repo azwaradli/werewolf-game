@@ -114,6 +114,10 @@ public class Player {
         return role;
     }
     
+    public boolean isActive(){
+        return (!getName().equals(""));
+    }
+    
     public void setRoleWerewolf(){
         role = false;
     }

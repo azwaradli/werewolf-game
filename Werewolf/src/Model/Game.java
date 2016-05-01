@@ -33,7 +33,7 @@ public class Game {
     }
     
     public int getNotConfirmPlayerSize(){
-        return players.size()-preparatorLead.size();
+        return playerSize()-preparatorLead.size();
     }
     
     public int getLeaderId(){
@@ -50,7 +50,7 @@ public class Game {
     }
     
     public int checkLeader(){
-        if(preparatorLead.size() == players.size()){
+        if(preparatorLead.size() == playerSize()){
             return makeLeader();
         }
         return -1;
@@ -110,12 +110,18 @@ public class Game {
     }
     
     public ArrayList<Player> getPlayer(){
-        return players;
+        ArrayList<Player> temp = new ArrayList();
+        for(Player player : players){
+            if(player.isActive()){
+                temp.add(player);
+            }
+        }
+        return temp;
     }
     
     public ArrayList<Player> getPlayerReady(){
         ArrayList<Player> tempPlayers = new ArrayList();
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isReady()){
                 tempPlayers.add(player);
             }
@@ -125,7 +131,7 @@ public class Game {
     
     public ArrayList<Player> getPlayerNotReady(){
         ArrayList<Player> tempPlayers = new ArrayList();
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(!player.isReady()){
                 tempPlayers.add(player);
             }
@@ -134,12 +140,12 @@ public class Game {
     }
     
     public int playerSize(){
-        return players.size();
+        return getPlayer().size();
     }
     
     public int playerReadySize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isReady()){
                 temp++;
             }
@@ -149,7 +155,7 @@ public class Game {
     
     public int playerNotReadySize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(!player.isReady()){
                 temp++;
             }
@@ -159,7 +165,7 @@ public class Game {
     
     public int playerAliveSize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isAlive()){
                 temp++;
             }
@@ -169,7 +175,7 @@ public class Game {
     
     public int playerDeadSize(){
         int temp = 0;
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(!player.isAlive()){
                 temp++;
             }
@@ -178,7 +184,7 @@ public class Game {
     }
     
     public boolean addPlayer(String name, String ip, int port){
-        if(isNameUnique(name)){
+        if(isNameUnique(name)&&!name.equals("")){
             players.add(new Player(stPlayerId++, name, ip, port));
             return true;
         }else{
@@ -243,7 +249,7 @@ public class Game {
     public ArrayList<Player> getFriends(int mid){
         
         ArrayList<Player> temp = new ArrayList();
-        for(Player player : players){
+        for(Player player : getPlayer()){
             if(player.isCivil() == getPlayer(mid).isCivil()&&player.getId()!=mid){
                 temp.add(player);
             }
