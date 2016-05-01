@@ -39,6 +39,12 @@ public class Messenger {
         message = obj.toString();
     }
     
+    public void killCivilianVote(int playerId){
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.killCivilianVoteMessage(playerId);
+        message = obj.toString();
+    }
+    
     public String getMessage(){
         return message;
     }
