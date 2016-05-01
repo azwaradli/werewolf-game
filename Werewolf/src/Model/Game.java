@@ -91,6 +91,10 @@ public class Game {
         idLeader = inp;
     }
     
+    public void resetLeader(){
+        preparatorLead.clear();
+    }
+    
     public int prepareLeader(int inp){
         preparatorLead.add(inp);
         return checkLeader();

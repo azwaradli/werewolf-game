@@ -276,4 +276,20 @@ public class MessageCreator {
         return null;
     }
     
+    public String killedError(){
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("status", "error");
+            obj.put("description", "Your method is unknown.");
+            
+            StringWriter out = new StringWriter();
+            obj.writeJSONString(out);
+            
+            return out.toString();
+        } catch (IOException ex) {
+            Logger.getLogger(MessageCreator.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
 }
