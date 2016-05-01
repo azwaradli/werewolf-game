@@ -33,8 +33,9 @@ public class WereWolfServer {
     private static HashSet<PrintWriter> writers = new HashSet<PrintWriter>();
     private static Game game = new Game();
     private static MessageCreator mc = new MessageCreator();
-    private static boolean waitingkpu = true;
+    private static boolean waitingkpu = true, waitingsender = true;
     private final static int MIN_PLAYER = 2;
+    private static int CURRENT_PLAYER = 0;
     
     public static void main(String[] args) throws IOException{
         System.out.println("The Werewolf server is running");
@@ -184,24 +185,51 @@ public class WereWolfServer {
                                         String message = mc.readySuccess();
                                         isready = true;
                                         out.println(message);
-                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" ready to play. Waiting " + (MIN_PLAYER-game.playerReadySize())+" more to play.");
-                                        while(game.playerReadySize() < MIN_PLAYER || game.playerReadySize() != game.playerSize());
+                                        if(MIN_PLAYER > game.playerSize()){
+                                            CURRENT_PLAYER = MIN_PLAYER;
+                                        }else{
+                                            CURRENT_PLAYER = game.playerSize();
+                                        }
+                                        System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" ready to play. Waiting " + (CURRENT_PLAYER-game.playerReadySize())+" more to play.");
+                                       
+                                        while(game.playerReadySize() < MIN_PLAYER || game.playerReadySize() != game.playerSize()){
+                                            try {
+                                                Thread.sleep(200);                 //1000 milliseconds is one second.
+                                            } catch(InterruptedException ex) {
+                                                Thread.currentThread().interrupt();
+                                            }
+                                        }
                                         
                                         //----------GAME START--------------
                                         if(game.playerReadySize() >= MIN_PLAYER && game.playerReadySize() == game.playerSize())
                                         {
-                                            game.start();
-                                            System.out.println("Server ::Game Started");
-                                            message = game.messageStartGame(thisClient);
-                                            out.println(message);
+                                            if(thisClient == game.getSenderId()){
+                                                waitingsender = true;
+                                                System.out.println("Server :: Starting the Game");
+                                                game.start();
+                                                waitingsender = false;
+                                            }else{
+                                                while(waitingsender){
+                                                    try {
+                                                        Thread.sleep(200);                 //1000 milliseconds is one second.
+                                                    } catch(InterruptedException ex) {
+                                                        Thread.currentThread().interrupt();
+                                                    }
+                                                }
+                                            }
                                             
                                             /* Send Message to Client */
+                                            if(thisClient == game.getSenderId()){
+                                                System.out.println("Server :: Succesfully Started the Game.");
+                                            }
                                             boolean sendf1 = true; 
                                             while(sendf1){
                                                 message = game.messageStartGame(thisClient);
                                                 out.println(message);
+                                                System.out.println("Server :: Sending Start Message to Player "+thisClient);
 
                                                 getjson = in.readLine();
+                                                System.out.println("Server :: Receive Message from Player "+thisClient);
                                                 obj = parser.parse(getjson);
                                                 json = (JSONObject)obj;
                                                 if(json.get("status").toString().equals("ok")){
@@ -265,8 +293,10 @@ public class WereWolfServer {
                                                     while(sendf2){
                                                         message = game.messageVoteNow();
                                                         out.println(message);
+                                                        System.out.println("Server :: Sending Vote Message to Player "+thisClient);
                                                         
                                                         getjson = in.readLine();
+                                                        System.out.println("Server :: Receive Message from Player "+thisClient);
                                                         obj = parser.parse(getjson);
                                                         json = (JSONObject)obj;
                                                         if(json.get("status").toString().equals("ok")){
@@ -390,8 +420,10 @@ public class WereWolfServer {
                                                     while(sendf3){
                                                         message = game.messageChangePhase();
                                                         out.println(message);
+                                                        System.out.println("Server :: Sending Phase Message to Player "+thisClient);
                                                         
                                                         getjson = in.readLine();
+                                                        System.out.println("Server :: Receive Message from Player "+thisClient);
                                                         obj = parser.parse(getjson);
                                                         json = (JSONObject)obj;
                                                         if(json.get("status").toString().equals("ok")){
