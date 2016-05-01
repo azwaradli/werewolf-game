@@ -260,8 +260,10 @@ public class WereWolfClient {
             }
         }
         connection.setDataReady(false);
-        System.out.println("CONN :: "+connection.getBiggestPID()+" - "+connection.getSecondBiggest());
+        
+//        System.out.println("CONN :: "+connection.getBiggestPID()+" - "+connection.getSecondBiggest());
         PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
+        udpListener.setProposer(paxosController.getProposer());
         paxosController.run();
         
         while(!connection.isEnded()){

@@ -47,7 +47,7 @@ public class Acceptor {
             promisedID = proposalID;
         }
         messenger.sendPromise(proposerId,prevAcceptedValue,acceptedValue);*/
-        if(prevAcceptedValue == -1){
+        if(prevAcceptedProposalNum == -1){
             prevAcceptedProposalNum = proposalNumber;
             prevAcceptedId = proposerId;
             messenger.sendPromise(proposerId); // without previousAcceptedValue

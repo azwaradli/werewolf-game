@@ -161,7 +161,6 @@ public class TCPConnection implements Runnable{
                                     }
                                     for(int i = 0; i<playersInfo.size();i++){
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
-                                        tempInfo.add(clientInfo);
                                         int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                         if((temp > secondBiggestPID)&&(temp < biggestPID)){
                                             secondBiggestPID = temp;

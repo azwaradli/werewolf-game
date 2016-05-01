@@ -18,20 +18,29 @@ public class PaxosController {
     int playerId;
     int pidTerbesar;
     int pidTerbesarKedua;
+    TCPConnection connection;
     int role;
     
     Messenger messenger;
     Proposer proposer;
     
-    public PaxosController(int _playerId, TCPConnection connection){
+    public PaxosController(int _playerId, TCPConnection _connection){
         playerId = _playerId;
+        connection = _connection;
         pidTerbesar = connection.getBiggestPID();
         pidTerbesarKedua = connection.getSecondBiggest();
         messenger = new Messenger(connection);
         proposer = new Proposer(messenger, playerId);
     }
     
+    public Proposer getProposer(){
+        return proposer;
+    }
+    
     public void run(){
+        proposer.setQuorum((connection.getListPlayers().size()-2)/2);
+        System.out.println("Jumlah Pemain : "+ connection.getListPlayers().size());
+        System.out.println("Quorum : "+(connection.getListPlayers().size()-2)/2);
         decideRole();
         runPaxos();
     }

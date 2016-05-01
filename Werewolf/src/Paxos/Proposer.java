@@ -24,18 +24,24 @@ public class Proposer {
     ProposalID lastAcceptedID;
     HashSet<Integer> promisesReceived = new HashSet<Integer>();
     int counter;
+    boolean promisedSend =false;
     
     public Proposer(Messenger messenger, int proposerUID){
         this.proposerUID = proposerUID;
         this.messenger = messenger;
         proposalID = new ProposalID(0, proposerUID);
         counter = 0;
+        quorumSize = 0;
         proposedValue = -1;
     }
     
     public void setProposal(int playerId){
         if(proposedValue == -1)
             proposedValue = playerId;
+    }
+    
+    public void setQuorum(int _quorum){
+        quorumSize = _quorum;
     }
     
     /*public void receivePromise(int fromUID, ProposalID proposalID, ProposalID prevAcceptedID, int prevAcceptedValue) {
@@ -61,19 +67,21 @@ public class Proposer {
         if(proposedValue == -1){
             proposedValue = prevAcceptedValue;
         }
-        if(counter > quorumSize){
+        if((!promisedSend)&&(counter > quorumSize)){
             if(proposedValue != -1){
                 messenger.acceptProposal(proposalID, proposedValue);
+                promisedSend = true;
             }
         }
     }
     
     public void receivePromise(){
         counter++;
-        
-        if(counter > quorumSize){
+        System.out.println(counter + " " + quorumSize);
+        if((!promisedSend)&&(counter > quorumSize)){
             if(proposedValue != -1){
                 messenger.acceptProposal(proposalID, proposedValue);
+                promisedSend = true;
             }
         }
     }

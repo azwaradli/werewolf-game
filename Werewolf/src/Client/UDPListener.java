@@ -120,6 +120,7 @@ public class UDPListener implements Runnable{
                     else if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
                         String status = json.get(StandardMessage.MESSAGE_STATUS).toString();
                         if(status.equals(StandardMessage.PARAM_OK)){
+                            System.out.println("message before crash " + json);
                             if(json.containsKey(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED)){
                                 int prevAcceptedValue = Integer.parseInt(json.get(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED).toString());
                                 //proposer.receivePromise(playerId, proposalID, prevAcceptedID, prevAcceptedValue);
