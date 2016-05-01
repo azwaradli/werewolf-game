@@ -13,6 +13,7 @@ import org.json.simple.JSONObject;
  */
 public class Messenger {
     ClientProtocol clientProtocol;
+    UDPSender udpSender;
     String message;
     
     public Messenger(){
@@ -24,7 +25,6 @@ public class Messenger {
         JSONObject obj = new JSONObject();
         obj = clientProtocol.prepareProposalMessage(proposalNumber, playerId);
         message = obj.toString();
-        
     }
     
     public void acceptProposal(int proposalNumber, int playerId){
@@ -41,5 +41,14 @@ public class Messenger {
     
     public String getMessage(){
         return message;
+    }
+    
+    
+    public void sendToAll(){
+        
+    }
+    
+    public void sendToOne(){
+        
     }
 }
