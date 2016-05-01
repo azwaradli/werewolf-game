@@ -46,7 +46,7 @@ public class ClientProtocol {
         JSONObject data = new JSONObject();
         data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
         data.put(StandardMessage.MESSAGE_DESCRIPTION, StandardMessage.PARAM_ACCEPTED);
-        //data.put(StandardMessage.PARAM_PREV_ACCEPTED, prevAcceptedValue);
+        data.put(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED, prevAcceptedValue);
         return data;
     }
     

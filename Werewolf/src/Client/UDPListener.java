@@ -5,9 +5,20 @@
  */
 package Client;
 
+import Model.StandardMessage;
+import Paxos.Acceptor;
+import Paxos.ProposalID;
+import Paxos.Proposer;
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JTextArea;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -20,6 +31,9 @@ public class UDPListener implements Runnable{
     private byte[] receiveData;
     private JTextArea messageArea;
     private InetSocketAddress address;
+    
+    Acceptor acceptor;
+    Proposer proposer;
     
     public UDPListener(String _address,int _port, JTextArea _messageArea){
         port = _port;
@@ -35,7 +49,7 @@ public class UDPListener implements Runnable{
         }
     }
     
-    public UDPListener(String _address,int _port){
+    public UDPListener(String _address,int _port, Messenger messenger){
         port = _port;
         try{
             server = new DatagramSocket(null);
@@ -46,6 +60,7 @@ public class UDPListener implements Runnable{
         }catch(SocketException e){
             e.printStackTrace();
         }
+        acceptor = new Acceptor(messenger);
     }
     
     public InetSocketAddress getAddress(){
@@ -56,8 +71,14 @@ public class UDPListener implements Runnable{
         return localPort;
     }
     
+    public void setProposer(Proposer proposer){
+        this.proposer = proposer;
+    }
+    
     @Override
     public void run(){
+        JSONParser parser = new JSONParser();
+        JSONObject json;
         while(true){    
             try{
                 receiveData = new byte[1024];
@@ -67,6 +88,42 @@ public class UDPListener implements Runnable{
                 //message dapat diproses
                 System.out.println(message);
                 messageArea.append("<"+packet.getPort()+">       :  " + message + "\n");
+                
+                try {
+                    Object obj = parser.parse(message);
+                    json = (JSONObject)obj;
+                    
+                    if(json.containsKey(StandardMessage.MESSAGE_METHOD)){
+                        String method = json.get(StandardMessage.MESSAGE_METHOD).toString();
+                        if(method.equals(StandardMessage.PARAM_PREPARE_PROPOSAL)){
+                            JSONArray proposalId = (JSONArray) json.get(StandardMessage.MESSAGE_PROPOSAL_ID);
+                            int proposalNumber = Integer.parseInt(proposalId.get(0).toString());
+                            int fromPlayerId = Integer.parseInt(proposalId.get(1).toString());
+                            acceptor.receivePrepare(fromPlayerId, new ProposalID(proposalNumber, fromPlayerId));
+                        }
+                        else if(method.equals(StandardMessage.PARAM_ACCEPT_PROPOSAL)){
+                            JSONArray proposalId = (JSONArray) json.get(StandardMessage.MESSAGE_PROPOSAL_ID);
+                            int proposalNumber = Integer.parseInt(proposalId.get(0).toString());
+                            int fromPlayerId = Integer.parseInt(proposalId.get(1).toString());
+                            
+                            int kpuId = (Integer) json.get(StandardMessage.MESSAGE_KPU_ID);
+                            
+                            acceptor.receiveAccept(fromPlayerId, new ProposalID(proposalNumber, fromPlayerId), kpuId);
+                        }
+                    }
+                    else if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
+                        String status = json.get(StandardMessage.MESSAGE_STATUS).toString();
+                        if(status.equals(StandardMessage.PARAM_OK)){
+                            if(json.containsKey(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED)){
+                                //proposer.receivePromise(port, proposalID, prevAcceptedID, port);
+                            }
+                        }
+                    }
+                    
+                } catch (ParseException ex) {
+                    Logger.getLogger(UDPListener.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
             }catch(IOException e){
                 e.printStackTrace();
             }

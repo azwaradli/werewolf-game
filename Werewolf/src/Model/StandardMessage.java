@@ -23,6 +23,7 @@ public class StandardMessage {
     public static String MESSAGE_VOTE_STATUS = "vote_status";
     public static String MESSAGE_PLAYER_KILLED = "player_killed";
     public static String MESSAGE_VOTE_RESULT = "message_result";
+    public static String MESSAGE_PREVIOUS_ACCEPTED = "previous_accepted";
             
     public static String PARAM_JOIN = "join";
     public static String PARAM_LEAVE = "leave";
