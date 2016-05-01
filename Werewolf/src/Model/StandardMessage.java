@@ -37,6 +37,9 @@ public class StandardMessage {
     public static String PARAM_VOTE_RESULT = "vote_result";
     public static String PARAM_VOTE_CIVILIAN = "vote_civilian";
     public static String PARAM_VOTE_RESULT_CIVILIAN = "vote_result_civilian";
+    public static String PARAM_FAIL = "fail";
+    public static String PARAM_REJECTED = "rejected";
+    public static String PARAM_ERROR = "error";
     /* End of client */
     
     /* Server */

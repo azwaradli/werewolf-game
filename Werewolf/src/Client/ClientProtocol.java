@@ -48,29 +48,6 @@ public class ClientProtocol {
         return data;
     }
     
-    public JSONObject sendPromise(int prevAcceptedValue){
-        JSONObject data = new JSONObject();
-        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
-        data.put(StandardMessage.MESSAGE_DESCRIPTION, StandardMessage.PARAM_ACCEPTED);
-        data.put(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED, prevAcceptedValue);
-        return data;
-    }
-    
-    public JSONObject sendAccepted(int acceptedValue){
-        JSONObject data = new JSONObject();
-        data.put(StandardMessage.MESSAGE_METHOD,StandardMessage.PARAM_ACCEPTED_PROPOSAL);
-        data.put(StandardMessage.MESSAGE_KPU_ID,acceptedValue);
-        data.put(StandardMessage.MESSAGE_DESCRIPTION,StandardMessage.PARAM_ACCEPTED_PROPOSAL);
-        return data;
-    }
-    
-    public JSONObject confirmAccepted(){
-        JSONObject data = new JSONObject();
-        data.put(StandardMessage.MESSAGE_STATUS,StandardMessage.PARAM_OK);
-        data.put(StandardMessage.MESSAGE_DESCRIPTION,StandardMessage.PARAM_ACCEPTED);
-        return data;
-    }
-    
     public JSONObject listClientMessage(){
         JSONObject data = new JSONObject();
         
@@ -167,6 +144,50 @@ public class ClientProtocol {
             data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
         }
         
+        return data;
+    }
+    
+    public JSONObject sendPromiseMessage(int prevAcceptedValue){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION, StandardMessage.PARAM_ACCEPTED);
+        data.put(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED, prevAcceptedValue);
+        return data;
+    }
+    
+    public JSONObject sendPromiseMessage(){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION, StandardMessage.PARAM_ACCEPTED);
+        return data;
+    }
+    
+    public JSONObject sendRejectedMessage(){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_FAIL);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION, StandardMessage.PARAM_REJECTED);
+        return data;
+    }
+    
+    public JSONObject sendErrorMessage(String message){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_ERROR);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION, message);
+        return data;
+    }
+    
+    public JSONObject sendAcceptedMessage(int acceptedValue){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_METHOD,StandardMessage.PARAM_ACCEPTED_PROPOSAL);
+        data.put(StandardMessage.MESSAGE_KPU_ID,acceptedValue);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION,StandardMessage.PARAM_ACCEPTED_PROPOSAL);
+        return data;
+    }
+    
+    public JSONObject confirmAcceptedMessage(){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_STATUS,StandardMessage.PARAM_OK);
+        data.put(StandardMessage.MESSAGE_DESCRIPTION,StandardMessage.PARAM_ACCEPTED);
         return data;
     }
            

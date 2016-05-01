@@ -16,10 +16,14 @@ public class Acceptor {
     private ProposalID promisedID;
     private ProposalID acceptedID;
     private int acceptedValue;
-    private int prevAcceptedValue;
+    private int prevAcceptedValue; // ignore sementara
+    private int prevAcceptedId;
+    private int prevAcceptedProposalNum;
     
     public Acceptor(Messenger _messenger){
         messenger = _messenger;
+        prevAcceptedId = -1;
+        prevAcceptedProposalNum = -1;
     }
     
     public ProposalID getPromisedID(){
@@ -38,11 +42,34 @@ public class Acceptor {
         return prevAcceptedValue;
     }
     
-    public void receivePrepare(int senderID, ProposalID proposalID) throws IOException{   
-        if(promisedID ==null || proposalID.getID() > promisedID.getID()){
+    public void receivePrepare(int proposalNumber, int proposerId) throws IOException{   
+        /*if(promisedID == null || proposalID.getID() > promisedID.getID()){
             promisedID = proposalID;
         }
-        messenger.sendPromise(senderID,prevAcceptedValue,acceptedValue);
+        messenger.sendPromise(proposerId,prevAcceptedValue,acceptedValue);*/
+        if(prevAcceptedValue == -1){
+            prevAcceptedProposalNum = proposalNumber;
+            prevAcceptedId = proposerId;
+            messenger.sendPromise(proposerId); // without previousAcceptedValue
+        }
+        else{
+            if(prevAcceptedProposalNum > proposalNumber){
+                messenger.sendRejected(proposerId);
+            }
+            else if(prevAcceptedProposalNum < proposalNumber){
+                messenger.sendPromise(proposerId, prevAcceptedId);
+                prevAcceptedProposalNum = proposalNumber;
+                prevAcceptedId = proposerId;
+            }
+            else{ // prevAcceptedNumber == proposalNumber
+                if(prevAcceptedId > proposerId){
+                    messenger.sendRejected(proposerId);
+                }
+                else{
+                    messenger.sendError(proposerId);
+                }
+            }
+        }
     }
     
     public void receiveAccept(int senderID,ProposalID proposalID,int value) throws IOException{

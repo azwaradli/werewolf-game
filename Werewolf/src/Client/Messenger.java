@@ -47,25 +47,6 @@ public class Messenger {
         message = obj.toString();
     }
     
-    public void sendAccepted(ProposalID proposalID, int acceptedValue) throws IOException, InterruptedException {
-        JSONObject obj = new JSONObject();
-        obj = clientProtocol.sendAccepted(acceptedValue);
-        message = obj.toString();
-        if(connection.sendAccepted(message)){
-            obj = clientProtocol.confirmAccepted();
-            message = obj.toString();
-            sendToOne(proposalID.getPlayerID());
-        }
-    }
-    
-    
-    public void sendPromise(int proposerUID, int prevAcceptedValue, int acceptedValue){
-        JSONObject obj = new JSONObject();
-        obj = clientProtocol.sendPromise(prevAcceptedValue);
-        message = obj.toString();
-        sendToOne(proposerUID);
-    }
-    
     public void killCivilianVote(int playerId){
         JSONObject obj = new JSONObject();
         obj = clientProtocol.killCivilianVoteMessage(playerId);
@@ -76,6 +57,44 @@ public class Messenger {
         return message;
     }
     
+    public void sendPromise(int proposerID, int prevAcceptedValue){
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.sendPromiseMessage(prevAcceptedValue);
+        message = obj.toString();
+        sendToOne(proposerID);
+    }
+    
+    public void sendPromise(int proposerId) {
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.sendPromiseMessage();
+        message = obj.toString();
+        sendToOne(proposerId);
+    }
+    
+    public void sendRejected(int proposerId){
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.sendRejectedMessage();
+        message = obj.toString();
+        sendToOne(proposerId);
+    }
+    
+    public void sendError(int proposerId){
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.sendErrorMessage("Error cuy");
+        message = obj.toString();
+        sendToOne(proposerId);
+    }
+    
+    public void sendAccepted(ProposalID proposalID, int acceptedValue) throws IOException, InterruptedException {
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.sendAcceptedMessage(acceptedValue);
+        message = obj.toString();
+        if(connection.sendAccepted(message)){
+            obj = clientProtocol.confirmAcceptedMessage();
+            message = obj.toString();
+            sendToOne(proposalID.getPlayerID());
+        }
+    }
     
     public void sendToAll(){
         connection.listClient();
@@ -104,4 +123,5 @@ public class Messenger {
             }
         }
     }
+
 }

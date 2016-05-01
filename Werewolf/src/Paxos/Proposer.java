@@ -39,7 +39,7 @@ public class Proposer {
         if ( !proposalID.equals(this.proposalID) || promisesReceived.contains(fromUID) ) 
             return;
 		
-        promisesReceived.add( fromUID );
+        promisesReceived.add(fromUID);
 
         if (lastAcceptedID == null || prevAcceptedID.getID() > lastAcceptedID.getID()){
             lastAcceptedID = prevAcceptedID;

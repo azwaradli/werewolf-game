@@ -31,6 +31,7 @@ public class UDPListener implements Runnable{
     private byte[] receiveData;
 //    private JTextArea messageArea;
     private InetSocketAddress address;
+    private int playerId;
     
     Acceptor acceptor;
     Proposer proposer;
@@ -51,6 +52,7 @@ public class UDPListener implements Runnable{
     
     public UDPListener(String _address,int _port, Messenger messenger){
         port = _port;
+        playerId = 0;
         try{
             server = new DatagramSocket(null);
             address = new InetSocketAddress(_address,port);
@@ -69,6 +71,10 @@ public class UDPListener implements Runnable{
     
     public int getLocalPort(){
         return localPort;
+    }
+    
+    public void setPlayerId(int playerId){
+        this.playerId = playerId;
     }
     
     public void setProposer(Proposer proposer){
@@ -95,11 +101,11 @@ public class UDPListener implements Runnable{
                     
                     if(json.containsKey(StandardMessage.MESSAGE_METHOD)){
                         String method = json.get(StandardMessage.MESSAGE_METHOD).toString();
-                        if(method.equals(StandardMessage.PARAM_PREPARE_PROPOSAL)){
+                        if(method.equals(StandardMessage.PARAM_PREPARE_PROPOSAL)){ // terima prepare proposal
                             JSONArray proposalId = (JSONArray) json.get(StandardMessage.MESSAGE_PROPOSAL_ID);
                             int proposalNumber = Integer.parseInt(proposalId.get(0).toString());
-                            int fromPlayerId = Integer.parseInt(proposalId.get(1).toString());
-                            acceptor.receivePrepare(fromPlayerId, new ProposalID(proposalNumber, fromPlayerId));
+                            int proposerId = Integer.parseInt(proposalId.get(1).toString());
+                            acceptor.receivePrepare(proposalNumber, proposerId);
                         }
                         else if(method.equals(StandardMessage.PARAM_ACCEPT_PROPOSAL)){
                             JSONArray proposalId = (JSONArray) json.get(StandardMessage.MESSAGE_PROPOSAL_ID);
@@ -115,9 +121,14 @@ public class UDPListener implements Runnable{
                         String status = json.get(StandardMessage.MESSAGE_STATUS).toString();
                         if(status.equals(StandardMessage.PARAM_OK)){
                             if(json.containsKey(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED)){
-                                //proposer.receivePromise(port, proposalID, prevAcceptedID, port);
+                                int prevAcceptedValue = (int) json.get(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED);
+                                //proposer.receivePromise(playerId, proposalID, prevAcceptedID, prevAcceptedValue);
+                            }
+                            else{
+                                //proposer.receiveAccepted();
                             }
                         }
+                        
                     }
                     
                 } catch (ParseException ex) {
