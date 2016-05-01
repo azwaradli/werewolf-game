@@ -24,8 +24,7 @@ public class Proposer {
     ProposalID lastAcceptedID;
     HashSet<Integer> promisesReceived = new HashSet<Integer>();
     
-    
-    public void Proposer(Messenger messenger, int proposerUID, String proposal_id){
+    public Proposer(Messenger messenger, int proposerUID){
         this.proposerUID = proposerUID;
         this.messenger = messenger;
         proposalID = new ProposalID(0, proposerUID);
