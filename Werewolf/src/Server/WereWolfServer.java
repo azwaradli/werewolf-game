@@ -501,10 +501,6 @@ public class WereWolfServer {
                 } catch (IOException e) {
                 }
             }
-        }
-        
-        
-        
+        }   
     }
-    
 }

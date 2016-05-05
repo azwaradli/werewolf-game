@@ -40,6 +40,8 @@ public class StandardMessage {
     public static String PARAM_FAIL = "fail";
     public static String PARAM_REJECTED = "rejected";
     public static String PARAM_ERROR = "error";
+    public static String KPU_SELECTED = "kpu_selected";
+    public static String KPU_ID = "kpu_id";
     /* End of client */
     
     /* Server */

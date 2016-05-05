@@ -26,10 +26,12 @@ import org.json.simple.parser.ParseException;
 public class TCPConnection implements Runnable{
     public String serverAddress;
     public int port;
+    public int kpuID;
     public ClientProtocol clientProtocol;
     public int localPort;
     private int biggestPID;
     private int secondBiggestPID;
+    private String day;
     private ArrayList<JSONObject> AllClients;
     
     private String state = "";
@@ -47,10 +49,16 @@ public class TCPConnection implements Runnable{
     
     public TCPConnection(String _serverAddress, int _port){
         serverAddress = _serverAddress;
+        kpuID = 0;
         port = _port;
+        day = "DAY";
         clientProtocol = new ClientProtocol();
         AllClients = new ArrayList<JSONObject>();
     }
+    
+    public int getKpuID(){
+        return kpuID;
+    } 
     
     public int getLocalPort(){
         return localPort;
@@ -169,6 +177,9 @@ public class TCPConnection implements Runnable{
                                     AllClients = tempInfo;
                                     dataReady = true;
 //                                    System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
+                                }
+                                else if(json.containsValue(StandardMessage.KPU_SELECTED)){
+                                    kpuID = Integer.parseInt(json.get(StandardMessage.KPU_ID).toString());
                                 }
                                 else if(json.containsValue("thanks for playing")){
                                     state = "END";

@@ -35,6 +35,20 @@ public class Messenger {
         sendToAll();
     }
     
+    public void sendVoteCivilian(int target){
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.killCivilianVoteMessage(target);
+        message = obj.toString();
+        sendToOne(connection.getKpuID());
+    }
+    
+    public void sendVoteWerewolf(int target){
+        JSONObject obj = new JSONObject();
+        obj = clientProtocol.killWerewolfVoteMessage(target);
+        message = obj.toString();
+        sendToOne(connection.getKpuID());
+    }
+    
     public void acceptProposal(ProposalID proposalID, int proposedValue){
         JSONObject obj = new JSONObject();
         obj = clientProtocol.acceptProposalMessage(proposalID.getID(), proposalID.getPlayerID(), proposedValue);

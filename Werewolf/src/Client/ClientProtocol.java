@@ -143,7 +143,6 @@ public class ClientProtocol {
             data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
             data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
         }
-        
         return data;
     }
     
