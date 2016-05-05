@@ -39,6 +39,8 @@ public class Messenger {
         JSONObject obj = new JSONObject();
         obj = clientProtocol.acceptProposalMessage(proposalID.getID(), proposalID.getPlayerID(), proposedValue);
         message = obj.toString();
+        System.out.println(message);
+        sendToAll();
     }
     
     public void killWerewolfVote(int playerId){

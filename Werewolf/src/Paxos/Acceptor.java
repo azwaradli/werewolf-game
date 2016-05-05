@@ -50,6 +50,7 @@ public class Acceptor {
         if(prevAcceptedProposalNum == -1){
             prevAcceptedProposalNum = proposalNumber;
             prevAcceptedId = proposerId;
+            promisedID = new ProposalID(proposalNumber, proposerId);
             messenger.sendPromise(proposerId); // without previousAcceptedValue
         }
         else{
@@ -60,6 +61,7 @@ public class Acceptor {
                 messenger.sendPromise(proposerId, prevAcceptedId);
                 prevAcceptedProposalNum = proposalNumber;
                 prevAcceptedId = proposerId;
+                promisedID = new ProposalID(proposalNumber, proposerId);
             }
             else{ // prevAcceptedNumber == proposalNumber
                 if(prevAcceptedId > proposerId){
@@ -73,13 +75,15 @@ public class Acceptor {
     }
     
     public void receiveAccept(int senderID,ProposalID proposalID,int value) throws IOException{
-        if (promisedID == null || proposalID.getID() > promisedID.getID() || proposalID.equals(promisedID)) {
+//        System.out.println("promise ID : " + promisedID.getID() + "\n proposal ID : " + proposalID.getID());
+        if (promisedID == null || proposalID.getID() >= promisedID.getID() /*|| proposalID.equals(promisedID)*/) {
             promisedID    = proposalID;
             acceptedID    = proposalID;
             prevAcceptedValue = acceptedValue;
             acceptedValue = value;
             try{
-            messenger.sendAccepted(acceptedID,acceptedValue);
+                messenger.sendAccepted(acceptedID,acceptedValue);
+                System.out.println("proposal accepted");
             } catch(InterruptedException e){
                 e.printStackTrace();
             }

@@ -106,21 +106,20 @@ public class UDPListener implements Runnable{
                             int proposalNumber = Integer.parseInt(proposalId.get(0).toString());
                             int proposerId = Integer.parseInt(proposalId.get(1).toString());
                             acceptor.receivePrepare(proposalNumber, proposerId);
+                            // kirim prepare berupa atribute proposer
                         }
                         else if(method.equals(StandardMessage.PARAM_ACCEPT_PROPOSAL)){
                             JSONArray proposalId = (JSONArray) json.get(StandardMessage.MESSAGE_PROPOSAL_ID);
                             int proposalNumber = Integer.parseInt(proposalId.get(0).toString());
-                            int fromPlayerId = Integer.parseInt(proposalId.get(1).toString());
-                            
-                            int kpuId = (Integer) json.get(StandardMessage.MESSAGE_KPU_ID);
-                            
-                            acceptor.receiveAccept(fromPlayerId, new ProposalID(proposalNumber, fromPlayerId), kpuId);
+                            int proposerId = Integer.parseInt(proposalId.get(1).toString());
+                            int kpuId = Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString());
+                            acceptor.receiveAccept(proposerId, new ProposalID(proposalNumber, proposerId), kpuId);
+                            // kpuId = proposer yang terpilih
                         }
                     }
                     else if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
                         String status = json.get(StandardMessage.MESSAGE_STATUS).toString();
                         if(status.equals(StandardMessage.PARAM_OK)){
-                            System.out.println("message before crash " + json);
                             if(json.containsKey(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED)){
                                 int prevAcceptedValue = Integer.parseInt(json.get(StandardMessage.MESSAGE_PREVIOUS_ACCEPTED).toString());
                                 //proposer.receivePromise(playerId, proposalID, prevAcceptedID, prevAcceptedValue);

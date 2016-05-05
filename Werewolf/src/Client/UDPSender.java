@@ -42,8 +42,11 @@ public class UDPSender implements Runnable{
 
             if(rand < 0.85)
                 client.send(packet);
-            else
+            else{
                 System.out.println("paket anda tidak terkirim");
+                System.out.println("resending message");
+                client.send(packet);
+            }
             client.close();
         }catch(SocketException e){
             e.printStackTrace();

@@ -67,7 +67,7 @@ public class Proposer {
         if(proposedValue == -1){
             proposedValue = prevAcceptedValue;
         }
-        if((!promisedSend)&&(counter > quorumSize)){
+        if((!promisedSend)&&(counter >= quorumSize)){
             if(proposedValue != -1){
                 messenger.acceptProposal(proposalID, proposedValue);
                 promisedSend = true;
@@ -77,9 +77,9 @@ public class Proposer {
     
     public void receivePromise(){
         counter++;
-        System.out.println(counter + " " + quorumSize);
-        if((!promisedSend)&&(counter > quorumSize)){
+        if((!promisedSend)&&(counter >= quorumSize)){
             if(proposedValue != -1){
+                System.out.println("Counter  : "+counter + " " + quorumSize);        
                 messenger.acceptProposal(proposalID, proposedValue);
                 promisedSend = true;
             }
