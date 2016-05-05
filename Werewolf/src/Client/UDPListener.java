@@ -32,6 +32,7 @@ public class UDPListener implements Runnable{
 //    private JTextArea messageArea;
     private InetSocketAddress address;
     private int playerId;
+    private ArrayList<ArrayList<Integer>> voteWerewolf;
     
     Acceptor acceptor;
     Proposer proposer;
@@ -63,6 +64,7 @@ public class UDPListener implements Runnable{
             e.printStackTrace();
         }
         acceptor = new Acceptor(messenger);
+        voteWerewolf = new ArrayList<>();
     }
     
     public InetSocketAddress getAddress(){
@@ -115,6 +117,20 @@ public class UDPListener implements Runnable{
                             int kpuId = Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString());
                             acceptor.receiveAccept(proposerId, new ProposalID(proposalNumber, proposerId), kpuId);
                             // kpuId = proposer yang terpilih
+                        }
+                        else if(method.equals(StandardMessage.PARAM_VOTE_WEREWOLF)){
+                            int victimId = Integer.parseInt(json.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+                            ArrayList<Integer> voteWerewolfElmt = new ArrayList<>();
+                            voteWerewolfElmt.add(victimId);
+                            int count = 1;
+                            for(int i = 0; i < voteWerewolf.size(); i++){
+                                if(voteWerewolf.get(i).get(0).equals(victimId)){
+                                    count++;
+                                    voteWerewolf.get(i).set(1, count);
+                                    break;
+                                }
+                            }
+                            voteWerewolf.add(voteWerewolfElmt);
                         }
                     }
                     else if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
