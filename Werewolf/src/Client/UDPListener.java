@@ -75,6 +75,10 @@ public class UDPListener implements Runnable{
         return localPort;
     }
     
+    public ArrayList<ArrayList<Integer>> getVoteWerewolf(){
+        return voteWerewolf;
+    }
+    
     public void setPlayerId(int playerId){
         this.playerId = playerId;
     }
@@ -120,17 +124,14 @@ public class UDPListener implements Runnable{
                         }
                         else if(method.equals(StandardMessage.PARAM_VOTE_WEREWOLF)){
                             int victimId = Integer.parseInt(json.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
-                            ArrayList<Integer> voteWerewolfElmt = new ArrayList<>();
-                            voteWerewolfElmt.add(victimId);
-                            int count = 1;
                             for(int i = 0; i < voteWerewolf.size(); i++){
                                 if(voteWerewolf.get(i).get(0).equals(victimId)){
+                                    int count = voteWerewolf.get(i).get(1);
                                     count++;
                                     voteWerewolf.get(i).set(1, count);
                                     break;
                                 }
                             }
-                            voteWerewolf.add(voteWerewolfElmt);
                         }
                     }
                     else if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
