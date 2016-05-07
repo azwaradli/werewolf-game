@@ -51,6 +51,8 @@ public class StandardMessage {
     public static String MESSAGE_TIME = "time";
     public static String MESSAGE_ROLE = "role";
     public static String MESSAGE_FRIEND = "friend";
+    public static String MESSAGE_DAYS = "days";
+    public static String MESSAGE_PHASE = "phase";
     
     public static String PARAM_OK = "ok";
     public static String PARAM_ACCEPTED = "accepted";
@@ -60,5 +62,7 @@ public class StandardMessage {
     public static String PARAM_NIGHT = "night";
     public static String PARAM_WEREWOLF = "werewolf";
     public static String PARAM_CIVILIAN = "civilian";
+    public static String PARAM_CHANGE_PHASE = "change_phase";
+    public static String PARAM_VOTE_NOW = "vote_now";
     /* End of server */
 }

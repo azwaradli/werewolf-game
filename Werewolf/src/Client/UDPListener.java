@@ -32,7 +32,7 @@ public class UDPListener implements Runnable{
 //    private JTextArea messageArea;
     private InetSocketAddress address;
     private int playerId;
-    private ArrayList<ArrayList<Integer>> voteWerewolf;
+    private ArrayList<ArrayList<Integer>> voteResult;
     
     Acceptor acceptor;
     Proposer proposer;
@@ -64,27 +64,7 @@ public class UDPListener implements Runnable{
             e.printStackTrace();
         }
         acceptor = new Acceptor(messenger);
-        voteWerewolf = new ArrayList<>();
-    }
-    
-    public InetSocketAddress getAddress(){
-        return address;
-    }
-    
-    public int getLocalPort(){
-        return localPort;
-    }
-    
-    public ArrayList<ArrayList<Integer>> getVoteWerewolf(){
-        return voteWerewolf;
-    }
-    
-    public void setPlayerId(int playerId){
-        this.playerId = playerId;
-    }
-    
-    public void setProposer(Proposer proposer){
-        this.proposer = proposer;
+        voteResult = new ArrayList<>();
     }
     
     @Override
@@ -122,13 +102,13 @@ public class UDPListener implements Runnable{
                             acceptor.receiveAccept(proposerId, new ProposalID(proposalNumber, proposerId), kpuId);
                             // kpuId = proposer yang terpilih
                         }
-                        else if(method.equals(StandardMessage.PARAM_VOTE_WEREWOLF)){
+                        else if(method.equals(StandardMessage.PARAM_VOTE_WEREWOLF) || method.equals(StandardMessage.PARAM_VOTE_CIVILIAN)){
                             int victimId = Integer.parseInt(json.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
-                            for(int i = 0; i < voteWerewolf.size(); i++){
-                                if(voteWerewolf.get(i).get(0).equals(victimId)){
-                                    int count = voteWerewolf.get(i).get(1);
+                            for(int i = 0; i < voteResult.size(); i++){
+                                if(voteResult.get(i).get(0).equals(victimId)){
+                                    int count = voteResult.get(i).get(1);
                                     count++;
-                                    voteWerewolf.get(i).set(1, count);
+                                    voteResult.get(i).set(1, count);
                                     break;
                                 }
                             }
@@ -158,5 +138,35 @@ public class UDPListener implements Runnable{
             }
         }
     }
+    
+    public InetSocketAddress getAddress(){
+        return address;
+    }
+    
+    public int getLocalPort(){
+        return localPort;
+    }
+    
+    public ArrayList<ArrayList<Integer>> getVoteResult(){
+        return voteResult;
+    }
+    
+    public void setPlayerId(int playerId){
+        this.playerId = playerId;
+    }
+    
+    public void setProposer(Proposer proposer){
+        this.proposer = proposer;
+    }
+    
+    public void setVoteResult(ArrayList<JSONObject> allClients){
+        ArrayList<Integer> client = new ArrayList<>();
+        for(int i = 0; i < allClients.size(); i++){
+            client.add(Integer.parseInt(allClients.get(i).toString()));
+            client.add(0);
+            voteResult.add(client);
+        }
+    }
+    
 }
 
