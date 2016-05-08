@@ -31,8 +31,9 @@ public class TCPConnection implements Runnable{
     public int localPort;
     private int biggestPID;
     private int secondBiggestPID;
-    private String day;
+    private int day;
     private ArrayList<JSONObject> AllClients;
+    private String phase;
     
     private String state = "";
     private boolean dataReady = false;
@@ -50,9 +51,10 @@ public class TCPConnection implements Runnable{
         serverAddress = _serverAddress;
         kpuID = 0;
         port = _port;
-        day = "DAY";
+        day = 0;
         clientProtocol = new ClientProtocol();
         AllClients = new ArrayList<JSONObject>();
+        phase = "day";
     }
     
     public int getKpuID(){
@@ -184,7 +186,8 @@ public class TCPConnection implements Runnable{
                             }
                         }
                         else if(json.containsKey(StandardMessage.MESSAGE_METHOD)){
-                            if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_START)){
+                            String method = json.get(StandardMessage.MESSAGE_METHOD).toString();
+                            if(method.equals(StandardMessage.PARAM_START)){
                                 time = json.get(StandardMessage.MESSAGE_TIME).toString();
                                 role = json.get(StandardMessage.MESSAGE_ROLE).toString();
                                 System.out.println("Client :: Start Game");
@@ -198,6 +201,16 @@ public class TCPConnection implements Runnable{
                                     System.out.println(friend);
                                 }
                                 state = "START";
+                                out.println(clientProtocol.statusOK().toString());
+                            }
+                            else if(method.equals(StandardMessage.PARAM_CHANGE_PHASE)){
+                                time = json.get(StandardMessage.MESSAGE_TIME).toString();
+                                day = Integer.parseInt(json.get(StandardMessage.MESSAGE_DAYS).toString());
+                                System.out.println("Client :: Change Phase");
+                                out.println(clientProtocol.statusOK().toString());
+                            }
+                            else if(method.equals(StandardMessage.PARAM_VOTE_NOW)){
+                                phase = json.get(StandardMessage.MESSAGE_PHASE).toString();
                                 out.println(clientProtocol.statusOK().toString());
                             }
                         }
@@ -238,6 +251,14 @@ public class TCPConnection implements Runnable{
         out.println(clientProtocol.listClientMessage());
     }
     
+    public void infoWerewolfKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
+        out.println(clientProtocol.infoWerewolfKilledMessage(voteStatus, playerKilled, voteResult));
+    }
+    
+    public void infoCivilianKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
+        out.println(clientProtocol.infoCivilianKilledMessage(voteStatus, playerKilled, voteResult));
+    }
+    
     public void acceptedProposal(){
         out.println(clientProtocol.acceptedProposalMessage(player_id));
     }
@@ -259,11 +280,4 @@ public class TCPConnection implements Runnable{
         return true;
     }
     
-    public void infoWerewolfKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
-        out.println(clientProtocol.infoWerewolfKilledMessage(voteStatus, playerKilled, voteResult));
-    }
-    
-    public void infoCivilianKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
-        out.println(clientProtocol.infoCivilianKilledMessage(voteStatus, playerKilled, voteResult));
-    }
 }
