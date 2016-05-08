@@ -270,7 +270,13 @@ public class WereWolfServer {
                                             long startTime = System.currentTimeMillis(); //fetch starting time
                                             System.out.println("Server :: Client "+thisClient + " waiting leader.");
                                             //while(game.checkLeader() == -1&&(System.currentTimeMillis()-startTime)<10000);    //Wait other players until done or 10 seconds
-                                            while(game.checkLeader() == -1);  
+                                            while(game.checkLeader() == -1){
+                                                try {
+                                                    Thread.sleep(200);                 //1000 milliseconds is one second.
+                                                } catch(InterruptedException ex) {
+                                                    Thread.currentThread().interrupt();
+                                                }
+                                            }
                                             System.out.println("Server :: Client "+thisClient + " leader chosen.");
                                         }
                                         
@@ -280,16 +286,29 @@ public class WereWolfServer {
                                         System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" doesn't have kpu id");
                                     }
                                 }
+                                else if(json.get("method").equals("waiting_vote_now")&&game.getPlayer(thisClient).isReady()&&game.isBegan())
+                                {
+                                    System.out.println("Server :: CLIENT "+thisClient+" Request VOTE NOW");
+                                    while(game.checkLeader() == -1){
+                                        try {
+                                            Thread.sleep(200);                 //1000 milliseconds is one second.
+                                        } catch(InterruptedException ex) {
+                                            Thread.currentThread().interrupt();
+                                        }
+                                    }
+                                }
                                 
                                 //--------------------------------------------
                                 //----------GAME STARTED KPU RECEIVED---------
                                 //--------------------------------------------
                                 
-                                if(game.checkLeader() != -1&&game.getPlayer(thisClient).isReady()&&game.isBegan())
+                                if((game.checkLeader() != -1&&game.getPlayer(thisClient).isReady()&&game.isBegan()))
                                 {
                                     //----------------------------------
                                     //----------KPU ID RECEIVED---------
                                     //----------------------------------
+                                    System.out.println("Server:: Leader Chosen");
+                                    
                                     System.out.println("Server ::All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
 
                                     String message = mc.prepareProposalSuccess(game.getLeaderId());
@@ -481,9 +500,9 @@ public class WereWolfServer {
                                     //----------------------------------
                                     //----------KPU ID REJECTED---------
                                     //----------------------------------
-                                    System.out.println("Server ::Other clients failed to confirm their kpu id.");
-                                    String message = mc.prepareProposalFail();
-                                    out.println(message);
+//                                    System.out.println("Server ::Other clients failed to confirm their kpu id.");
+//                                    String message = mc.prepareProposalFail();
+//                                    out.println(message);
 
                                 }
                             }

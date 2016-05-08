@@ -294,6 +294,7 @@ public class TCPConnection implements Runnable{
     
     public boolean sendAccepted(String message){
         boolean ret = false;
+        System.out.println("Client :: Sending : "+message );
         out.println(message);
         try{
             JSONParser parser = new JSONParser();
