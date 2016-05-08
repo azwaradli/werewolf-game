@@ -106,7 +106,7 @@ public class Game {
     }
     
     public int checkLeader(){
-        if(preparatorLead.size() == playerSize()){
+        if(preparatorLead.size() == playerSize()-1){
             return makeLeader();
         }
         return -1;
@@ -353,7 +353,7 @@ public class Game {
                 return true;
             }else if(civilianSize() == 0){
                 return true;
-            }else if(civilianSize() == 1 && werewolfSize() == 1){
+            }else if(civilianSize() == werewolfSize()){
                 return true;
             }
             return false;
