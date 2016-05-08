@@ -182,7 +182,7 @@ public class WereWolfClient {
         while(!connection.isReady()){
             //busy waiting
             try {
-                Thread.sleep(500);                 //1000 milliseconds is one second.
+                Thread.sleep(1000);                 //1000 milliseconds is one second.
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
@@ -255,6 +255,7 @@ public class WereWolfClient {
         paxosController.run();
         waitForData(connection);
 
+        System.out.println("masuk sini");
         int count =0;
         Integer order;
         String time;
@@ -275,23 +276,19 @@ public class WereWolfClient {
             if(connection.getPhase().equals("day")){
                 //DAYTIME
                 System.out.println("DAY TIME");
-                if (count ==0){
-                    System.out.println("You cannot vote on the first day");
-                }
-                else{
-                    System.out.println("List of alive players");
-                    System.out.println(connection.getListPlayers());
-                    System.out.println("Vote by typing '<user_id>'");
-                    connection.listClient();
-                    waitForData(connection);
-                    connection.setDataReady(false);
+                System.out.println("List of alive players");
+                System.out.println(connection.getListPlayers());
+                System.out.println("Vote by typing '<user_id>'");
+                connection.listClient();
+                waitForData(connection);
+                connection.setDataReady(false);
+                order = sc.nextInt();
+                while(connection.isPlayerExist(order)){
+                    System.out.println("User doesn't exist. Please vote again");
                     order = sc.nextInt();
-                    while(connection.isPlayerExist(order)){
-                        System.out.println("User doesn't exist. Please vote again");
-                        order = sc.nextInt();
-                    }
-                    messenger.sendVoteCivilian(order);
                 }
+                messenger.sendVoteCivilian(order);
+                
                 
             }else if(connection.getPhase().equals("night")){
                 //NIGHTTIME

@@ -168,15 +168,15 @@ public class TCPConnection implements Runnable{
 
                         if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
                             if(json.get(StandardMessage.MESSAGE_STATUS).equals(StandardMessage.PARAM_OK)){
-                                System.out.println("Client :: Status :: OK");
+//                                System.out.println("Client :: Status :: OK");
 
                                 if(json.containsKey(StandardMessage.MESSAGE_PLAYER_ID)){
                                     String playerid = json.get(StandardMessage.MESSAGE_PLAYER_ID).toString();
-                                    System.out.println("Client :: Player ID :: "+playerid);
+//                                    System.out.println("Client :: Player ID :: "+playerid);
                                     player_id = Integer.parseInt(playerid);
                                 }
                                 else if(json.containsKey(StandardMessage.MESSAGE_CLIENTS)){
-                                    System.out.println("Client :: List Client");
+//                                    System.out.println("Client :: List Client");
                                     JSONArray playersInfo = (JSONArray) json.get(StandardMessage.MESSAGE_CLIENTS);
 
                                     ArrayList<JSONObject> tempInfo = new ArrayList<JSONObject>();

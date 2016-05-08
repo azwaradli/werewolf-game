@@ -75,7 +75,6 @@ public class Acceptor {
     }
     
     public void receiveAccept(int senderID,ProposalID proposalID,int value) throws IOException{
-//        System.out.println("promise ID : " + promisedID.getID() + "\n proposal ID : " + proposalID.getID());
         if (promisedID == null || proposalID.getID() >= promisedID.getID() /*|| proposalID.equals(promisedID)*/) {
             promisedID    = proposalID;
             acceptedID    = proposalID;
