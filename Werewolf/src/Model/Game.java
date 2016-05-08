@@ -25,7 +25,7 @@ public class Game {
     private int stPlayerId=0;
     private int daycounter = 0;
     private boolean day = true;
-    private boolean started = false;
+    private boolean started = false, began = false;
     private int idLeader = -1, gconflict = 0, idSender=-1;
     private ArrayList<Integer> preparatorLead = new ArrayList();
     private ArrayList<Integer> werewolfId = new ArrayList();
@@ -130,6 +130,10 @@ public class Game {
     
     public int getConflict(){
         return gconflict;
+    }
+    
+    public boolean isBegan(){
+        return began;
     }
     
     public boolean isStarted(){
@@ -341,10 +345,14 @@ public class Game {
         return false;
     }
     
-    public void start(){
-        started = true;
+    public void began(){
+        began = true;
         randomingWerewolf();
         daycounter++;
+    }
+    
+    public void start(){
+        started = false;
     }
     
     public boolean isGameOver(){
@@ -364,7 +372,7 @@ public class Game {
     public void resetGame(){
         daycounter = 0;
         day = true;
-        started = false;
+        began = false;
         idLeader = -1;
         gconflict = 0;
         idSender= -1;
