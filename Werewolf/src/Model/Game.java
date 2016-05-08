@@ -106,7 +106,7 @@ public class Game {
     }
     
     public int checkLeader(){
-        if(preparatorLead.size() == playerSize()-1){
+        if(preparatorLead.size() == playerSize()-2){
             return makeLeader();
         }
         return -1;
