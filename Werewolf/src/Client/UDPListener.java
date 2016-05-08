@@ -126,7 +126,6 @@ public class UDPListener implements Runnable{
                                 proposer.receivePromise();
                             }
                         }
-                        
                     }
                     
                 } catch (ParseException ex) {

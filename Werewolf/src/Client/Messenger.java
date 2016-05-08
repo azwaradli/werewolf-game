@@ -54,6 +54,7 @@ public class Messenger {
         obj = clientProtocol.acceptProposalMessage(proposalID.getID(), proposalID.getPlayerID(), proposedValue);
         message = obj.toString();
         System.out.println(message);
+        connection.check();
         sendToAll();
     }
     

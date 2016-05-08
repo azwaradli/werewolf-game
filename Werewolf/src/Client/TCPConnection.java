@@ -309,4 +309,8 @@ public class TCPConnection implements Runnable{
         return true;
     }
     
+    public void check(){
+        out.println(clientProtocol.waitingVote());
+    }
+    
 }

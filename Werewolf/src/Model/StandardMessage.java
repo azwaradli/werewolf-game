@@ -31,6 +31,7 @@ public class StandardMessage {
     public static String PARAM_CLIENT_ADDRESS = "client_address";
     public static String PARAM_PREPARE_PROPOSAL = "prepare_proposal";
     public static String PARAM_ACCEPT_PROPOSAL = "accept_proposal";
+    public static String PARAM_WAITING_VOTE = "waiting_vote_now";
     public static String PARAM_ACCEPTED_PROPOSAL = "accepted_proposal";
     public static String PARAM_VOTE_WEREWOLF = "vote_werewolf";
     public static String PARAM_VOTE_RESULT_WEREWOLF = "vote_result_werewolf";

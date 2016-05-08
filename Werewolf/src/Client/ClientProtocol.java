@@ -83,6 +83,12 @@ public class ClientProtocol {
         return data;
     }
     
+    public JSONObject waitingVote(){
+        JSONObject data = new JSONObject();
+        data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_WAITING_VOTE);
+        return data;
+    }
+    
     public JSONObject acceptedProposalMessage(int playerId){
         JSONObject data = new JSONObject();
         
