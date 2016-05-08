@@ -177,7 +177,19 @@ public class WereWolfClient {
             "Welcome to the Werewolf Game",
             JOptionPane.QUESTION_MESSAGE);
     }
-
+    
+    private static void waitForData(TCPConnection connection){
+        while(!connection.isReady()){
+            //busy waiting
+            try {
+                Thread.sleep(500);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        connection.setDataReady(false);
+    }
+    
     /**
      * Prompt for and return the desired screen name.
      */
@@ -213,33 +225,18 @@ public class WereWolfClient {
         boolean waiting = false;
         while(!waiting){
             System.out.println("Cara Komunikasi : ");
-//            System.out.println("UDP <spasi> Address <spasi> Port <spasi> Fungsi");
-            System.out.println("TCP <spasi> Fungsi");
+            System.out.println("Fungsi");
             String message = sc.nextLine();
-            String messages[] = message.split(" ");
-//            if(messages[0].equals("UDP")){
-//                
-//                if(messages[3].equals("prepare-proposal")){
-//                    connection.listClient();
-////                    messenger.prepareProposal(port, port);
-//                }
-//                
-////                UDPSender udpSender = new UDPSender(messages[1], Integer.parseInt(messages[2]) , messenger.getMessage());
-////                Thread t3 = new Thread(udpSender);
-////                t3.start();
-//            }
-            if(messages[0].equals("TCP")){
-                if(messages[1].equals("leave-game")){
-                    connection.leaveGame();
-                }
-                else if(messages[1].equals("ready-up")){
-                    connection.readyUp();
-                    waiting = true;
-                }
-                else if(messages[1].equals("list-client")){
-                    connection.listClient();
-                }
+            if(message.equals("leave-game")){
+                connection.leaveGame();
             }
+            else if(message.equals("ready-up")){
+                connection.readyUp();
+                waiting = true;
+            }
+            else if(message.equals("list-client")){
+                connection.listClient();
+            } 
         }
         while(!connection.isStarted()){
             //busy waiting
@@ -249,54 +246,73 @@ public class WereWolfClient {
                 Thread.currentThread().interrupt();
             }
         }
-        System.out.println("masuk paxos");
-        connection.listClient();
-        while(!connection.isReady()){
-            //busy waiting
-            try {
-                Thread.sleep(500);                 //1000 milliseconds is one second.
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        connection.setDataReady(false);
         
-//        System.out.println("CONN :: "+connection.getBiggestPID()+" - "+connection.getSecondBiggest());
+        //PILIH LEADER
+        connection.listClient();
+        waitForData(connection);
+        PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
+        udpListener.setProposer(paxosController.getProposer());
+        paxosController.run();
+        waitForData(connection);
+
         int count =0;
-        String order;
+        Integer order;
+        String time;
+        time = "day";
         while(!connection.isEnded()){
-            //PILIH LEADER
-            PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
-            udpListener.setProposer(paxosController.getProposer());
-            paxosController.run();
-            
-            //DAYTIME
-            System.out.println("DAYTIME");
-            if (count ==0){
-                System.out.println("You cannot vote on the first day");
-            }
-            else{
-                System.out.println("Vote by typing '<user_id>'");
+            if(!time.equals(connection.getPhase())){
+                //GANTI HARI
+                //PILIH LEADER
                 connection.listClient();
-                while(!connection.isReady()){
-                    //busy waiting
-                    try {
-                        Thread.sleep(500);                 //1000 milliseconds is one second.
-                    } catch(InterruptedException ex) {
-                        Thread.currentThread().interrupt();
-                    }
-                }
-                connection.setDataReady(false);
-                
-                order = sc.nextLine();
-                
+                waitForData(connection);
+                paxosController = new PaxosController(connection.getPlayerId(),connection);
+                udpListener.setProposer(paxosController.getProposer());
+                paxosController.run();
+                waitForData(connection);
+                time ="day";
             }
             
-            
-            
-            //NIGHTTIME
-            
-            
+            if(connection.getPhase().equals("day")){
+                //DAYTIME
+                System.out.println("DAY TIME");
+                if (count ==0){
+                    System.out.println("You cannot vote on the first day");
+                }
+                else{
+                    System.out.println("List of alive players");
+                    System.out.println(connection.getListPlayers());
+                    System.out.println("Vote by typing '<user_id>'");
+                    connection.listClient();
+                    waitForData(connection);
+                    connection.setDataReady(false);
+                    order = sc.nextInt();
+                    while(connection.isPlayerExist(order)){
+                        System.out.println("User doesn't exist. Please vote again");
+                        order = sc.nextInt();
+                    }
+                    messenger.sendVoteCivilian(order);
+                }
+                
+            }else if(connection.getPhase().equals("night")){
+                //NIGHTTIME
+                time ="night";
+                System.out.println("NIGHT TIME");
+                if(connection.getRole().equals("werewolf")){
+                    System.out.println("List of alive players");
+                    System.out.println(connection.getListPlayers());
+                    System.out.println("Vote by typing '<user_id>'");
+                    connection.listClient();
+                    waitForData(connection);
+                    connection.setDataReady(false);
+                    order = sc.nextInt();
+                    while(connection.isPlayerExist(order)){
+                        System.out.println("User doesn't exist. Please vote again");
+                        order = sc.nextInt();
+                    }
+                    messenger.sendVoteWerewolf(order);
+                }
+            }
+            waitForData(connection);
             count++;
         }
     }

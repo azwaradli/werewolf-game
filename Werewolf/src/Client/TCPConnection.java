@@ -54,7 +54,9 @@ public class TCPConnection implements Runnable{
         day = 0;
         clientProtocol = new ClientProtocol();
         AllClients = new ArrayList<JSONObject>();
+        time="";
         phase = "day";
+        role ="civilian";
     }
     
     public int getKpuID(){
@@ -65,6 +67,9 @@ public class TCPConnection implements Runnable{
         return localPort;
     }
     
+    public String getPhase(){
+        return phase;
+    }
     
     public String getAddress(){
         return serverAddress;
@@ -114,6 +119,30 @@ public class TCPConnection implements Runnable{
         return secondBiggestPID;
     }
     
+    public boolean isPlayerExist(int pid){
+        boolean ret = false;
+        for(int i = 0;i<AllClients.size();i++){
+            int client = Integer.parseInt(AllClients.get(i).get("player_id").toString());
+            if(client == pid){
+                ret = true;
+                break;
+            }
+        }
+        return ret;
+    }
+    
+    public String listClients(){
+        String ret = "";
+        for(int i = 0;i<AllClients.size();i++){
+            if(AllClients.get(i).get("is_alive").toString().equals("1")){
+                String client_id = AllClients.get(i).get("player_id").toString();
+                String player_name = AllClients.get(i).get("username").toString();
+                ret = ret + client_id + " " + player_name + "\n";
+            }
+        }
+        return ret;
+    }
+    
     @Override
     public void run(){
         // Make connection and initialize stream
@@ -125,7 +154,6 @@ public class TCPConnection implements Runnable{
             
             String getjson;
             JSONObject json;
-            role ="civilian";
             JSONParser parser = new JSONParser();
             
             // Process all messages from server, according to the protocol.
@@ -212,6 +240,7 @@ public class TCPConnection implements Runnable{
                             else if(method.equals(StandardMessage.PARAM_VOTE_NOW)){
                                 phase = json.get(StandardMessage.MESSAGE_PHASE).toString();
                                 out.println(clientProtocol.statusOK().toString());
+                                dataReady=true;
                             }
                         }
                         else{

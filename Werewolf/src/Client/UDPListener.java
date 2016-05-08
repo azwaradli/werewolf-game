@@ -162,7 +162,7 @@ public class UDPListener implements Runnable{
     public void setVoteResult(ArrayList<JSONObject> allClients){
         ArrayList<Integer> client = new ArrayList<>();
         for(int i = 0; i < allClients.size(); i++){
-            client.add(Integer.parseInt(allClients.get(i).toString()));
+            client.add(Integer.parseInt(allClients.get(i).get("player_id").toString()));
             client.add(0);
             voteResult.add(client);
         }
