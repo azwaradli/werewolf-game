@@ -269,7 +269,8 @@ public class WereWolfServer {
                                             
                                             long startTime = System.currentTimeMillis(); //fetch starting time
                                             System.out.println("Server :: Client "+thisClient + " waiting leader.");
-                                            while(game.checkLeader() == -1&&(System.currentTimeMillis()-startTime)<10000);    //Wait other players until done or 10 seconds
+                                            //while(game.checkLeader() == -1&&(System.currentTimeMillis()-startTime)<10000);    //Wait other players until done or 10 seconds
+                                            while(game.checkLeader() == -1);  
                                             System.out.println("Server :: Client "+thisClient + " leader chosen.");
                                         }
                                         
