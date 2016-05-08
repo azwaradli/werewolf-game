@@ -143,7 +143,11 @@ public class MessageCreator {
                 for(Player player : players){
                     JSONObject temp = new JSONObject();
                     temp.put("player_id", player.getId());
-                    temp.put("is_alive", player.isAlive());
+                    if(player.isAlive()){
+                        temp.put("is_alive", 1);
+                    }else{
+                        temp.put("is_alive", 0);
+                    }
                     temp.put("address", player.getIP());
                     temp.put("port", player.getPort());
                     temp.put("username", player.getName());
