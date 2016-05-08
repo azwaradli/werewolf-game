@@ -102,7 +102,7 @@ public class WereWolfServer {
                             //----------JOIN STATE----------
                             //------------------------------
                                 System.out.println("Server :: Client Request Join");
-                                if(!game.isStarted())
+                                if(!game.isBegan())
                                 {      
                                     //Jika Game Belum Di Mulai
                                     if(json.containsKey(StandardMessage.MESSAGE_USERNAME))
@@ -205,7 +205,7 @@ public class WereWolfServer {
                                             if(thisClient == game.getSenderId()){
                                                 waitingsender = true;
                                                 System.out.println("Server :: Starting the Game");
-                                                game.start();
+                                                game.began();
                                                 waitingsender = false;
                                             }else{
                                                 while(waitingsender){
@@ -264,7 +264,7 @@ public class WereWolfServer {
                                     if(json.containsKey(StandardMessage.MESSAGE_KPU_ID))
                                     {
                                         System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" confirm KPU ID "+json.get(StandardMessage.MESSAGE_KPU_ID).toString());
-                                        if(game.prepareLeader((int) json.get(StandardMessage.MESSAGE_KPU_ID))==-1){
+                                        if(game.prepareLeader(Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString()))==-1){
                                             System.out.println("Server ::Client "+ game.getPlayer(thisClient).getName() +" succesfully confirm. wait for other player confirm.");
                                             
                                             long startTime = System.currentTimeMillis(); //fetch starting time
@@ -285,7 +285,7 @@ public class WereWolfServer {
                                 //----------GAME STARTED KPU RECEIVED---------
                                 //--------------------------------------------
                                 
-                                if(game.checkLeader() != -1&&game.getPlayer(thisClient).isReady()&&game.isStarted())
+                                if(game.checkLeader() != -1&&game.getPlayer(thisClient).isReady()&&game.isBegan())
                                 {
                                     //----------------------------------
                                     //----------KPU ID RECEIVED---------
@@ -476,7 +476,7 @@ public class WereWolfServer {
                                     }
 
                                 }
-                                else if(game.getPlayer(thisClient).isReady()&&game.isStarted())
+                                else if(game.getPlayer(thisClient).isReady()&&game.isBegan())
                                 {
                                     //----------------------------------
                                     //----------KPU ID REJECTED---------

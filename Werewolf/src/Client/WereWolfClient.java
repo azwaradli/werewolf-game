@@ -178,7 +178,7 @@ public class WereWolfClient {
             JOptionPane.QUESTION_MESSAGE);
     }
     
-    private static void waitForData(TCPConnection connection){
+    private void waitForData(TCPConnection connection){
         while(!connection.isReady()){
             //busy waiting
             try {
