@@ -35,7 +35,6 @@ public class TCPConnection implements Runnable{
     private ArrayList<JSONObject> AllClients;
     
     private String state = "";
-    private boolean timeChanged = false;
     private boolean dataReady = false;
     
     Socket socket;
@@ -89,10 +88,6 @@ public class TCPConnection implements Runnable{
         return state.equals("END");
     }
     
-    public boolean isTimeChanged(){
-        return timeChanged;
-    }
-    
     public boolean isReady(){
         return dataReady;
     }
@@ -128,6 +123,7 @@ public class TCPConnection implements Runnable{
             
             String getjson;
             JSONObject json;
+            role ="civilian";
             JSONParser parser = new JSONParser();
             
             // Process all messages from server, according to the protocol.

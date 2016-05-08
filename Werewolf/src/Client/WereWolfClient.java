@@ -262,12 +262,21 @@ public class WereWolfClient {
         connection.setDataReady(false);
         
 //        System.out.println("CONN :: "+connection.getBiggestPID()+" - "+connection.getSecondBiggest());
-        PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
-        udpListener.setProposer(paxosController.getProposer());
-        paxosController.run();
-        
+        int count =0;
+        String order;
         while(!connection.isEnded()){
-            if(connection.isTimeChanged()){
+            //PILIH LEADER
+            PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
+            udpListener.setProposer(paxosController.getProposer());
+            paxosController.run();
+            
+            //DAYTIME
+            System.out.println("DAYTIME");
+            if (count ==0){
+                System.out.println("You cannot vote on the first day");
+            }
+            else{
+                System.out.println("Vote by typing '<user_id>'");
                 connection.listClient();
                 while(!connection.isReady()){
                     //busy waiting
@@ -278,12 +287,17 @@ public class WereWolfClient {
                     }
                 }
                 connection.setDataReady(false);
-                paxosController.run();}
-            System.out.println("Masukkan order : ");
-            String order = sc.nextLine();
-            if(order=="prepare"){
-            
+                
+                order = sc.nextLine();
+                
             }
+            
+            
+            
+            //NIGHTTIME
+            
+            
+            count++;
         }
     }
 
