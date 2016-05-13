@@ -299,8 +299,8 @@ public class TCPConnection implements Runnable{
         out.println(clientProtocol.infoWerewolfKilledMessage(voteResult));
     }
     
-    public void infoCivilianKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
-        out.println(clientProtocol.infoCivilianKilledMessage(voteStatus, playerKilled, voteResult));
+    public void infoCivilianKilled(ArrayList<ArrayList<Integer>> voteResult){
+        out.println(clientProtocol.infoCivilianKilledMessage(voteResult));
     }
     
     public void acceptedProposal(){

@@ -113,6 +113,22 @@ public class ClientProtocol {
         int voteStatus = -1;
         int playerKilled = -1;
         
+        int maxVote = -1;
+        
+        for(int i = 0; i < voteResult.size(); i++){
+            if(voteResult.get(i).get(1) > maxVote){
+                maxVote = voteResult.get(i).get(1);
+                playerKilled = voteResult.get(i).get(0);
+            }
+            else if(voteResult.get(i).get(1) == maxVote){
+                playerKilled = -1;
+            }
+        }
+        
+        if(playerKilled != -1){
+            voteStatus = 1;
+        }
+        
         if(voteStatus == 1){
             data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_WEREWOLF);
             data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
@@ -137,8 +153,25 @@ public class ClientProtocol {
         return data;
     }
 
-    public JSONObject infoCivilianKilledMessage(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
+    public JSONObject infoCivilianKilledMessage(ArrayList<ArrayList<Integer>> voteResult){
         JSONObject data = new JSONObject();
+        int voteStatus = -1;
+        int playerKilled = -1;
+        int maxVote = -1;
+        
+        for(int i = 0; i < voteResult.size(); i++){
+            if(voteResult.get(i).get(1) > maxVote){
+                maxVote = voteResult.get(i).get(1);
+                playerKilled = voteResult.get(i).get(0);
+            }
+            else if(voteResult.get(i).get(1) == maxVote){
+                playerKilled = -1;
+            }
+        }
+        
+        if(playerKilled != -1){
+            voteStatus = 1;
+        }
         
         if(voteStatus == 1){
             data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_WEREWOLF);
