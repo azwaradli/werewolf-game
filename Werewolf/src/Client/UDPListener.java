@@ -34,6 +34,9 @@ public class UDPListener implements Runnable{
     private int playerId;
     private ArrayList<ArrayList<Integer>> voteResult;
     
+    private int werewolfCount;
+    private int civilianCount;
+    
     Acceptor acceptor;
     Proposer proposer;
     
@@ -51,9 +54,30 @@ public class UDPListener implements Runnable{
 //        }
 //    }
     
+    public ArrayList<ArrayList<Integer>> getVoteResults(){
+        return voteResult;
+    }
+    
+    public int getWerewolfCount(){
+        return werewolfCount;
+    }
+    
+    public int getCivilianCount(){
+        return civilianCount;
+    }
+    
+    public void setWerewolfCount(int n){
+        werewolfCount = n;
+    }
+    
+    public void setCivilianCount(int n){
+        civilianCount = n;
+    }
+    
     public UDPListener(String _address,int _port, Messenger messenger){
         port = _port;
         playerId = 0;
+        werewolfCount = 2;
         try{
             server = new DatagramSocket(null);
             address = new InetSocketAddress(_address,port);
@@ -108,6 +132,7 @@ public class UDPListener implements Runnable{
                                 if(voteResult.get(i).get(0).equals(victimId)){
                                     int count = voteResult.get(i).get(1);
                                     count++;
+                                    werewolfCount--;
                                     voteResult.get(i).set(1, count);
                                     break;
                                 }

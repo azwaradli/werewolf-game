@@ -108,8 +108,10 @@ public class ClientProtocol {
         return data;
     }
     
-    public JSONObject infoWerewolfKilledMessage(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
+    public JSONObject infoWerewolfKilledMessage(ArrayList<ArrayList<Integer>> voteResult){
         JSONObject data = new JSONObject();
+        int voteStatus = -1;
+        int playerKilled = -1;
         
         if(voteStatus == 1){
             data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_WEREWOLF);

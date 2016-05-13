@@ -44,10 +44,12 @@ public class TCPConnection implements Runnable{
     
     /* atribut player di client */
     int player_id;
+    boolean is_alive;
     String time, role;
     ArrayList<String> friend;
     
     public TCPConnection(String _serverAddress, int _port){
+        is_alive = true;
         serverAddress = _serverAddress;
         kpuID = 0;
         port = _port;
@@ -69,6 +71,10 @@ public class TCPConnection implements Runnable{
     
     public String getPhase(){
         return phase;
+    }
+    
+    public boolean isAlive(){
+        return is_alive;
     }
     
     public String getAddress(){
@@ -189,9 +195,18 @@ public class TCPConnection implements Runnable{
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
                                         tempInfo.add(clientInfo);
                                         int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+                                        if(temp==player_id){
+                                            if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==-1){
+                                                is_alive = false;
+                                            }
+                                            else{
+                                                is_alive = true;
+                                            }
+                                        }
                                         if(temp > biggestPID){
                                             biggestPID = temp;
                                         }
+                                        
                                     }
                                     for(int i = 0; i<playersInfo.size();i++){
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
@@ -280,8 +295,8 @@ public class TCPConnection implements Runnable{
         out.println(clientProtocol.listClientMessage());
     }
     
-    public void infoWerewolfKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
-        out.println(clientProtocol.infoWerewolfKilledMessage(voteStatus, playerKilled, voteResult));
+    public void infoWerewolfKilled(ArrayList<ArrayList<Integer>> voteResult){
+        out.println(clientProtocol.infoWerewolfKilledMessage(voteResult));
     }
     
     public void infoCivilianKilled(int voteStatus, int playerKilled, ArrayList<ArrayList<Integer>> voteResult){
