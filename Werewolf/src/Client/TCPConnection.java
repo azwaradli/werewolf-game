@@ -35,6 +35,9 @@ public class TCPConnection implements Runnable{
     private ArrayList<JSONObject> AllClients;
     private String phase;
     
+    private int werewolfCount;
+    private int civilianCount;
+    
     private String state = "";
     private boolean dataReady = false;
     
@@ -95,6 +98,14 @@ public class TCPConnection implements Runnable{
     
     public boolean isStarted(){
         return state.equals("START");
+    }
+    
+    public int getWerewolfCount(){
+        return werewolfCount;
+    }
+    
+    public int getCivilianCount(){
+        return civilianCount;
     }
     
     public boolean isEnded(){
@@ -191,18 +202,29 @@ public class TCPConnection implements Runnable{
 
                                     biggestPID = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                     secondBiggestPID = 0;
+                                    werewolfCount = 0;
+                                    civilianCount = 0;
                                     for(int i = 1; i<playersInfo.size();i++){
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
                                         tempInfo.add(clientInfo);
+                                        
+                                        if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==1){
+                                            if(clientInfo.get(StandardMessage.MESSAGE_ROLE).toString()==("werewolf")){
+                                                werewolfCount++;
+                                            }else{
+                                                civilianCount++;
+                                            }
+                                        }
                                         int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                         if(temp==player_id){
-                                            if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==-1){
+                                            if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==0){
                                                 is_alive = false;
                                             }
                                             else{
                                                 is_alive = true;
                                             }
                                         }
+                                        
                                         if(temp > biggestPID){
                                             biggestPID = temp;
                                         }
@@ -295,12 +317,14 @@ public class TCPConnection implements Runnable{
         out.println(clientProtocol.listClientMessage());
     }
     
-    public void infoWerewolfKilled(ArrayList<ArrayList<Integer>> voteResult){
+    public void infoWerewolfKilled(ArrayList<ArrayList<Integer>> voteResult, UDPListener udpListener){
         out.println(clientProtocol.infoWerewolfKilledMessage(voteResult));
+        udpListener.resetVoteResults();
     }
     
-    public void infoCivilianKilled(ArrayList<ArrayList<Integer>> voteResult){
+    public void infoCivilianKilled(ArrayList<ArrayList<Integer>> voteResult, UDPListener udpListener){
         out.println(clientProtocol.infoCivilianKilledMessage(voteResult));
+        udpListener.resetVoteResults();
     }
     
     public void acceptedProposal(){

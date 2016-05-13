@@ -58,6 +58,10 @@ public class UDPListener implements Runnable{
         return voteResult;
     }
     
+    public void resetVoteResults(){
+        voteResult = new ArrayList<ArrayList<Integer>>();
+    }
+    
     public int getWerewolfCount(){
         return werewolfCount;
     }

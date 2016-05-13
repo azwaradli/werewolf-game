@@ -179,11 +179,15 @@ public class WereWolfClient {
     }
     
     private void waitForData(TCPConnection connection, UDPListener udpListener){
+        udpListener.setWerewolfCount(connection.getWerewolfCount());
+        udpListener.setCivilianCount(connection.getCivilianCount());
         while(!connection.isReady()){
             //busy waiting
             if(udpListener.getWerewolfCount()<=0){
-                connection.infoWerewolfKilled(udpListener.getVoteResults());
-                udpListener.setWerewolfCount(2);
+                connection.infoWerewolfKilled(udpListener.getVoteResults(), udpListener);
+            }
+            if(udpListener.getCivilianCount()<=0){
+                connection.infoCivilianKilled(udpListener.getVoteResults(), udpListener);
             }
             try {
                 Thread.sleep(1000);                 //1000 milliseconds is one second.
