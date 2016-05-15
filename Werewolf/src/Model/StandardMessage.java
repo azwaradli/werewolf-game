@@ -67,6 +67,7 @@ public class StandardMessage {
     public static String PARAM_CIVILIAN = "civilian";
     public static String PARAM_CHANGE_PHASE = "change_phase";
     public static String PARAM_VOTE_NOW = "vote_now";
+    public static String PARAM_KPU_SELECTED = "kpu_selected";
     public static String PARAM_GAME_OVER = "game_over";
     /* End of server */
 }

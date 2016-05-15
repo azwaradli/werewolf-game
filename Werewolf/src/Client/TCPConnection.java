@@ -26,7 +26,7 @@ import org.json.simple.parser.ParseException;
 public class TCPConnection implements Runnable{
     public String serverAddress;
     public int port;
-    public int kpuID;
+    public int kpu_id;
     public ClientProtocol clientProtocol;
     public int localPort;
     private int biggestPID;
@@ -54,7 +54,7 @@ public class TCPConnection implements Runnable{
     public TCPConnection(String _serverAddress, int _port){
         is_alive = true;
         serverAddress = _serverAddress;
-        kpuID = 0;
+        kpu_id = 0;
         port = _port;
         day = 0;
         clientProtocol = new ClientProtocol();
@@ -65,7 +65,7 @@ public class TCPConnection implements Runnable{
     }
     
     public int getKpuID(){
-        return kpuID;
+        return kpu_id;
     } 
     
     public int getLocalPort(){
@@ -241,9 +241,9 @@ public class TCPConnection implements Runnable{
                                     dataReady = true;
 //                                    System.out.println(AllClients +" " + biggestPID+ " "+secondBiggestPID);
                                 }
-                                else if(json.containsValue(StandardMessage.KPU_SELECTED)){
-                                    kpuID = Integer.parseInt(json.get(StandardMessage.KPU_ID).toString());
-                                }
+//                                else if(json.containsValue(StandardMessage.KPU_SELECTED)){
+//                                    kpu_id = Integer.parseInt(json.get(StandardMessage.KPU_ID).toString());
+//                                }
                                 else if(json.containsValue("thanks for playing")){
                                     state = "END";
                                     break;
@@ -278,6 +278,9 @@ public class TCPConnection implements Runnable{
                                 phase = json.get(StandardMessage.MESSAGE_PHASE).toString();
                                 out.println(clientProtocol.statusOK().toString());
                                 dataReady=true;
+                            }
+                            else if(method.equals(StandardMessage.PARAM_KPU_SELECTED)){
+                                kpu_id = Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString());
                             }
                             else if(method.equals(StandardMessage.PARAM_GAME_OVER)){
                                 String winner = json.get(StandardMessage.MESSAGE_WINNER).toString();
