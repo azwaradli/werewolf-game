@@ -279,6 +279,14 @@ public class TCPConnection implements Runnable{
                                 out.println(clientProtocol.statusOK().toString());
                                 dataReady=true;
                             }
+                            else if(method.equals(StandardMessage.PARAM_GAME_OVER)){
+                                String winner = json.get(StandardMessage.MESSAGE_WINNER).toString();
+                                System.out.println("Client :: GAME OVER");
+                                System.out.println("Winner :: ");
+                                out.println(clientProtocol.statusOK().toString());
+                                state = "END";
+                                break;
+                            }
                         }
                         else{
                             System.out.println("Client :: Status :: "+json.get(StandardMessage.MESSAGE_STATUS).toString());

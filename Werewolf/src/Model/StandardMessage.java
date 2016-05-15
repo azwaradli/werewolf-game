@@ -55,6 +55,7 @@ public class StandardMessage {
     public static String MESSAGE_FRIEND = "friend";
     public static String MESSAGE_DAYS = "days";
     public static String MESSAGE_PHASE = "phase";
+    public static String MESSAGE_WINNER = "winner";
     
     public static String PARAM_OK = "ok";
     public static String PARAM_ACCEPTED = "accepted";
@@ -66,5 +67,6 @@ public class StandardMessage {
     public static String PARAM_CIVILIAN = "civilian";
     public static String PARAM_CHANGE_PHASE = "change_phase";
     public static String PARAM_VOTE_NOW = "vote_now";
+    public static String PARAM_GAME_OVER = "game_over";
     /* End of server */
 }
