@@ -106,7 +106,7 @@ public class UDPListener implements Runnable{
                 server.receive(packet);
                 String message = new String(packet.getData(),0, packet.getLength());
                 //message dapat diproses
-                System.out.println(message);
+                System.out.println("Client :: Receive :: "+message);
 //                messageArea.append("<"+packet.getPort()+">       :  " + message + "\n");
                 
                 try {

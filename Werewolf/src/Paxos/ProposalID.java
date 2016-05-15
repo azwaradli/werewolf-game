@@ -41,24 +41,57 @@ public class ProposalID {
     public void incrementID(){
         id++;
     }
-    
-    public int compare(ProposalID rhs) {
-        if (this.id == rhs.id) {
-            if (rhs.getPlayerID() == playerID){
+    public int compare( ProposalID rhs ) {
+        if ( equals(rhs) )
                 return 0;
-            }
-            else if (playerID < rhs.getPlayerID()) {
+        if ( id < rhs.id || (id == rhs.id && playerID > rhs.playerID))
                 return -1;
-            }
-            else {
-                return 1;
-            }
-        }
-        else if (this.id < rhs.id) {
-            return -1;
-        }
-        else {
-            return 1;
-        }
+        return 1;
     }
+
+    public boolean isGreaterThan( ProposalID rhs ) {
+        return compare(rhs) > 0;
+    }
+
+    public boolean isLessThan( ProposalID rhs ) {
+        return compare(rhs) < 0;
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj)
+                return true;
+        if (obj == null)
+                return false;
+        if (getClass() != obj.getClass())
+                return false;
+        ProposalID other = (ProposalID) obj;
+        if (id != other.id)
+                return false;
+        if (playerID == -1) {
+                if (other.playerID != -1)
+                        return false;
+        } else if (playerID != other.playerID)
+                return false;
+        return true;
+    }
+    
+//    public int compare(ProposalID rhs) {
+//        if (this.id == rhs.id) {
+//            if (rhs.getPlayerID() == playerID){
+//                return 0;
+//            }
+//            else if (playerID < rhs.getPlayerID()) {
+//                return -1;
+//            }
+//            else {
+//                return 1;
+//            }
+//        }
+//        else if (this.id < rhs.id) {
+//            return -1;
+//        }
+//        else {
+//            return 1;
+//        }
+//    }
 }

@@ -259,11 +259,11 @@ public class WereWolfClient {
         //PILIH LEADER
         connection.listClient();
         waitForData(connection,udpListener);
-        System.out.println("Client : End PAXOS");
         PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
         udpListener.setProposer(paxosController.getProposer());
         paxosController.run();
         waitForData(connection,udpListener);
+        System.out.println("Client : End PAXOS");
 
         System.out.println("masuk sini");
         int count =0;

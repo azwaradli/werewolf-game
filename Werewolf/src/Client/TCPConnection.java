@@ -54,13 +54,13 @@ public class TCPConnection implements Runnable{
     public TCPConnection(String _serverAddress, int _port){
         is_alive = true;
         serverAddress = _serverAddress;
-        kpu_id = 0;
+        kpu_id = -1;
         port = _port;
         day = 0;
         clientProtocol = new ClientProtocol();
         AllClients = new ArrayList<JSONObject>();
         time="";
-        phase = "day";
+        phase = "none";
         role ="civilian";
     }
     
@@ -357,7 +357,7 @@ public class TCPConnection implements Runnable{
         }catch(ParseException e){
             e.printStackTrace();
         }
-        return true;
+        return ret;
     }
     
     public void check(){

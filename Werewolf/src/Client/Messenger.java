@@ -33,6 +33,7 @@ public class Messenger {
         obj = clientProtocol.prepareProposalMessage(proposalID.getID(), proposalID.getPlayerID());
         message = obj.toString();
         sendToAll();
+        System.out.println("Client :: Send :: prepare proposal");
     }
     
     public void sendVoteCivilian(int target){
@@ -54,8 +55,9 @@ public class Messenger {
         obj = clientProtocol.acceptProposalMessage(proposalID.getID(), proposalID.getPlayerID(), proposedValue);
         message = obj.toString();
         System.out.println(message);
-        connection.check();
         sendToAll();
+        connection.check();
+        System.out.println("Client :: Send :: accept proposal");
     }
     
     public void killWerewolfVote(int playerId){
@@ -79,6 +81,7 @@ public class Messenger {
         obj = clientProtocol.sendPromiseMessage(prevAcceptedValue);
         message = obj.toString();
         sendToOne(proposerID);
+        System.out.println("Client :: Send :: promise with prevAcceptedValue");
     }
     
     public void sendPromise(int proposerId) {
@@ -86,6 +89,7 @@ public class Messenger {
         obj = clientProtocol.sendPromiseMessage();
         message = obj.toString();
         sendToOne(proposerId);
+        System.out.println("Client :: Send :: promise only");
     }
     
     public void sendRejected(int proposerId){
@@ -93,6 +97,7 @@ public class Messenger {
         obj = clientProtocol.sendRejectedMessage();
         message = obj.toString();
         sendToOne(proposerId);
+        System.out.println("Client :: Send :: rejected");
     }
     
     public void sendError(int proposerId){
@@ -100,6 +105,7 @@ public class Messenger {
         obj = clientProtocol.sendErrorMessage("Error cuy");
         message = obj.toString();
         sendToOne(proposerId);
+        System.out.println("Client :: Send :: error");
     }
     
     public void sendAccepted(ProposalID proposalID, int acceptedValue) throws IOException, InterruptedException {
@@ -110,6 +116,10 @@ public class Messenger {
             obj = clientProtocol.confirmAcceptedMessage();
             message = obj.toString();
             sendToOne(proposalID.getPlayerID());
+            System.out.println("Client :: Send :: accepted");
+        }
+        else{
+            System.out.println("Client :: Send Accepted Failes");
         }
     }
     

@@ -80,8 +80,11 @@ public class Acceptor {
         }
     }
     
-    public void receiveAccept(int senderID,ProposalID proposalID,int value) throws IOException{
-        if (promisedID == null || proposalID.getID() >= promisedID.getID() /*|| proposalID.equals(promisedID)*/) {
+    public void receiveAccept(int senderID, ProposalID proposalID, int value) throws IOException{
+        System.out.println("promisedID: "+promisedID.getID()+"|"+promisedID.getPlayerID());
+        System.out.println("promisedID: "+proposalID.getID()+"|"+proposalID.getPlayerID());
+//        if (promisedID == null || proposalID.getID() >= promisedID.getID() /*|| proposalID.equals(promisedID)*/) {
+        if(promisedID == null || proposalID.isGreaterThan(promisedID) || proposalID.equals(promisedID)){
             promisedID    = proposalID;
             acceptedID    = proposalID;
             prevAcceptedValue = acceptedValue;
@@ -92,6 +95,9 @@ public class Acceptor {
             } catch(InterruptedException e){
                 e.printStackTrace();
             }
+        }
+        else{
+            messenger.sendRejected(senderID);
         }
     }
     
