@@ -67,13 +67,13 @@ public class Game {
         for(Player player : players){
             if(player.isActive()){
                 for(int i : werewolfId){
-                    System.out.println("Random :: int "+i);
                     if(temp == i){
                         System.out.println("Random :: werewolf "+player.getName());
                         player.setRoleWerewolf();
                         break;
+                    }else{
+                        System.out.println("Random :: civil "+player.getName());
                     }
-                    System.out.println("Random :: civil "+player.getName());
                 }
                 temp++;
             }
