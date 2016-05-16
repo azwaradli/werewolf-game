@@ -60,7 +60,7 @@ public class TCPConnection implements Runnable{
         clientProtocol = new ClientProtocol();
         AllClients = new ArrayList<JSONObject>();
         time="";
-        phase = "none";
+        phase = "day";
         role ="civilian";
     }
     
@@ -349,6 +349,7 @@ public class TCPConnection implements Runnable{
         try{
             JSONParser parser = new JSONParser();
             String getjson = in.readLine();
+            System.out.println("Client :: JSON : "+ getjson);
             JSONObject json = (JSONObject) parser.parse(getjson);
             if(json.get("status").equals("ok"))
                 ret = true;

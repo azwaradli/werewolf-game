@@ -179,16 +179,18 @@ public class WereWolfClient {
     }
     
     private void waitForData(TCPConnection connection, UDPListener udpListener){
-        udpListener.setWerewolfCount(connection.getWerewolfCount());
-        udpListener.setCivilianCount(connection.getCivilianCount());
+//        udpListener.setWerewolfCount(connection.getWerewolfCount());
+//        udpListener.setCivilianCount(connection.getCivilianCount());
         while(!connection.isReady()){
             //busy waiting
-            if(udpListener.getWerewolfCount()<=0){
-                connection.infoWerewolfKilled(udpListener.getVoteResults(), udpListener);
-            }
-            if(udpListener.getCivilianCount()<=0){
-                connection.infoCivilianKilled(udpListener.getVoteResults(), udpListener);
-            }
+//            if(udpListener.getWerewolfCount()<=0){
+//                System.out.println("kill werewolf");
+//                connection.infoWerewolfKilled(udpListener.getVoteResults(), udpListener);
+//            }
+//            if(udpListener.getCivilianCount()<=0){
+//                System.out.println("kill civilian");
+//                connection.infoCivilianKilled(udpListener.getVoteResults(), udpListener);
+//            }
             try {
                 Thread.sleep(1000);                 //1000 milliseconds is one second.
             } catch(InterruptedException ex) {
@@ -274,6 +276,7 @@ public class WereWolfClient {
             if(!time.equals(connection.getPhase())){
                 //GANTI HARI
                 //PILIH LEADER
+                System.out.println("Client : Start PAXOS");
                 connection.listClient();
                 waitForData(connection,udpListener);
                 paxosController = new PaxosController(connection.getPlayerId(),connection);
@@ -281,6 +284,7 @@ public class WereWolfClient {
                 paxosController.run();
                 waitForData(connection,udpListener);
                 time ="day";
+                System.out.println("Client : End PAXOS");
             }
             
             if(connection.getPhase().equals("day")&&(connection.isAlive())){
