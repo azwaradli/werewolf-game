@@ -40,6 +40,7 @@ public class TCPConnection implements Runnable{
     
     private String state = "";
     private boolean dataReady = false;
+    private boolean dayChanged = false;
     
     Socket socket;
     BufferedReader in;
@@ -96,6 +97,10 @@ public class TCPConnection implements Runnable{
         dataReady = ready;
     }
     
+    public void setDayChanged(boolean changed){
+        dayChanged = changed;
+    }
+    
     public boolean isStarted(){
         return state.equals("START");
     }
@@ -114,6 +119,10 @@ public class TCPConnection implements Runnable{
     
     public boolean isReady(){
         return dataReady;
+    }
+    
+    public boolean isDayChanged(){
+        return dayChanged;
     }
     
     public String getRole(){
@@ -277,7 +286,7 @@ public class TCPConnection implements Runnable{
                             else if(method.equals(StandardMessage.PARAM_VOTE_NOW)){
                                 phase = json.get(StandardMessage.MESSAGE_PHASE).toString();
                                 out.println(clientProtocol.statusOK().toString());
-                                dataReady=true;
+                                dayChanged=true;
                             }
                             else if(method.equals(StandardMessage.PARAM_KPU_SELECTED)){
                                 kpu_id = Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString());

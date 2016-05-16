@@ -178,12 +178,23 @@ public class WereWolfClient {
             JOptionPane.QUESTION_MESSAGE);
     }
     
-    private void waitForData(TCPConnection connection, UDPListener udpListener, boolean listen){
+    private void waitForData(TCPConnection connection){
+        while(!connection.isReady()){
+            try {
+                Thread.sleep(1000);                 //1000 milliseconds is one second.
+            } catch(InterruptedException ex) {
+                Thread.currentThread().interrupt();
+            }
+        }
+        connection.setDataReady(false);
+    }
+    
+    private void waitForDay(TCPConnection connection, UDPListener udpListener, boolean listen){
         if(listen){
             udpListener.setWerewolfCount(connection.getWerewolfCount());
             udpListener.setCivilianCount(connection.getCivilianCount());
         }
-        while(!connection.isReady()){
+        while(!connection.isDayChanged()){
             //busy waiting
             if(listen){
                 if(udpListener.getWerewolfCount()<=0){
@@ -201,7 +212,7 @@ public class WereWolfClient {
                 Thread.currentThread().interrupt();
             }
         }
-        connection.setDataReady(false);
+        connection.setDayChanged(false);
     }
     
     /**
@@ -264,11 +275,11 @@ public class WereWolfClient {
         System.out.println("Client : Start PAXOS");
         //PILIH LEADER
         connection.listClient();
-        waitForData(connection,udpListener,false);
+        waitForData(connection);
         PaxosController paxosController = new PaxosController(connection.getPlayerId(),connection);
         udpListener.setProposer(paxosController.getProposer());
         paxosController.run();
-        waitForData(connection,udpListener,false);
+        waitForDay(connection,udpListener,false);
         System.out.println("Client : End PAXOS");
 
         System.out.println("masuk sini");
@@ -282,11 +293,11 @@ public class WereWolfClient {
                 //PILIH LEADER
                 System.out.println("Client : Start PAXOS");
                 connection.listClient();
-                waitForData(connection,udpListener,false);
+                waitForData(connection);
                 paxosController = new PaxosController(connection.getPlayerId(),connection);
                 udpListener.setProposer(paxosController.getProposer());
                 paxosController.run();
-                waitForData(connection,udpListener,false);
+                waitForDay(connection,udpListener,false);
                 time ="day";
                 System.out.println("Client : End PAXOS");
             }
@@ -298,7 +309,7 @@ public class WereWolfClient {
                 System.out.println(connection.listClients());
                 System.out.println("Vote by typing '<user_id>'");
                 connection.listClient();
-                waitForData(connection,udpListener,false);
+                waitForData(connection);
                 connection.setDataReady(false);
                 order = sc.nextInt();
                 while(connection.isPlayerExist(order)){
@@ -317,7 +328,7 @@ public class WereWolfClient {
                     System.out.println(connection.listClients());
                     System.out.println("Vote by typing '<user_id>'");
                     connection.listClient();
-                    waitForData(connection,udpListener,false);
+                    waitForData(connection);
                     connection.setDataReady(false);
                     order = sc.nextInt();
                     while(connection.isPlayerExist(order)){
@@ -327,7 +338,7 @@ public class WereWolfClient {
                     messenger.sendVoteCivilian(order);
                 }
             }
-            waitForData(connection,udpListener,true);
+            waitForDay(connection,udpListener,true);
             count++;
         }
     }
