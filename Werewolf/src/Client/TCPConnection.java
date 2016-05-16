@@ -276,6 +276,7 @@ public class TCPConnection implements Runnable{
                             }
                             else if(method.equals(StandardMessage.PARAM_VOTE_NOW)){
                                 phase = json.get(StandardMessage.MESSAGE_PHASE).toString();
+                                System.out.println("Client :: Vote Now");
                                 out.println(clientProtocol.statusOK().toString());
                                 dataReady=true;
                             }

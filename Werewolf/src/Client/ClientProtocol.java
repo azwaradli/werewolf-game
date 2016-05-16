@@ -28,6 +28,7 @@ public class ClientProtocol {
     
     public JSONObject statusOK(){
         JSONObject data = new JSONObject();
+        System.out.println("Client :: Send :: Status OK");
         data.put(StandardMessage.MESSAGE_STATUS, StandardMessage.PARAM_OK);
         return data;
     }

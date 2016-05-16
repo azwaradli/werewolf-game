@@ -88,7 +88,7 @@ public class Proposer {
                 promisedSend = true;
             }
             else{
-                messenger.sendCheck();
+                sendCheckToServer();
             }
         }
     }
@@ -100,4 +100,7 @@ public class Proposer {
         messenger.prepareProposal(proposalID);
     }
     
+    public void sendCheckToServer(){
+        messenger.sendCheck();
+    }
 }
