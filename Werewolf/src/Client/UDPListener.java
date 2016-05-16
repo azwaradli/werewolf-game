@@ -37,6 +37,8 @@ public class UDPListener implements Runnable{
     private int werewolfCount;
     private int civilianCount;
     
+    private int count;
+    
     Acceptor acceptor;
     Proposer proposer;
     
@@ -56,6 +58,10 @@ public class UDPListener implements Runnable{
     
     public ArrayList<ArrayList<Integer>> getVoteResults(){
         return voteResult;
+    }
+    
+    public void resetCount(){
+        count = 0;
     }
     
     public void resetVoteResults(){
@@ -80,6 +86,7 @@ public class UDPListener implements Runnable{
     
     public UDPListener(String _address,int _port, Messenger messenger){
         port = _port;
+        count = 0;
         playerId = 0;
         werewolfCount = 2;
         try{
@@ -155,8 +162,11 @@ public class UDPListener implements Runnable{
                                 proposer.receivePromise();
                             }
                         }
-                        else if(status.equals(StandardMessage.PARAM_REJECTED)){
-                            proposer.sendCheckToServer();
+                        else if(status.equals(StandardMessage.PARAM_FAIL)){
+                            if(count==0){
+                               proposer.sendCheckToServer();
+                               count++;
+                            }
                         }
                     }
                     

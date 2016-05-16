@@ -372,6 +372,7 @@ public class TCPConnection implements Runnable{
     }
     
     public void check(){
+        System.out.println("Client :: Send Check");
         out.println(clientProtocol.waitingVote());
     }
     

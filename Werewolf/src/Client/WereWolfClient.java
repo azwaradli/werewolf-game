@@ -294,6 +294,7 @@ public class WereWolfClient {
                 System.out.println("Client : Start PAXOS");
                 connection.listClient();
                 waitForData(connection);
+                udpListener.resetCount();
                 paxosController = new PaxosController(connection.getPlayerId(),connection);
                 udpListener.setProposer(paxosController.getProposer());
                 paxosController.run();
@@ -316,6 +317,7 @@ public class WereWolfClient {
                     System.out.println("User doesn't exist. Please vote again");
                     order = sc.nextInt();
                 }
+                System.out.println(order + " is chosen");
                 messenger.sendVoteWerewolf(order);
                 
                 
@@ -335,6 +337,7 @@ public class WereWolfClient {
                         System.out.println("User doesn't exist. Please vote again");
                         order = sc.nextInt();
                     }
+                    System.out.println(order + " is chosen");
                     messenger.sendVoteCivilian(order);
                 }
             }

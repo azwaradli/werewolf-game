@@ -67,6 +67,7 @@ public class Proposer {
         if(proposedValue == -1){
             proposedValue = prevAcceptedValue;
         }
+
         if((!promisedSend)&&(counter >= quorumSize)){
             if(proposedValue != -1){
                 System.out.println("Counter  : "+counter + " " + quorumSize);
