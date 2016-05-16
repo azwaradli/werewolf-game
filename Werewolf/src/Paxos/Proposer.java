@@ -73,6 +73,9 @@ public class Proposer {
                 messenger.acceptProposal(proposalID, proposedValue);
                 promisedSend = true;
             }
+            else{
+                messenger.sendCheck();
+            }
         }
     }
     
@@ -83,6 +86,9 @@ public class Proposer {
                 System.out.println("Counter  : "+counter + " " + quorumSize);        
                 messenger.acceptProposal(proposalID, proposedValue);
                 promisedSend = true;
+            }
+            else{
+                messenger.sendCheck();
             }
         }
     }
