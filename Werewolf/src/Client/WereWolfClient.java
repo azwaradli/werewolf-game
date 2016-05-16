@@ -190,20 +190,23 @@ public class WereWolfClient {
     }
     
     private void waitForDay(TCPConnection connection, UDPListener udpListener, boolean listen){
+        boolean once = true;
         if(listen){
             udpListener.setWerewolfCount(connection.getWerewolfCount());
             udpListener.setCivilianCount(connection.getCivilianCount());
         }
         while(!connection.isDayChanged()){
             //busy waiting
-            if(listen){
+            if(listen && once){
                 if(udpListener.getWerewolfCount()<=0){
                     System.out.println("kill werewolf");
                     connection.infoWerewolfKilled(udpListener.getVoteResults(), udpListener);
+                    once = false;
                 }
                 if(udpListener.getCivilianCount()<=0){
                     System.out.println("kill civilian");
                     connection.infoCivilianKilled(udpListener.getVoteResults(), udpListener);
+                    once = false;
                 }
             }
             try {
@@ -309,13 +312,13 @@ public class WereWolfClient {
                 System.out.println("List of alive players");
                 System.out.println(connection.listClients());
                 System.out.println("Vote by typing '<user_id>'");
-                connection.listClient();
-                waitForData(connection);
-                connection.setDataReady(false);
-                order = sc.nextInt();
-                while(connection.isPlayerExist(order)){
+//                connection.listClient();
+//                waitForData(connection);
+//                connection.setDataReady(false);
+                order = Integer.parseInt(sc.nextLine());
+                while(!connection.isPlayerExist(order)){
                     System.out.println("User doesn't exist. Please vote again");
-                    order = sc.nextInt();
+                    order = Integer.parseInt(sc.nextLine());
                 }
                 System.out.println(order + " is chosen");
                 messenger.sendVoteWerewolf(order);
@@ -331,11 +334,10 @@ public class WereWolfClient {
                     System.out.println("Vote by typing '<user_id>'");
                     connection.listClient();
                     waitForData(connection);
-                    connection.setDataReady(false);
-                    order = sc.nextInt();
-                    while(connection.isPlayerExist(order)){
+                    order = Integer.parseInt(sc.nextLine());
+                    while(!connection.isPlayerExist(order)){
                         System.out.println("User doesn't exist. Please vote again");
-                        order = sc.nextInt();
+                        order = Integer.parseInt(sc.nextLine());
                     }
                     System.out.println(order + " is chosen");
                     messenger.sendVoteCivilian(order);

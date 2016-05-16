@@ -89,7 +89,7 @@ public class WereWolfServer {
                 
                 while(true){
                     getjson = in.readLine();
-                    //System.out.println("Server :: Client "+ thisClient +" Message :: " + getjson);
+                    System.out.println("Server :: Client "+ thisClient +" Message :: " + getjson);
                     try {
                         
                         Object obj = parser.parse(getjson);
@@ -344,7 +344,7 @@ public class WereWolfServer {
                                             }
                                         }
 
-
+                                        
                                         if(game.getPlayer(thisClient).getId() == game.getLeaderId())
                                         {
                                             System.out.println("Server :: [PLAYER AS KPU] | Received Request from KPU");
@@ -355,11 +355,22 @@ public class WereWolfServer {
                                             getjson = in.readLine();
                                             obj = parser.parse(getjson);
                                             json = (JSONObject)obj;
-                                            //System.out.println("Server :: [PLAYER AS KPU] | Client "+ thisClient +" Message :: " + getjson);
+                                            System.out.println("Server :: [PLAYER AS KPU] | KPU "+ thisClient +" Message :: " + getjson);
 
                                             if(json.containsKey("method"))
                                             {
-                                                if(json.get("method").equals("vote_result_werewolf")&&game.isDay())
+                                                if(json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_CLIENT_ADDRESS))
+                                                {
+                                                    //---------------------------------------
+                                                    //----------REQUEST PLAYER---------------
+                                                    //----------CLIENT ADDRESS STATE---------
+                                                    //---------------------------------------
+                                                    //System.out.println("Server :: Client "+ game.getPlayer(thisClient).getName() +" requesting to client address");
+                                                    ArrayList<Player> players = game.getPlayer();
+                                                    message = mc.requestPlayers(players);
+                                                    out.println(message);
+                                                }
+                                                else if(json.get("method").equals("vote_result_werewolf")&&game.isDay())
                                                 {
                                                     System.out.println("Server :: [PLAYER AS KPU] | KPU Request Vote Werewolf");
                                                     //------------------------------------------
@@ -530,7 +541,7 @@ public class WereWolfServer {
                     } catch (ParseException ex) {
                         Logger.getLogger(WereWolfServer.class.getName()).log(Level.SEVERE, null, ex);
                     } catch(NullPointerException npe){
-                        System.out.println("Error Exception : "+npe.getMessage());
+                        System.out.println("Error Exception : Client "+thisClient+" "+npe.getMessage());
                         if(thisClient!=-1)
                         {
                             System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");
