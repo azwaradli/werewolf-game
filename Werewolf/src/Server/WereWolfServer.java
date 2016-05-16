@@ -259,16 +259,16 @@ public class WereWolfServer {
                                 else if((json.get(StandardMessage.MESSAGE_METHOD).equals(StandardMessage.PARAM_ACCEPTED_PROPOSAL)&&game.getPlayer(thisClient).isReady()))
                                 {
                                     //-----------------------------------------
-                                    //----------PREPARE PROPOSAL STATE---------
+                                    //----------ACCEPTED PROPOSAL STATE---------
                                     //-----------------------------------------
                                     if(json.containsKey(StandardMessage.MESSAGE_KPU_ID))
                                     {
-                                        System.out.println("Server :: [Prepare Proposal State] | Client "+ game.getPlayer(thisClient).getName() +" confirm KPU ID "+json.get(StandardMessage.MESSAGE_KPU_ID).toString());
+                                        System.out.println("Server :: [Accepted Proposal State] | Client "+ game.getPlayer(thisClient).getName() +" confirm KPU ID "+json.get(StandardMessage.MESSAGE_KPU_ID).toString());
                                         if(game.prepareLeader(Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString()))==-1){
-                                            System.out.println("Server ::Client "+ game.getPlayer(thisClient).getName() +" succesfully confirm. wait for other player confirm.");
+                                            System.out.println("Server :: [Accepted Proposal State] | Client "+ game.getPlayer(thisClient).getName() +" succesfully confirm. wait for other player confirm.");
                                             
                                             long startTime = System.currentTimeMillis(); //fetch starting time
-                                            System.out.println("Server :: [Prepare Proposal State] | Client "+thisClient + " waiting leader.");
+                                            System.out.println("Server :: [Accepted Proposal State] | Client "+thisClient + " waiting leader.");
                                             //while(game.checkLeader() == -1&&(System.currentTimeMillis()-startTime)<10000);    //Wait other players until done or 10 seconds
                                             while(game.checkLeader() == -1){
                                                 try {
@@ -277,25 +277,29 @@ public class WereWolfServer {
                                                     Thread.currentThread().interrupt();
                                                 }
                                             }
-                                            System.out.println("Server :: [Prepare Proposal State] | Client "+thisClient + " leader chosen.");
+                                            System.out.println("Server :: [Accepted Proposal State] | Client "+thisClient + " leader chosen.");
+                                        }else{
+                                            System.out.println("Server :: [Accepted Proposal State] | Client "+ game.getPlayer(thisClient).getName() +" succesfully confirm. Done waiting.");
                                         }
                                         
                                     }
                                     else
                                     {
-                                        System.out.println("Server :: [Prepare Proposal State] | Client "+ game.getPlayer(thisClient).getName() +" doesn't have kpu id");
+                                        System.out.println("Server :: [Accepted Proposal State] | Client "+ game.getPlayer(thisClient).getName() +" doesn't have kpu id");
                                     }
                                 }
                                 else if(json.get("method").equals("waiting_vote_now")&&game.getPlayer(thisClient).isReady()&&game.isBegan())
                                 {
-                                    System.out.println("Server :: [Prepare Proposal State] | CLIENT "+thisClient+" Request VOTE NOW");
+                                    System.out.println("Server :: [Accepted Proposal State] | CLIENT "+thisClient+" Request VOTE NOW");
                                     while(game.checkLeader() == -1){
                                         try {
                                             Thread.sleep(200);                 //1000 milliseconds is one second.
+                                            System.out.println("in-"+game.checkLeader());
                                         } catch(InterruptedException ex) {
                                             Thread.currentThread().interrupt();
                                         }
                                     }
+                                    System.out.println("Server :: [Accepted Proposal State] | Client "+thisClient+" stop waiting leader.");
                                 }
                                 
                                 //--------------------------------------------
@@ -334,6 +338,7 @@ public class WereWolfServer {
                                             System.out.println("Server :: [KPU RECEIVED] | Receive Message from Player "+thisClient);
                                             obj = parser.parse(getjson);
                                             json = (JSONObject)obj;
+                                            System.out.println("Server :: Client "+ thisClient +" Message :: " + getjson);
                                             if(json.get("status").toString().equals("ok")){
                                                 sendf2 = false;
                                             }
@@ -525,19 +530,20 @@ public class WereWolfServer {
                     } catch (ParseException ex) {
                         Logger.getLogger(WereWolfServer.class.getName()).log(Level.SEVERE, null, ex);
                     } catch(NullPointerException npe){
+                        System.out.println("Error Exception : "+npe.getMessage());
                         if(thisClient!=-1)
                         {
                             System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");
                             game.deletePlayer(thisClient);
                         }
                         return;
-                    } catch (SocketException se) {
-                        if(thisClient!=-1)
-                        {
-                            System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");
-                            game.deletePlayer(thisClient);
-                        }
-                        return;
+//                    } catch (SocketException se) {
+//                        if(thisClient!=-1)
+//                        {
+//                            System.out.println("Server :: Client "+game.getPlayer(thisClient).getName()+" Leaving the game.");
+//                            game.deletePlayer(thisClient);
+//                        }
+//                        return;
                     }
                     if(game.isGameOver()){
                         System.out.println("Server :: Reseting The Game.");
