@@ -124,16 +124,16 @@ public class Messenger {
     }
     
     public void sendToAll(){
-        connection.listClient();
-        while(!connection.isReady()){
-            //busy waiting
-            try {
-                Thread.sleep(500);                 //1000 milliseconds is one second.
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        connection.setDataReady(false);
+//        connection.listClient();
+//        while(!connection.isReady()){
+//            //busy waiting
+//            try {
+//                Thread.sleep(500);                 //1000 milliseconds is one second.
+//            } catch(InterruptedException ex) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
+//        connection.setDataReady(false);
         for(JSONObject c : connection.getListPlayers()){
             int id = Integer.parseInt(c.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
             if((id!=connection.getBiggestPID())&&(id!=connection.getSecondBiggest())){
@@ -147,16 +147,16 @@ public class Messenger {
     }
     
     public void sendToOne(int pid){
-        connection.listClient();
-        while(!connection.isReady()){
-            //busy waiting
-            try {
-                Thread.sleep(500);                 //1000 milliseconds is one second.
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
-            }
-        }
-        connection.setDataReady(false);
+//        connection.listClient();
+//        while(!connection.isReady()){
+//            //busy waiting
+//            try {
+//                Thread.sleep(500);                 //1000 milliseconds is one second.
+//            } catch(InterruptedException ex) {
+//                Thread.currentThread().interrupt();
+//            }
+//        }
+//        connection.setDataReady(false);
         for(JSONObject c : connection.getListPlayers()){
             int id = Integer.parseInt(c.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
             if(id==pid){

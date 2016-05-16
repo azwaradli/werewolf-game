@@ -259,9 +259,9 @@ public class WereWolfClient {
                 connection.readyUp();
                 waiting = true;
             }
-            else if(message.equals("list-client")){
-                connection.listClient();
-            } 
+//            else if(message.equals("list-client")){
+//                connection.listClient();
+//            } 
         }
         while(!connection.isStarted()){
             //busy waiting
