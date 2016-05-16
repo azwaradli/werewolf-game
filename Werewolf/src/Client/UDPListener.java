@@ -155,6 +155,9 @@ public class UDPListener implements Runnable{
                                 proposer.receivePromise();
                             }
                         }
+                        else if(status.equals(StandardMessage.PARAM_REJECTED)){
+                            proposer.sendCheckToServer();
+                        }
                     }
                     
                 } catch (ParseException ex) {

@@ -73,6 +73,9 @@ public class Proposer {
                 messenger.acceptProposal(proposalID, proposedValue);
                 promisedSend = true;
             }
+            else{
+                messenger.sendCheck();
+            }
         }
     }
     
@@ -84,6 +87,9 @@ public class Proposer {
                 messenger.acceptProposal(proposalID, proposedValue);
                 promisedSend = true;
             }
+            else{
+                sendCheckToServer();
+            }
         }
     }
     
@@ -94,4 +100,7 @@ public class Proposer {
         messenger.prepareProposal(proposalID);
     }
     
+    public void sendCheckToServer(){
+        messenger.sendCheck();
+    }
 }

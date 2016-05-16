@@ -56,8 +56,13 @@ public class Messenger {
         message = obj.toString();
         System.out.println(message);
         sendToAll();
-        connection.check();
+        sendCheck();
         System.out.println("Client :: Send :: accept proposal");
+    }
+    
+    public void sendCheck(){
+        System.out.println("Client :: Send :: OK");
+        connection.check();
     }
     
     public void killWerewolfVote(int playerId){
