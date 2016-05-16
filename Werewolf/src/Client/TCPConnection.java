@@ -343,21 +343,21 @@ public class TCPConnection implements Runnable{
     }
     
     public boolean sendAccepted(String message){
-        boolean ret = false;
+        boolean ret = true;
         System.out.println("Client :: Sending : "+message );
         out.println(message);
-        try{
-            JSONParser parser = new JSONParser();
-            String getjson = in.readLine();
-            System.out.println("Client :: JSON : "+ getjson);
-            JSONObject json = (JSONObject) parser.parse(getjson);
-            if(json.get("status").equals("ok"))
-                ret = true;
-        }catch(IOException e){
-            e.printStackTrace();
-        }catch(ParseException e){
-            e.printStackTrace();
-        }
+//        try{
+//            JSONParser parser = new JSONParser();
+//            String getjson = in.readLine();
+//            System.out.println("Client :: JSON : "+ getjson);
+//            JSONObject json = (JSONObject) parser.parse(getjson);
+//            if(json.get("status").equals("ok"))
+//                ret = true;
+//        }catch(IOException e){
+//            e.printStackTrace();
+//        }catch(ParseException e){
+//            e.printStackTrace();
+//        }
         return ret;
     }
     
