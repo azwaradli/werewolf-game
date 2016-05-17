@@ -38,9 +38,9 @@ public class PaxosController {
     }
     
     public void run(){
-        proposer.setQuorum((connection.getListPlayers().size()-2)/2);
+        proposer.setQuorum(((connection.getListPlayers().size()-2)/2)+1);
         System.out.println("Jumlah Pemain : "+ connection.getListPlayers().size());
-        System.out.println("Quorum : "+(connection.getListPlayers().size()-2)/2);
+        System.out.println("Quorum : "+(1+connection.getListPlayers().size()-2)/2);
         decideRole();
         runPaxos();
     }

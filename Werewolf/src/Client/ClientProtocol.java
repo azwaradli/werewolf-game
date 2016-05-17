@@ -137,7 +137,7 @@ public class ClientProtocol {
             data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
         }
         else if(voteStatus == -1){
-            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT);
+            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_WEREWOLF);
             data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
             data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
         }
@@ -175,13 +175,13 @@ public class ClientProtocol {
         }
         
         if(voteStatus == 1){
-            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_WEREWOLF);
+            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_CIVILIAN);
             data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
             data.put(StandardMessage.MESSAGE_PLAYER_KILLED, playerKilled);
             data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
         }
         else if(voteStatus == -1){
-            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT);
+            data.put(StandardMessage.MESSAGE_METHOD, StandardMessage.PARAM_VOTE_RESULT_CIVILIAN);
             data.put(StandardMessage.MESSAGE_VOTE_STATUS, voteStatus);
             data.put(StandardMessage.MESSAGE_VOTE_RESULT, voteResult);
         }

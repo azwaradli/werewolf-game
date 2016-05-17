@@ -157,6 +157,7 @@ public class UDPListener implements Runnable{
                                     int count = voteResult.get(i).get(1);
                                     count++;
                                     civilianCount--;
+                                    System.out.println("civilian "+ victimId + " voted");
                                     voteResult.get(i).set(1, count);
                                     break;
                                 }

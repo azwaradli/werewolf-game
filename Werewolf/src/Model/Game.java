@@ -29,11 +29,29 @@ public class Game {
     private int idLeader = -1, gconflict = 0, idSender=-1;
     private ArrayList<Integer> preparatorLead = new ArrayList();
     private ArrayList<Integer> werewolfId = new ArrayList();
+    private static boolean waitingkpu = true;
+    public static boolean nokill = false;
     
     private int WEREWOLF_AMOUNT = 2;
     
     public Game(){
         players = new ArrayList();
+    }
+    
+    public void setNoKill(boolean inp){
+        nokill = inp;
+    }
+    
+    public boolean isNokill(){
+        return nokill;
+    }
+    
+    public boolean waitingKPU(){
+        return waitingkpu;
+    }
+    
+    public void setWaitingKPU(boolean inp){
+        waitingkpu = inp;
     }
     
     public void killPlayer(int id){
@@ -157,6 +175,10 @@ public class Game {
         if(day){
             daycounter++;
         }
+    }
+    
+    public void mockChangeDay(){
+        day = !day;
     }
     
     public boolean isDay(){
@@ -497,7 +519,7 @@ public class Game {
                 }
             }
         }
-        System.out.println("Server :: "+getPlayer(Integer.parseInt(idp))+" is dead.");
+        System.out.println("Server :: "+getPlayer(Integer.parseInt(idp)).getName()+" is dead.");
     }
     
 }

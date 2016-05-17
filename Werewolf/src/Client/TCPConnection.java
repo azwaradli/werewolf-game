@@ -281,7 +281,7 @@ public class TCPConnection implements Runnable{
                             }
                             else if(method.equals(StandardMessage.PARAM_CHANGE_PHASE)){
                                 time = json.get(StandardMessage.MESSAGE_TIME).toString();
-                                day = Integer.parseInt(json.get(StandardMessage.MESSAGE_DAYS).toString());
+                                day = Integer.parseInt(json.get(StandardMessage.PARAM_DAY).toString());
                                 System.out.println("Client :: Change Phase");
                                 out.println(clientProtocol.statusOK().toString());
                             }
