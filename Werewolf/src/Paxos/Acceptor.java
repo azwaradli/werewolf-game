@@ -64,18 +64,19 @@ public class Acceptor {
                 promisedID = new ProposalID(proposalNumber, proposerId);
             }
             else{ // prevAcceptedNumber == proposalNumber
-                if(prevAcceptedId > proposerId){
+                
+//                if(prevAcceptedId > proposerId){
+//                    messenger.sendRejected(proposerId);
+//                }
+//                else if(prevAcceptedId < proposerId){
+//                    messenger.sendPromise(proposerId, prevAcceptedId);
+//                    prevAcceptedProposalNum = proposalNumber;
+//                    prevAcceptedId = proposerId;
+//                    promisedID = new ProposalID(proposalNumber, proposerId);
+//                }
+//                else{
                     messenger.sendRejected(proposerId);
-                }
-                else if(prevAcceptedId < proposerId){
-                    messenger.sendPromise(proposerId, prevAcceptedId);
-                    prevAcceptedProposalNum = proposalNumber;
-                    prevAcceptedId = proposerId;
-                    promisedID = new ProposalID(proposalNumber, proposerId);
-                }
-                else{
-                    messenger.sendError(proposerId);
-                }
+//                }
             }
         }
     }

@@ -193,24 +193,26 @@ public class WereWolfClient {
         boolean once = true;
         if(listen){
             udpListener.setWerewolfCount(connection.getWerewolfCount());
+            System.out.println("quorum werewolf : " + connection.getWerewolfCount());
             udpListener.setCivilianCount(connection.getCivilianCount());
+            System.out.println("quorum civilian : " + connection.getCivilianCount());
         }
         while(!connection.isDayChanged()){
             //busy waiting
             if(listen && once){
                 if(udpListener.getWerewolfCount()<=0){
-                    System.out.println("kill werewolf");
+                    System.out.println("vote werewolf result");
                     connection.infoWerewolfKilled(udpListener.getVoteResults(), udpListener);
                     once = false;
                 }
                 if(udpListener.getCivilianCount()<=0){
-                    System.out.println("kill civilian");
+                    System.out.println("vote civilian result");
                     connection.infoCivilianKilled(udpListener.getVoteResults(), udpListener);
                     once = false;
                 }
             }
             try {
-                Thread.sleep(1000);                 //1000 milliseconds is one second.
+                Thread.sleep(3000);                 //3000 milliseconds is three second.
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
@@ -320,11 +322,11 @@ public class WereWolfClient {
                     System.out.println("User doesn't exist. Please vote again");
                     order = Integer.parseInt(sc.nextLine());
                 }
-                System.out.println(order + " is chosen");
-                messenger.sendVoteWerewolf(order);
-                
-                
-            }else if(connection.getPhase().equals("night")&&(connection.isAlive())){
+                udpListener.setVoteResult(connection.getListPlayers());
+                System.out.println(udpListener.getVoteResults());
+                messenger.sendVoteCivilian(order);
+            }
+            else if(connection.getPhase().equals("night")&&(connection.isAlive())){
                 //NIGHTTIME
                 time ="night";
                 System.out.println("NIGHT TIME");
@@ -339,8 +341,9 @@ public class WereWolfClient {
                         System.out.println("User doesn't exist. Please vote again");
                         order = Integer.parseInt(sc.nextLine());
                     }
-                    System.out.println(order + " is chosen");
-                    messenger.sendVoteCivilian(order);
+                    udpListener.setVoteResult(connection.getListPlayers());
+                    System.out.println(udpListener.getVoteResults());
+                    messenger.sendVoteWerewolf(order);
                 }
             }
             waitForDay(connection,udpListener,true);

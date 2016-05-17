@@ -137,7 +137,7 @@ public class UDPListener implements Runnable{
                             acceptor.receiveAccept(proposerId, new ProposalID(proposalNumber, proposerId), kpuId);
                             // kpuId = proposer yang terpilih
                         }
-                        else if(method.equals(StandardMessage.PARAM_VOTE_WEREWOLF) || method.equals(StandardMessage.PARAM_VOTE_CIVILIAN)){
+                        else if(method.equals(StandardMessage.PARAM_VOTE_WEREWOLF)){
                             int victimId = Integer.parseInt(json.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                             for(int i = 0; i < voteResult.size(); i++){
                                 if(voteResult.get(i).get(0).equals(victimId)){
@@ -148,7 +148,23 @@ public class UDPListener implements Runnable{
                                     break;
                                 }
                             }
+                            System.out.println("Client :: "+werewolfCount+" more vote to go");
                         }
+                        else if(method.equals(StandardMessage.PARAM_VOTE_CIVILIAN)){
+                            int victimId = Integer.parseInt(json.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
+                            for(int i = 0; i < voteResult.size(); i++){
+                                if(voteResult.get(i).get(0).equals(victimId)){
+                                    int count = voteResult.get(i).get(1);
+                                    count++;
+                                    civilianCount--;
+                                    voteResult.get(i).set(1, count);
+                                    break;
+                                }
+                            }
+                            System.out.println("Client :: "+civilianCount+" more vote to go");
+                        }
+                        
+                        
                     }
                     else if(json.containsKey(StandardMessage.MESSAGE_STATUS)){
                         String status = json.get(StandardMessage.MESSAGE_STATUS).toString();
@@ -188,10 +204,6 @@ public class UDPListener implements Runnable{
         return localPort;
     }
     
-    public ArrayList<ArrayList<Integer>> getVoteResult(){
-        return voteResult;
-    }
-    
     public void setPlayerId(int playerId){
         this.playerId = playerId;
     }
@@ -201,8 +213,8 @@ public class UDPListener implements Runnable{
     }
     
     public void setVoteResult(ArrayList<JSONObject> allClients){
-        ArrayList<Integer> client = new ArrayList<>();
         for(int i = 0; i < allClients.size(); i++){
+            ArrayList<Integer> client = new ArrayList<>();
             client.add(Integer.parseInt(allClients.get(i).get("player_id").toString()));
             client.add(0);
             voteResult.add(client);

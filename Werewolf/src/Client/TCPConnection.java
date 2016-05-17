@@ -211,19 +211,11 @@ public class TCPConnection implements Runnable{
 
                                     biggestPID = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                     secondBiggestPID = 0;
-                                    werewolfCount = 0;
-                                    civilianCount = 0;
+                                    
                                     for(int i = 1; i<playersInfo.size();i++){
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
                                         tempInfo.add(clientInfo);
                                         
-                                        if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==1){
-                                            if(clientInfo.get(StandardMessage.MESSAGE_ROLE).toString()==("werewolf")){
-                                                werewolfCount++;
-                                            }else{
-                                                civilianCount++;
-                                            }
-                                        }
                                         int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                         if(temp==player_id){
                                             if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==0){
@@ -233,14 +225,24 @@ public class TCPConnection implements Runnable{
                                                 is_alive = true;
                                             }
                                         }
-                                        
                                         if(temp > biggestPID){
                                             biggestPID = temp;
                                         }
                                         
                                     }
+                                    werewolfCount = 0;
+                                    civilianCount = 0;
                                     for(int i = 0; i<playersInfo.size();i++){
                                         clientInfo = (JSONObject) parser.parse(playersInfo.get(i).toString());
+                                        if(Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ALIVE).toString())==1){
+//                                            System.out.println(clientInfo.get(StandardMessage.MESSAGE_ROLE).toString());
+                                            if(clientInfo.get(StandardMessage.MESSAGE_ROLE).toString().equals("werewolf")){
+                                                werewolfCount++;
+                                                civilianCount++;
+                                            }else{
+                                                civilianCount++;
+                                            }
+                                        }
                                         int temp = Integer.parseInt(clientInfo.get(StandardMessage.MESSAGE_PLAYER_ID).toString());
                                         if((temp > secondBiggestPID)&&(temp < biggestPID)){
                                             secondBiggestPID = temp;
@@ -290,6 +292,7 @@ public class TCPConnection implements Runnable{
                                 dayChanged=true;
                             }
                             else if(method.equals(StandardMessage.PARAM_KPU_SELECTED)){
+                                System.out.println("Client :: Receive KPU ID");
                                 kpu_id = Integer.parseInt(json.get(StandardMessage.MESSAGE_KPU_ID).toString());
                             }
                             else if(method.equals(StandardMessage.PARAM_GAME_OVER)){

@@ -40,14 +40,24 @@ public class Messenger {
         JSONObject obj = new JSONObject();
         obj = clientProtocol.killCivilianVoteMessage(target);
         message = obj.toString();
-        sendToOne(connection.getKpuID());
+        if(connection.getKpuID() != -1){
+            System.out.println("Client :: Send :: vote civilian result");
+            sendToOne(connection.getKpuID());
+        }
+        else
+            System.out.println("Client :: KPU ID doesn't exist");
     }
     
     public void sendVoteWerewolf(int target){
         JSONObject obj = new JSONObject();
         obj = clientProtocol.killWerewolfVoteMessage(target);
         message = obj.toString();
-        sendToOne(connection.getKpuID());
+        if(connection.getKpuID() != -1){
+            System.out.println("Client :: Send :: vote werewolf result");
+            sendToOne(connection.getKpuID());
+        }
+        else
+            System.out.println("Client :: KPU ID doesn't exist");
     }
     
     public void acceptProposal(ProposalID proposalID, int proposedValue){
