@@ -315,9 +315,12 @@ public class WereWolfServer {
                                     
                                     System.out.println("Server :: [KPU RECEIVED] | All Client has confirmed their kpu id. "+game.getConflict()+" conflict.");
 
+                                    
                                     String message = mc.prepareProposalSuccess(game.getLeaderId());
                                     out.println(message);
-
+                                    System.out.println("Server :: [KPU RECEIVED] | Sent Kpu ID to Client "+thisClient);
+                                    
+                                    int tryKill = 0;
                                     while(true){
                                         System.out.println("Server :: [KPU RECEIVED] | Start on Game State.");
                                         //----------------------------------
@@ -326,6 +329,7 @@ public class WereWolfServer {
                                         System.out.println("Server :: [KPU RECEIVED] | Prepare Voting.");
 
                                         waitingkpu = true;
+                                        String phase = game.getDay();
 
                                         /* Send Message to Client */
                                         boolean sendf2 = true;
@@ -376,12 +380,13 @@ public class WereWolfServer {
                                                     //------------------------------------------
                                                     //----------INFO WEREWOLF KILLED------------
                                                     //------------------------------------------
+                                                    boolean someoneKilled = false;
                                                     if(json.containsKey("vote_status") && json.containsKey("vote_result"))
                                                     {
                                                         if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
                                                         {
                                                             System.out.println("Server :: [PLAYER AS KPU] | 'Day Voting' has approving one person to kill.");
-
+                                                            someoneKilled = true;
                                                             game.outDataVote((JSONArray) json.get("vote_result"), json.get("player_killed").toString());
                                                             game.killPlayer(Integer.parseInt(json.get("player_killed").toString()));
 
@@ -389,20 +394,13 @@ public class WereWolfServer {
 
                                                             message = mc.killedPlayerSuccess();
                                                             out.println(message);
-
-                                                            System.out.println("Server :: [PLAYER AS KPU] | Game changing phase.");
-                                                            game.changeDay();
-                                                            System.out.println("Server :: [PLAYER AS KPU] | Changed phase to "+game.getDay());
-
-                                                            waitingkpu = false;
                                                         }
                                                         else if(json.get("vote_status").equals(-1))
                                                         {
                                                             System.out.println("Server :: [PLAYER AS KPU] | 'Day Voting' No Person killed.");
+                                                            tryKill++;
                                                             message = mc.killedNoPlayerSuccess();
                                                             out.println(message);
-                                                            game.changeDay();
-                                                            waitingkpu = false;
                                                         }else{
                                                             System.out.println("Server :: [PLAYER AS KPU] | Status not known.");
                                                             message = mc.killedPlayerFail();
@@ -415,6 +413,16 @@ public class WereWolfServer {
                                                         message = mc.killedPlayerError();
                                                         out.println(message);
                                                     }
+                                                    
+                                                    if(someoneKilled||tryKill==2){
+                                                        System.out.println("Server :: [PLAYER AS KPU] | Game changing phase.");
+                                                        game.changeDay();
+                                                        System.out.println("Server :: [PLAYER AS KPU] | Changed phase to "+game.getDay());
+                                                        tryKill = 0;
+                                                        someoneKilled = false;
+                                                        waitingkpu = false;
+                                                    }
+                                                    
                                                 }
                                                 else if(json.get("method").equals("vote_result_civilian")&&game.isNight())
                                                 {
@@ -422,6 +430,7 @@ public class WereWolfServer {
                                                     //------------------------------------------
                                                     //----------INFO CIVILIANS KILLED-----------
                                                     //------------------------------------------
+                                                    boolean someoneKilled = false;
                                                     if(json.containsKey("vote_status") && json.containsKey("vote_result"))
                                                     {
                                                         if(json.get("vote_status").equals(1)&&json.containsKey("player_killed"))
@@ -430,20 +439,26 @@ public class WereWolfServer {
                                                             game.killPlayer(Integer.parseInt(json.get("player_killed").toString()));
                                                             message = mc.killedPlayerSuccess();
                                                             out.println(message);
-                                                            game.changeDay();
-                                                            waitingkpu = false;
+                                                            
+                                                            someoneKilled = true;
                                                         }
                                                         else if(json.get("vote_status").equals(-1))
                                                         {
                                                             System.out.println("Server :: [PLAYER AS KPU] | No Civilian killed.");
                                                             message = mc.killedNoPlayerSuccess();
                                                             out.println(message);
-                                                            game.changeDay();
-                                                            waitingkpu = false;
+                                                            
                                                         }else{
                                                             System.out.println("Server :: [PLAYER AS KPU] | Status not known.");
                                                             message = mc.killedPlayerFail();
                                                             out.println(message);
+                                                        }
+                                                        
+                                                        if(someoneKilled){
+                                                            System.out.println("Server :: [PLAYER AS KPU] | Game changing phase.");
+                                                            game.changeDay();
+                                                            System.out.println("Server :: [PLAYER AS KPU] | Changed phase to "+game.getDay());
+                                                            waitingkpu = false;
                                                         }
                                                     }
                                                     else
@@ -471,42 +486,45 @@ public class WereWolfServer {
                                         //----------AND KPU WHEN DONE-------
                                         //----------------------------------
                                         while(waitingkpu);
-                                        if(thisClient == game.getLeaderId()){
-                                            System.out.println("Server :: [AFTER KPU DONE] | Day "+game.getDayCounter()+" phase "+game.getDay()+".");
-                                        }
-
-                                        /* Send Message to Client */
-                                        boolean sendf3 = true;
-                                        while(sendf3){
-                                            message = game.messageChangePhase();
-                                            out.println(message);
-                                            System.out.println("Server :: [AFTER KPU DONE] | Sending Phase Message to Player "+thisClient);
-
-                                            getjson = in.readLine();
-                                            System.out.println("Server :: [AFTER KPU DONE] | Receive Message from Player "+thisClient);
-                                            obj = parser.parse(getjson);
-                                            json = (JSONObject)obj;
-                                            if(json.get("status").toString().equals("ok")){
-                                                sendf3 = false;
+                                        
+                                        if(!phase.equals(game.getDay())){
+                                            if(thisClient == game.getLeaderId()){
+                                                System.out.println("Server :: [AFTER KPU DONE] | Day "+game.getDayCounter()+" phase "+game.getDay()+".");
                                             }
-                                        }
+
+                                            /* Send Message to Client */
+                                            boolean sendf3 = true;
+                                            while(sendf3){
+                                                message = game.messageChangePhase();
+                                                out.println(message);
+                                                System.out.println("Server :: [AFTER KPU DONE] | Sending Phase Message to Player "+thisClient);
+
+                                                getjson = in.readLine();
+                                                System.out.println("Server :: [AFTER KPU DONE] | Receive Message from Player "+thisClient);
+                                                obj = parser.parse(getjson);
+                                                json = (JSONObject)obj;
+                                                if(json.get("status").toString().equals("ok")){
+                                                    sendf3 = false;
+                                                }
+                                            }
 
 
-                                        //----------------------------------
-                                        //----------GAME OVER---------------
-                                        //----------------------------------
-                                        if(game.isGameOver()){
-                                            System.out.println("Server :: [ENDING GAME] | Game End. Thank you for playing.");
-                                            message = game.messageGameOver(game.getWinner());
-                                            out.println(message);
-                                            break;
-                                        }
+                                            //----------------------------------
+                                            //----------GAME OVER---------------
+                                            //----------------------------------
+                                            if(game.isGameOver()){
+                                                System.out.println("Server :: [ENDING GAME] | Game End. Thank you for playing.");
+                                                message = game.messageGameOver(game.getWinner());
+                                                out.println(message);
+                                                break;
+                                            }
 
-                                        if(game.isDay()){
-                                            /* KPU Session Expire */
-                                            System.out.println("Server :: [ENDING DAY] | KPU ID is expired.");
-                                            game.resetLeader();
-                                            break;
+                                            if(game.isDay()){
+                                                /* KPU Session Expire */
+                                                System.out.println("Server :: [ENDING DAY] | KPU ID is expired.");
+                                                game.resetLeader();
+                                                break;
+                                            }
                                         }
                                     }
 
