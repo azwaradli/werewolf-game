@@ -186,7 +186,7 @@ public class MessageCreator {
     public String prepareProposalSuccess(int kpuid){
         try {
             JSONObject obj = new JSONObject();
-            obj.put("status", "ok");
+            obj.put("method", "kpu_selected");
             obj.put("kpu_id", kpuid);
             obj.put("description", "");
             
